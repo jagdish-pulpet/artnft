@@ -25,7 +25,6 @@ export default function WelcomePage() {
   const router = useRouter();
   const { toast } = useToast();
 
-  // State for feature toggles
   const [showGuestLogin, setShowGuestLogin] = useState(true);
   const [showAdminAccessShortcut, setShowAdminAccessShortcut] = useState(true);
   const [showGitHubLink, setShowGitHubLink] = useState(true);
@@ -34,19 +33,35 @@ export default function WelcomePage() {
 
   useEffect(() => {
     setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return; // Only run after component has mounted
+
     if (typeof window !== 'undefined') {
-      // Read feature toggle states from localStorage
-      // Default to true (visible) if the key isn't found or isn't 'false'
+      const userToken = localStorage.getItem('artnft_user_token');
+      const adminAuthenticated = localStorage.getItem('isAdminAuthenticated') === 'true';
+
+      if (userToken) {
+        router.replace('/home'); // User logged in
+        return;
+      }
+      // Only check for admin redirect if not a regular user
+      if (adminAuthenticated) { 
+        router.replace('/admin/dashboard'); // Admin logged in
+        return;
+      }
+
+      // Feature Toggles - only if not redirecting
       setShowGuestLogin(localStorage.getItem(FT_USER_GUEST_LOGIN_KEY) !== 'false');
       setShowAdminAccessShortcut(localStorage.getItem(FT_USER_ADMIN_ACCESS_KEY) !== 'false');
       setShowGitHubLink(localStorage.getItem(FT_USER_GITHUB_LINK_KEY) !== 'false');
       setShowUserCredsDisplay(localStorage.getItem(FT_USER_CREDS_DISPLAY_KEY) !== 'false');
     }
-  }, []);
+  }, [isMounted, router]);
 
 
   const handleGuestNavigation = () => {
-    // Clear any existing user/admin auth state for guest mode
     if (typeof window !== 'undefined') {
         localStorage.removeItem('artnft_user_token');
         localStorage.removeItem('artnft_user_details');
@@ -61,18 +76,16 @@ export default function WelcomePage() {
   };
 
   const handleAdminAccess = () => {
-    // This simulates a quick dev pathway, actual admin auth is on /admin/login
-    // For safety, clear user tokens if any exist
      if (typeof window !== 'undefined') {
         localStorage.removeItem('artnft_user_token');
         localStorage.removeItem('artnft_user_details');
-        localStorage.setItem('isAdminAuthenticated', 'true'); // Mock admin auth for direct nav
+        // localStorage.setItem('isAdminAuthenticated', 'true'); // This line might be better handled by the admin login page itself
     }
     toast({
-        title: 'Admin Access (Dev Shortcut)',
-        description: 'Proceeding to admin dashboard. Regular admin login is at /admin/login.',
+        title: 'Redirecting to Admin Panel',
+        description: 'Please log in with admin credentials.',
     });
-    router.push('/admin/dashboard');
+    router.push('/admin/login'); // Go to admin login, not directly to dashboard
   };
   
   if (!isMounted) {
@@ -143,4 +156,3 @@ export default function WelcomePage() {
     </div>
   );
 }
-

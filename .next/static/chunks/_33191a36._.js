@@ -74,15 +74,15 @@ var _s = __turbopack_context__.k.signature();
 function SplashScreen() {
     _s();
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
-    const [isShowingSplash, setIsShowingSplash] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true); // Renamed for clarity
+    const [isShowingSplash, setIsShowingSplash] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(true);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "SplashScreen.useEffect": ()=>{
             const timer = setTimeout({
                 "SplashScreen.useEffect.timer": ()=>{
-                    setIsShowingSplash(false); // Explicitly set to false before navigating
+                    setIsShowingSplash(false); // Hide loader before navigating
                     router.push('/welcome');
                 }
-            }["SplashScreen.useEffect.timer"], 2000); // Reduced duration to 2 seconds for faster testing
+            }["SplashScreen.useEffect.timer"], 2000);
             // Clear the timer if the component unmounts before the timeout finishes
             return ({
                 "SplashScreen.useEffect": ()=>clearTimeout(timer)
@@ -90,7 +90,7 @@ function SplashScreen() {
         }
     }["SplashScreen.useEffect"], [
         router
-    ]); // router dependency is correct for router.push
+    ]);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "flex flex-col items-center justify-center min-h-screen bg-artistic-gradient text-white p-4",
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -118,12 +118,12 @@ function SplashScreen() {
                         className: "h-8 w-8 animate-spin text-white"
                     }, void 0, false, {
                         fileName: "[project]/src/app/page.tsx",
-                        lineNumber: 33,
+                        lineNumber: 32,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/page.tsx",
-                    lineNumber: 32,
+                    lineNumber: 31,
                     columnNumber: 11
                 }, this)
             ]
