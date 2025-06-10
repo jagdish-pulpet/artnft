@@ -5,8 +5,8 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   const NFT = sequelize.define('NFT', {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.UUID, // Keeping NFT ID as UUID as per new schema
+      defaultValue: DataTypes.UUIDV4, // Sequelize can generate this
       primaryKey: true,
       allowNull: false,
     },
@@ -19,23 +19,23 @@ module.exports = (sequelize) => {
       allowNull: true,
     },
     image_url: {
-      type: DataTypes.STRING, // URL to the image stored externally (e.g., IPFS, S3)
+      type: DataTypes.STRING,
       allowNull: false,
       validate: {
         isUrl: true,
       },
     },
-    price_eth: { // Current price if for sale, or starting bid if auction
-      type: DataTypes.DECIMAL(18, 8), // Precision for ETH values
-      allowNull: true, // Might be null if not for sale or only auction starting bid shown elsewhere
+    price_eth: {
+      type: DataTypes.DECIMAL(18, 8),
+      allowNull: true,
     },
     currency_symbol: {
       type: DataTypes.STRING(10),
       defaultValue: 'ETH',
       allowNull: false,
     },
-    status: { // e.g., 'pending_moderation', 'listed', 'on_auction', 'sold', 'hidden'
-      type: DataTypes.STRING,
+    status: {
+      type: DataTypes.ENUM('pending_moderation', 'listed', 'on_auction', 'sold', 'hidden', 'draft'),
       defaultValue: 'pending_moderation',
       allowNull: false,
     },
@@ -47,40 +47,42 @@ module.exports = (sequelize) => {
       type: DataTypes.DATE,
       allowNull: true,
     },
-    creator_id: { // Foreign Key to Users table
+    creator_id: { // Foreign Key to Users table (UUID)
       type: DataTypes.UUID,
       allowNull: false,
-      references: {
-        model: 'users', // Name of the users table
-        key: 'id',
-      },
     },
-    owner_id: { // Foreign Key to Users table (current owner)
+    owner_id: { // Foreign Key to Users table (UUID)
       type: DataTypes.UUID,
-      allowNull: true, // Can be null if newly minted by creator and not yet sold
-      references: {
-        model: 'users',
-        key: 'id',
-      },
-    },
-    category_id: { // Foreign Key to Categories table
-      type: DataTypes.UUID, // Ensure this matches the type of your category ID
-      allowNull: true, // Or false if every NFT must have a category
-      references: {
-        model: 'categories', // Name of the categories table
-        key: 'id',
-      },
-    },
-    tags: { // Store tags as a JSON array of strings, or use a separate join table for more complex tagging
-      type: DataTypes.JSON, 
       allowNull: true,
     },
-    collection_id: { // Optional: if NFTs belong to collections
-        type: DataTypes.UUID,
-        allowNull: true,
-        // references: { model: 'collections', key: 'id' } // If you have a collections table
+    category_id: { // Foreign Key to Categories table (INTEGER for SERIAL PK)
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
-    // Timestamps (createdAt, updatedAt) are added by Sequelize by default (config/database.js)
+    collection_id: { // Foreign Key to Collections table (INTEGER for SERIAL PK)
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
+    tags: {
+      type: DataTypes.JSONB, // Changed to JSONB for PostgreSQL
+      allowNull: true,
+    },
+    metadata_url: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    royalty_percentage: {
+        type: DataTypes.DECIMAL(5,2),
+        defaultValue: 0.00,
+    },
+    unlockable_content: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    view_count: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+    }
   }, {
     tableName: 'nfts',
     timestamps: true,
@@ -90,7 +92,7 @@ module.exports = (sequelize) => {
   NFT.associate = (models) => {
     NFT.belongsTo(models.User, {
       foreignKey: 'creator_id',
-      as: 'creator', // Alias for the association
+      as: 'creator',
     });
     NFT.belongsTo(models.User, {
       foreignKey: 'owner_id',
@@ -100,7 +102,7 @@ module.exports = (sequelize) => {
       foreignKey: 'category_id',
       as: 'category',
     });
-    // Add other associations like Bids, Favorites, etc.
+    // Example: NFT.belongsTo(models.Collection, { foreignKey: 'collection_id', as: 'collection' });
     // Example: NFT.hasMany(models.Bid, { foreignKey: 'nft_id', as: 'bids' });
   };
 

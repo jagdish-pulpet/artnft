@@ -5,8 +5,8 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   const Category = sequelize.define('Category', {
     id: {
-      type: DataTypes.UUID, // Consider if UUID is best or if auto-incrementing INT is simpler
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER, // Changed from UUID to INTEGER for SERIAL PK
+      autoIncrement: true,
       primaryKey: true,
       allowNull: false,
     },
@@ -15,7 +15,7 @@ module.exports = (sequelize) => {
       allowNull: false,
       unique: true,
     },
-    slug: { // URL-friendly version of the name
+    slug: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
@@ -24,11 +24,10 @@ module.exports = (sequelize) => {
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    icon: { // Optional: name of a Lucide icon or URL to an image
+    icon: {
         type: DataTypes.STRING,
         allowNull: true,
     }
-    // Timestamps (createdAt, updatedAt) are added by Sequelize by default
   }, {
     tableName: 'categories',
     timestamps: true,
@@ -43,10 +42,9 @@ module.exports = (sequelize) => {
   });
 
   Category.associate = (models) => {
-    // A category can have many NFTs
     Category.hasMany(models.NFT, {
       foreignKey: 'category_id',
-      as: 'nfts', // Alias for the association
+      as: 'nfts',
     });
   };
 

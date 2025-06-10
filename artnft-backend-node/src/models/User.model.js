@@ -6,8 +6,8 @@ const bcrypt = require('bcryptjs');
 module.exports = (sequelize) => {
   const User = sequelize.define('User', {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.UUID, // Keep UUID for User ID as it was specified in schema for gen_random_uuid()
+      defaultValue: DataTypes.UUIDV4, // Sequelize can generate this if not provided by DB default
       primaryKey: true,
       allowNull: false,
     },
@@ -26,7 +26,7 @@ module.exports = (sequelize) => {
     username: {
       type: DataTypes.STRING,
       unique: true,
-      allowNull: true, // Or false depending on requirements
+      allowNull: true,
     },
     avatar_url: {
       type: DataTypes.STRING,
@@ -45,22 +45,24 @@ module.exports = (sequelize) => {
       allowNull: true,
     },
     role: {
-      type: DataTypes.ENUM('user', 'admin'),
+      type: DataTypes.ENUM('user', 'admin'), // Sequelize handles ENUM to VARCHAR with CHECK or native ENUM
       defaultValue: 'user',
       allowNull: false,
     }
     // Timestamps (createdAt, updatedAt) are added by Sequelize by default
   }, {
     tableName: 'users',
+    timestamps: true,
+    underscored: true,
     hooks: {
       beforeCreate: async (user) => {
-        if (user.password_hash) {
+        if (user.password_hash && !user.password_hash.startsWith('$2a$')) { // Hash only if not already hashed
           const salt = await bcrypt.genSalt(10);
           user.password_hash = await bcrypt.hash(user.password_hash, salt);
         }
       },
       beforeUpdate: async (user) => {
-        if (user.changed('password_hash') && user.password_hash) {
+        if (user.changed('password_hash') && user.password_hash && !user.password_hash.startsWith('$2a$')) {
           const salt = await bcrypt.genSalt(10);
           user.password_hash = await bcrypt.hash(user.password_hash, salt);
         }
@@ -68,21 +70,23 @@ module.exports = (sequelize) => {
     }
   });
 
-  // Instance method to compare passwords
   User.prototype.isValidPassword = async function(password) {
     return bcrypt.compare(password, this.password_hash);
   };
 
-  // Static method to hash password (if you need to hash it outside hooks)
   User.hashPassword = async function(password) {
     const salt = await bcrypt.genSalt(10);
     return bcrypt.hash(password, salt);
   };
   
-  // User.associate = (models) => {
-  //   // User.hasMany(models.NFT, { as: 'createdNfts', foreignKey: 'creator_id' });
-  //   // User.hasMany(models.NFT, { as: 'ownedNfts', foreignKey: 'owner_id' });
-  // };
+  User.associate = (models) => {
+    User.hasMany(models.NFT, { as: 'createdNfts', foreignKey: 'creator_id' });
+    User.hasMany(models.NFT, { as: 'ownedNfts', foreignKey: 'owner_id' });
+    // Add other associations like Bids, Favorites, Collections, Notifications, etc.
+    // User.hasMany(models.Collection, { foreignKey: 'user_id', as: 'collections' });
+    // User.hasMany(models.Bid, { foreignKey: 'user_id', as: 'bids' });
+    // User.hasMany(models.Favorite, { foreignKey: 'user_id', as: 'favorites' });
+  };
 
   return User;
 };
