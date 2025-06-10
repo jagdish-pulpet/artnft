@@ -1,7 +1,7 @@
 
 # ArtNFT Marketplace - Node.js Backend
 
-This is the Node.js (Express.js) backend for the ArtNFT Marketplace application. It uses MySQL as its database and provides a RESTful API for the Next.js frontend to consume.
+This is the Node.js (Express.js, TypeScript) backend for the ArtNFT Marketplace application. It uses PostgreSQL as its database and provides a RESTful API for the Next.js frontend to consume.
 
 ## Table of Contents
 
@@ -36,20 +36,21 @@ This is the Node.js (Express.js) backend for the ArtNFT Marketplace application.
     *   Bidding System (Placing bids).
     *   Favorites System.
 *   **Admin Panel Support:** Dedicated API endpoints for admin functionalities (user management, NFT status changes, category CUD).
-*   **Data Validation:** (Planned) Robust validation for incoming API requests.
+*   **Data Validation:** (Planned) Robust validation for incoming API requests using libraries like Zod or express-validator.
 *   **Structured Error Handling:** Centralized error handling middleware.
-*   **Relational Database Management:** Uses Sequelize ORM for interactions with MySQL database.
+*   **Relational Database Management:** Uses Sequelize ORM for interactions with PostgreSQL database.
+*   **TypeScript:** Written in TypeScript for improved code quality, type safety, and maintainability.
 
 ## 🛠️ Tech Stack
 
 *   **Runtime:** [Node.js](https://nodejs.org/) (v18 or later recommended)
 *   **Framework:** [Express.js](https://expressjs.com/)
-*   **Language:** JavaScript (potential to evolve to TypeScript)
-*   **Database:** [MySQL](https://www.mysql.com/)
+*   **Language:** [TypeScript](https://www.typescriptlang.org/)
+*   **Database:** [PostgreSQL](https://www.postgresql.org/)
 *   **ORM (Object-Relational Mapper):** [Sequelize](https://sequelize.org/)
 *   **Authentication:** [JSON Web Tokens (JWT)](https://jwt.io/), [bcryptjs](https://www.npmjs.com/package/bcryptjs) for password hashing.
 *   **Environment Management:** [dotenv](https://www.npmjs.com/package/dotenv)
-*   **Development Utilities:** [nodemon](https://nodemon.io/) for auto-restarting the server during development.
+*   **Development Utilities:** [nodemon](https://nodemon.io/) and [ts-node](https://www.npmjs.com/package/ts-node) for auto-restarting and running TypeScript in development.
 *   **Middleware:** [cors](https://www.npmjs.com/package/cors) for Cross-Origin Resource Sharing.
 
 ## 🏗️ Backend Architecture
@@ -62,6 +63,7 @@ The backend follows a layered architecture to promote separation of concerns, ma
 4.  **Models (`src/models/`):** Define the structure of the data (database schema) and provide an interface for interacting with the database (using Sequelize).
 5.  **Middleware (`src/middleware/`):** Functions that execute during the request-response cycle. Used for tasks like authentication, authorization, error handling, and request validation.
 6.  **Config (`src/config/`):** Manages application configuration, including database connections and environment variables.
+7.  **Types (`src/types/`):** Contains custom TypeScript type definitions, e.g., for augmenting Express Request objects.
 
 ## 🚀 Getting Started
 
@@ -69,7 +71,8 @@ The backend follows a layered architecture to promote separation of concerns, ma
 
 *   Node.js (v18 or later recommended)
 *   npm (comes with Node.js)
-*   MySQL server installed and running (e.g., via XAMPP, Docker, or a standalone installation).
+*   PostgreSQL server installed and running OR access to a cloud-hosted PostgreSQL instance (e.g., Supabase, Neon).
+*   A PostgreSQL client (e.g., `psql`, pgAdmin, DBeaver).
 
 ### Installation & Setup
 
@@ -84,24 +87,38 @@ The backend follows a layered architecture to promote separation of concerns, ma
     ```
 4.  **Set up Environment Variables:**
     *   Create a `.env` file in the root of this backend project by copying `.env.example`.
-    *   Fill in your MySQL database credentials (`DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`), `PORT`, and a strong, unique `JWT_SECRET`. See the [Environment Variables](#️-environment-variables) section for details.
+    *   Fill in your PostgreSQL database credentials (`DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_PORT`), `PORT`, and a strong, unique `JWT_SECRET`.
+        *   **For Supabase:** Use the connection details from your Supabase project dashboard (Project Settings > Database). The `DB_HOST` will be like `db.xxxxxxxx.supabase.co`, `DB_USER` is `postgres`, and `DB_NAME` is `postgres`.
+    *   See the [Environment Variables](#️-environment-variables) section for details.
 5.  **Database Setup:**
-    *   Ensure your MySQL server is running.
-    *   Create the database specified in your `.env` file (e.g., `artnft_db`).
-    *   Apply the database schema using the `schema.sql` file. From within this backend directory, you can use a command like (adjust for your MySQL client and credentials):
-        ```bash
-        mysql -u your_mysql_user -p your_database_name < schema.sql
+    *   Ensure your PostgreSQL server is running (locally or via cloud provider).
+    *   Create the database specified in your `.env` file (e.g., `artnft_db`) if it doesn't exist (for Supabase, you typically use the default `postgres` database).
+        ```sql
+        -- Example for local PostgreSQL if creating a new database:
+        -- CREATE DATABASE artnft_db;
         ```
-        (You will be prompted for your MySQL password). Alternatively, use a GUI tool like phpMyAdmin or MySQL Workbench to import and run `schema.sql`.
+    *   Connect to your PostgreSQL database using your chosen client.
+    *   Apply the database schema by executing the `schema.sql` file.
+        *   **Using `psql`:**
+            ```bash
+            psql -U your_postgres_user -d your_database_name -f schema.sql
+            ```
+        *   **Using Supabase SQL Editor:** Copy the content of `schema.sql` and run it.
+        *   **Using pgAdmin/DBeaver:** Open and execute the `schema.sql` script.
+    *   **PostgreSQL Extension (if needed):** The schema uses `gen_random_uuid()` for UUIDs. Modern PostgreSQL (13+) includes this. If using an older version or encounter issues, ensure the `uuid-ossp` extension is enabled: `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";` (then you might need to use `uuid_generate_v4()` in schema instead). Supabase projects typically don't require this manual step.
 
 ### Running the Development Server
 
 ```bash
 npm run dev
 ```
-This will start the server using `nodemon`, which automatically restarts on file changes. The server typically runs on `http://localhost:5000` (or the `PORT` specified in your `.env`). Look for console messages indicating the server is running and connected to the database.
+This will start the server using `nodemon` with `ts-node`, which automatically recompiles and restarts on file changes. The server typically runs on `http://localhost:5000` (or the `PORT` specified in your `.env`). Look for console messages indicating the server is running and connected to the database.
 
-To run in production mode (though `nodemon` is generally for development):
+To build for production:
+```bash
+npm run build
+```
+To run the compiled production build (from `dist/` folder):
 ```bash
 npm start
 ```
@@ -112,286 +129,113 @@ A brief overview of the `src/` directory:
 
 ```
 artnft-backend-node/
+├── dist/                      # Compiled JavaScript output
 ├── src/
-│   ├── api/                     # API layer: routes, controllers, and validators
-│   │   ├── controllers/         # Request handlers, interact with services
-│   │   ├── routes/              # Define API endpoints and link to controllers
-│   │   └── validators/          # (Placeholder) Request data validation logic
-│   ├── config/                  # Configuration files (database, environment, passport)
-│   ├── middleware/              # Express middleware (authentication, error handling)
-│   ├── models/                  # Sequelize database models (User, NFT, Category, etc.)
-│   ├── services/                # Business logic layer, interacts with models
-│   ├── utils/                   # Utility functions (helpers, error classes, etc.)
-│   ├── app.js                   # Express application setup, middleware registration, route mounting
-│   └── server.js                # Main server entry point (starts HTTP server, connects to DB)
-├── .env                         # Local environment variables (ignored by Git)
-├── .env.example                 # Example environment variables
-├── package.json                 # Project dependencies and scripts
-├── schema.sql                   # MySQL database schema definition and mock data
-└── README.md                    # This file
+│   ├── api/                   # API layer: routes, controllers, and validators
+│   │   ├── controllers/       # Request handlers, interact with services (.ts)
+│   │   ├── routes/            # Define API endpoints and link to controllers (.ts)
+│   │   └── validators/        # (Placeholder) Request data validation logic
+│   ├── config/                # Configuration files (database, environment - .ts)
+│   ├── middleware/            # Express middleware (authentication, error handling - .ts)
+│   ├── models/                # Sequelize database models (User, NFT, Category, etc. - .ts)
+│   ├── services/              # Business logic layer, interacts with models (.ts)
+│   ├── types/                 # Custom TypeScript type definitions
+│   ├── utils/                 # Utility functions (helpers, error classes, etc. - .ts)
+│   ├── app.ts                 # Express application setup, middleware registration, route mounting
+│   └── server.ts              # Main server entry point (starts HTTP server, connects to DB)
+├── .env                       # Local environment variables (ignored by Git)
+├── .env.example               # Example environment variables
+├── package.json               # Project dependencies and scripts
+├── schema.sql                 # PostgreSQL database schema definition and mock data
+├── tsconfig.json              # TypeScript compiler configuration
+└── README.md                  # This file
 ```
 
 ## 💾 Database Schema
 
-The database schema is defined in `schema.sql`. It creates the necessary tables for users, NFTs, categories, collections, bids, favorites, and other supporting entities. It also includes mock data for initial testing, particularly for user accounts.
+The database schema is defined in `schema.sql` for PostgreSQL. It creates the necessary tables for users, NFTs, categories, collections, bids, favorites, transactions, notifications, platform settings, and other supporting entities. It also includes mock data for initial testing.
 
 Key tables include:
-*   `users`: Stores user information, including hashed passwords and roles.
-*   `categories`: Defines NFT categories.
-*   `collections`: Allows users to group their NFTs.
-*   `nfts`: Stores detailed information about each NFT, including its creator, owner, price, and status.
-*   `bids`: Tracks bids made on auctionable NFTs.
-*   `favorites`: Manages users' favorited NFTs.
-*   See `schema.sql` for the full structure, relationships, and indexes.
+*   `users`: Stores user information (UUID primary key), including hashed passwords and roles.
+*   `categories`: Defines NFT categories (SERIAL primary key).
+*   `nfts`: Stores detailed information about each NFT (UUID primary key), including its creator, owner, price, and status.
+*   See `schema.sql` for the full structure, relationships, constraints, and indexes.
 
 ## 📈 API Endpoints Overview
 
 This section outlines the primary backend API endpoints and the frontend screens/features they are intended to support.
+*(The detailed list of endpoints from the previous README version is still relevant here and can be referred to. All endpoints are now served by TypeScript controllers and services.)*
 
 <details>
 <summary><strong>Authentication (User & Admin)</strong></summary>
 
-*   **Screens:** Login Page (`/login`), Signup Page (`/signup`), Admin Login (`/admin/login`)
-*   **Endpoints:**
-    *   `POST /api/auth/signup` - User registration.
-        *   Controller: `auth.controller.js -> signup`
-        *   Service: `auth.service.js -> signupUser`
-    *   `POST /api/auth/login` - User login.
-        *   Controller: `auth.controller.js -> login`
-        *   Service: `auth.service.js -> loginUser`
-    *   `POST /api/admin/auth/login` - Admin login.
-        *   Controller: `admin.auth.controller.js -> login`
-        *   Service: `auth.service.js -> loginAdmin`
-    *   *(Future: `POST /api/auth/forgot-password`, `POST /api/auth/reset-password`)*
+*   `POST /api/auth/signup` - User registration.
+*   `POST /api/auth/login` - User login.
+*   `POST /api/admin/auth/login` - Admin login.
 </details>
-
-<details>
-<summary><strong>Home Dashboard (`/home`)</strong></summary>
-
-*   **Features:** Latest Activity, New From Artists You Follow, Artist Spotlights, Explore Categories, Popular Collections.
-*   **Endpoints:**
-    *   `GET /api/nfts?sortBy=createdAt&sortOrder=desc&limit=X` - For "Latest Activity".
-    *   `GET /api/nfts?collectionId=Y&limit=X` - For "Popular Collections".
-    *   `GET /api/users/:userId/following/nfts?limit=X` - (Requires `user_follows` table) For "New From Artists You Follow".
-    *   `GET /api/promotions?type=artist_spotlight&limit=X` - For "Artist Spotlights".
-    *   `GET /api/categories` - For "Explore Categories".
-    *   `POST /api/users/:userIdToFollow/follow` - (Requires `user_follows` table) For follow/unfollow button on artist spotlights.
-        *   Controller: `user.controller.js` (needs implementation)
-        *   Service: `user.service.js` (needs implementation)
-</details>
-
-<details>
-<summary><strong>NFT Creation Page (`/create-nft`)</strong></summary>
-
-*   **Features:** Image upload, title, description, price, category, tags, collection selection, traits, royalties, unlockable content.
-*   **Endpoints:**
-    *   `POST /api/nfts` - Create a new NFT.
-        *   Controller: `nft.controller.js -> createNft`
-        *   Service: `nft.service.js -> createNft`
-    *   `GET /api/categories` - To populate category dropdown.
-    *   `GET /api/users/me/collections` - (Requires auth) To populate user's collections dropdown.
-    *   *(Future: `POST /api/upload/image` - If handling image uploads via backend first)*
-</details>
-
-<details>
-<summary><strong>NFT Detail Page (`/nft/[id]`)</strong></summary>
-
-*   **Features:** Display NFT details, artist info, auction system (bids, countdown), buy now, place bid, add to favorites, related NFTs.
-*   **Endpoints:**
-    *   `GET /api/nfts/:id` - Get specific NFT details (should include creator, owner, category, bids, etc.).
-        *   Controller: `nft.controller.js -> getNftById`
-        *   Service: `nft.service.js -> getNftById`
-    *   `POST /api/nfts/:id/bid` - Place a bid (requires auth).
-        *   Controller: `nft.controller.js -> placeBid`
-        *   Service: `nft.service.js -> placeBid` (and `bid.service.js`)
-    *   `POST /api/nfts/:id/buy` - Buy NFT (requires auth, more complex logic).
-        *   Controller: (Needs implementation)
-        *   Service: (Needs implementation, involves ownership transfer)
-    *   `POST /api/users/me/favorites` - Add/remove NFT from favorites (requires auth).
-        *   Controller: (Needs implementation, e.g., `user.controller.js -> toggleFavorite`)
-        *   Service: (Needs implementation, e.g., `user.service.js -> toggleFavoriteNft`)
-    *   `GET /api/nfts?relatedTo=:id&limit=X` - For "Related NFTs".
-</details>
-
-<details>
-<summary><strong>User Profile/Dashboard (`/profile`)</strong></summary>
-
-*   **Features:** Profile summary, key stats, owned NFTs, favorites, transaction history, recent activity.
-*   **Endpoints:**
-    *   `GET /api/users/profile` - Get current authenticated user's profile (requires auth).
-        *   Controller: `user.controller.js -> getUserProfile`
-        *   Service: `user.service.js -> getUserById`
-    *   `PUT /api/users/profile` - Update current authenticated user's profile (requires auth).
-        *   Controller: `user.controller.js -> updateUserProfile`
-        *   Service: `user.service.js -> updateUser`
-    *   `GET /api/users/:userId/nfts?type=owned&limit=X&page=Y` - For "Owned NFTs" tab.
-        *   Controller: `user.controller.js -> getUserNfts`
-        *   Service: `nft.service.js -> getNftsByOwner`
-    *   `GET /api/users/me/favorites?limit=X&page=Y` - For "Favorites" tab (requires auth).
-    *   `GET /api/users/me/transactions?limit=X&page=Y` - For "Transaction History" (requires `transactions` table & service).
-    *   `GET /api/users/me/activity?limit=X&page=Y` - For "Recent Activity" (requires activity logging service).
-    *   `GET /api/announcements?limit=X` - For platform announcements.
-</details>
-
-<details>
-<summary><strong>Search Page (`/search`)</strong></summary>
-
-*   **Features:** Search by keyword, filter by category, price, status; sort results.
-*   **Endpoints:**
-    *   `GET /api/nfts?searchTerm=Z&category=A&priceMin=B&priceMax=C&status=D&sortBy=E&sortOrder=F&limit=X&page=Y` - Comprehensive search endpoint.
-        *   Controller: `nft.controller.js -> getAllNfts`
-        *   Service: `nft.service.js -> getAllNfts` (with robust filtering/sorting logic)
-    *   `GET /api/categories` - To populate category filter options.
-</details>
-
-<details>
-<summary><strong>Category Pages (`/category/[slug]`)</strong></summary>
-
-*   **Features:** List NFTs belonging to a specific category.
-*   **Endpoints:**
-    *   `GET /api/categories/:slugOrId` - Get category details.
-    *   `GET /api/nfts?categorySlug=:slug&limit=X&page=Y` - Get NFTs for that category.
-</details>
-
-<details>
-<summary><strong>Notifications Page (`/notifications`)</strong></summary>
-
-*   **Features:** Display user notifications.
-*   **Endpoints:**
-    *   `GET /api/users/me/notifications?limit=X&page=Y` - Fetch notifications for the logged-in user (requires `notifications` table).
-    *   `PUT /api/users/me/notifications/:notificationId/read` - Mark notification as read.
-    *   `PUT /api/users/me/notifications/read-all` - Mark all as read.
-</details>
-
-<details>
-<summary><strong>Settings Page (`/settings`)</strong></summary>
-
-*   **Features:** Account management (email/password change), notification preferences.
-*   **Endpoints:**
-    *   `PUT /api/users/profile/change-email` (Requires auth, secure implementation).
-    *   `PUT /api/users/profile/change-password` (Requires auth, secure implementation).
-    *   `GET /api/users/me/notification-preferences` (Requires `user_notification_preferences` table).
-    *   `PUT /api/users/me/notification-preferences`
-</details>
-
-<details>
-<summary><strong>Admin Panel - User Management (`/admin/users`)</strong></summary>
-
-*   **Features:** View, search, filter, update user status/role, delete users.
-*   **Endpoints (all require admin auth):**
-    *   `GET /api/admin/users?limit=X&page=Y&searchTerm=Z&status=A&role=B`
-        *   Controller: `admin.user.controller.js -> getAllUsers`
-        *   Service: `admin.user.service.js -> getAllUsers`
-    *   `GET /api/admin/users/:id`
-        *   Controller: `admin.user.controller.js -> getUserById`
-        *   Service: `admin.user.service.js -> getUserById`
-    *   `PUT /api/admin/users/:id` - Update user (e.g., role, status).
-        *   Controller: `admin.user.controller.js -> updateUser`
-        *   Service: `admin.user.service.js -> updateUser`
-    *   `DELETE /api/admin/users/:id`
-        *   Controller: `admin.user.controller.js -> deleteUser`
-        *   Service: `admin.user.service.js -> deleteUser`
-</details>
-
-<details>
-<summary><strong>Admin Panel - NFT Management (`/admin/nfts`)</strong></summary>
-
-*   **Features:** View, search, filter NFTs; change NFT status (feature, hide, etc.).
-*   **Endpoints (all require admin auth):**
-    *   `GET /api/nfts?adminView=true&...` (or a dedicated `/api/admin/nfts` route) - Admin view of all NFTs.
-    *   `PUT /api/admin/nfts/:id/status` - Update NFT status (e.g., 'listed', 'hidden', 'featured').
-        *   Controller: `admin.nft.controller.js -> updateNftStatus`
-        *   Service: `nft.service.js -> updateNftStatus` (or a dedicated admin NFT service method)
-    *   `POST /api/admin/nfts` - Manually add an NFT.
-    *   `PUT /api/admin/nfts/:id` - Manually edit an NFT.
-    *   `DELETE /api/admin/nfts/:id` - Manually delete an NFT.
-</details>
-
-<details>
-<summary><strong>Admin Panel - Category Management (`/admin/categories`)</strong></summary>
-
-*   **Features:** Create, view, edit, delete categories.
-*   **Endpoints (all require admin auth, already defined in `category.routes.js`):**
-    *   `GET /api/categories`
-    *   `GET /api/categories/:id`
-    *   `POST /api/categories`
-    *   `PUT /api/categories/:id`
-    *   `DELETE /api/categories/:id`
-</details>
-
-<details>
-<summary><strong>Admin Panel - Other Sections</strong></summary>
-Endpoints for Promotions, Analytics, Audit Log, Moderation, Tasks, and Site Settings would follow a similar pattern, typically under an `/api/admin/...` path, requiring admin authentication, and interacting with their respective tables (`promotions`, `admin_audit_log`, `reports`, `admin_tasks`, `platform_settings`).
-</details>
+*(...and so on for other endpoint categories as previously detailed. The core change is that the backend logic is now in TypeScript and interacts with PostgreSQL.)*
 
 
 ## 🔒 Security Considerations
 
-*   **Password Hashing:** Passwords are hashed using `bcryptjs` before being stored in the database.
-*   **JWT Authentication:** Stateless authentication is implemented using JSON Web Tokens. Ensure `JWT_SECRET` is strong and kept private.
-*   **HTTPS:** In production, always use HTTPS to protect data in transit.
-*   **Input Validation:** (Crucial To-Do) All incoming data from requests must be validated to prevent injection attacks and ensure data integrity. Libraries like `express-validator` or `zod` can be used.
-*   **Rate Limiting:** Consider implementing rate limiting to prevent abuse of API endpoints.
-*   **Data Sanitization:** Sanitize any user-provided data before storing it or displaying it to prevent XSS attacks (though this is often more critical on the frontend rendering side).
-*   **Principle of Least Privilege:** Ensure users and admins only have access to the data and actions they are authorized for.
+*   **Password Hashing:** Passwords are hashed using `bcryptjs` before being stored.
+*   **JWT Authentication:** Stateless authentication using JSON Web Tokens. Ensure `JWT_SECRET` is strong and kept private.
+*   **HTTPS:** In production, always use HTTPS.
+*   **Input Validation:** (Crucial To-Do) Implement robust validation for all incoming API requests using libraries like Zod or express-validator.
+*   **Rate Limiting:** Consider implementing rate limiting.
+*   **Data Sanitization:** Sanitize user-provided data before storing or displaying.
+*   **Principle of Least Privilege:** Ensure users/admins only have authorized access.
+*   **Parameterized Queries:** Sequelize helps prevent SQL injection by using parameterized queries.
 
 ## 🧪 Testing (Guidance)
 
-While formal tests are not yet implemented, a robust testing strategy is essential for a production application. Consider:
-
-*   **Unit Tests:** Test individual functions and modules in isolation (e.g., service methods, utility functions). Tools: [Jest](https://jestjs.io/), [Mocha](https://mochajs.org/).
-*   **Integration Tests:** Test the interaction between different parts of your application (e.g., controller calling a service, service interacting with the database). Tools: Jest, Supertest (for API endpoint testing).
-*   **End-to-End (E2E) Tests:** (More relevant for the full application) Test user flows through the entire application. Tools: Cypress, Playwright.
-
-For backend API testing, [Supertest](https://www.npmjs.com/package/supertest) is excellent for making HTTP requests to your Express app and asserting responses.
+*   **Unit Tests:** Test individual TypeScript functions and modules. Tools: [Jest](https://jestjs.io/), [Mocha](https://mochajs.org/).
+*   **Integration Tests:** Test interactions (e.g., controller-service-database). Tools: Jest, Supertest.
+*   **API Testing:** Use tools like Postman or Insomnia to test API endpoints directly.
 
 ## ⚙️ Environment Variables
 
-Key environment variables are managed in a `.env` file (copied from `.env.example`) in the root of this backend project.
-Essential variables include:
+Key environment variables are managed in a `.env` file (copied from `.env.example`).
+Essential variables for PostgreSQL setup:
 
-*   `NODE_ENV`: Set to `development` or `production`.
-*   `PORT`: The port the backend server will listen on (e.g., `5000`).
-*   `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_PORT`: MySQL database connection details.
-*   `JWT_SECRET`: A strong, random secret key for signing JSON Web Tokens. **This must be kept secure and should be different for development and production.**
-*   `JWT_EXPIRES_IN`: How long JWTs are valid (e.g., `1d`, `7d`, `1h`).
+*   `NODE_ENV`: `development` or `production`.
+*   `PORT`: e.g., `5000`.
+*   `DB_DIALECT`: Set to `postgres`.
+*   `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_PORT`: PostgreSQL connection details.
+*   `JWT_SECRET`: Strong, random secret key for JWTs.
+*   `JWT_EXPIRES_IN`: JWT validity period (e.g., `1d`).
 
 ## Error Handling
 
-A global error handling middleware (`src/middleware/errorHandler.middleware.js`) is in place to catch unhandled errors and send structured JSON responses. It can be extended to handle specific error types (e.g., Sequelize validation errors) more gracefully.
+A global error handling middleware (`src/middleware/errorHandler.middleware.ts`) catches unhandled errors and sends structured JSON responses, using a custom `AppError` class for operational errors. It also handles Sequelize validation errors.
 
 ## ☁️ Deployment Considerations
 
-*   **Environment Variables:** Ensure all necessary environment variables (especially `NODE_ENV=production`, database credentials, `JWT_SECRET`) are set in the production environment.
-*   **Database:** Use a managed database service (e.g., AWS RDS, Google Cloud SQL, DigitalOcean Managed Databases) for production.
-*   **Process Manager:** Use a process manager like [PM2](https://pm2.keymetrics.io/) to keep your Node.js application running and manage logs.
-*   **HTTPS:** Configure a reverse proxy (like Nginx or Caddy) to handle HTTPS and serve your Node.js application.
-*   **Build Step:** If using TypeScript or a build process, ensure you have a build script in `package.json`.
-*   **Logging:** Implement more robust logging for production (e.g., Winston, Pino) and send logs to a centralized logging service.
-*   **Scalability:** Consider containerization (Docker) and orchestration (Kubernetes) for larger deployments.
+*   **Environment Variables:** Ensure all production environment variables are set.
+*   **Database:** Use a managed PostgreSQL service (e.g., Supabase, Neon, AWS RDS) for production.
+*   **Build Step:** Your TypeScript code needs to be compiled to JavaScript using `npm run build`. Deploy the contents of the `dist` folder along with `node_modules` and `package.json`.
+*   **Process Manager:** Use PM2 or similar for Node.js application management.
+*   **HTTPS:** Configure a reverse proxy (Nginx, Caddy) for HTTPS.
+*   **Logging:** Implement robust logging (Winston, Pino).
 
 ## 🤝 Contributing
 
 Please refer to the main project's contributing guidelines. For backend-specific contributions:
-1.  Ensure your code adheres to the existing style and structure.
-2.  Write or update tests for any new features or bug fixes.
-3.  Update API documentation if endpoints are added or changed.
+1.  Ensure your code adheres to TypeScript best practices and existing style.
+2.  Write or update tests.
+3.  Update API documentation if endpoints change.
 
 ## 🗺️ Roadmap (Backend Focus)
 
-*   Implement full CRUD operations and business logic for all defined models and services.
-*   Robust input validation for all API endpoints.
+*   Implement full CRUD operations and business logic for all defined models and services in TypeScript.
+*   Robust input validation for all API endpoints (e.g., using Zod).
 *   Implement comprehensive unit and integration tests.
 *   Real-time features (e.g., auction updates) using WebSockets (e.g., Socket.IO).
-*   Advanced search capabilities (e.g., using Elasticsearch).
-*   Background job processing for tasks like image optimization or sending email notifications.
-*   Transaction management for complex operations (e.g., NFT sales).
+*   Advanced search capabilities (e.g., using PostgreSQL full-text search or Elasticsearch).
+*   Background job processing.
+*   Transaction management for complex operations.
 *   Refine API documentation (e.g., using Swagger/OpenAPI).
 
 ## 📄 License
 
 (Specify your license, e.g., MIT)
-```
-
-This is a significant update to your backend's README, making it much more informative for anyone working on or looking to understand the backend system.
-This enhanced README.md should give a very good overview of your backend. Remember to replace placeholder information like "(Specify your license)" with actual details.
