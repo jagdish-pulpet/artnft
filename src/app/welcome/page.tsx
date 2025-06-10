@@ -6,25 +6,82 @@ import { Button } from '@/components/ui/button';
 import ArtNFTLogo from '@/components/ArtNFTLogo';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, Github } from 'lucide-react'; 
+import { Shield, Github, Loader2 } from 'lucide-react'; 
 import { Separator } from '@/components/ui/separator';
+import { useEffect, useState } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+
+// Feature Toggle Keys from local storage
+const FT_USER_GUEST_LOGIN_KEY = 'artnft_ft_user_guest_login';
+const FT_USER_ADMIN_ACCESS_KEY = 'artnft_ft_user_admin_access';
+const FT_USER_GITHUB_LINK_KEY = 'artnft_ft_user_github_link';
+const FT_USER_CREDS_DISPLAY_KEY = 'artnft_ft_user_creds_display';
+
+// Default credentials for display
+const USER_EMAIL_FOR_DISPLAY = 'testuser@artnft.com';
+const USER_PASSWORD_FOR_DISPLAY = 'adminpass';
 
 export default function WelcomePage() {
   const router = useRouter();
   const { toast } = useToast();
 
+  // State for feature toggles
+  const [showGuestLogin, setShowGuestLogin] = useState(true);
+  const [showAdminAccessShortcut, setShowAdminAccessShortcut] = useState(true);
+  const [showGitHubLink, setShowGitHubLink] = useState(true);
+  const [showUserCredsDisplay, setShowUserCredsDisplay] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    if (typeof window !== 'undefined') {
+      // Read feature toggle states from localStorage
+      // Default to true (visible) if the key isn't found or isn't 'false'
+      setShowGuestLogin(localStorage.getItem(FT_USER_GUEST_LOGIN_KEY) !== 'false');
+      setShowAdminAccessShortcut(localStorage.getItem(FT_USER_ADMIN_ACCESS_KEY) !== 'false');
+      setShowGitHubLink(localStorage.getItem(FT_USER_GITHUB_LINK_KEY) !== 'false');
+      setShowUserCredsDisplay(localStorage.getItem(FT_USER_CREDS_DISPLAY_KEY) !== 'false');
+    }
+  }, []);
+
+
   const handleGuestNavigation = () => {
+    // Clear any existing user/admin auth state for guest mode
+    if (typeof window !== 'undefined') {
+        localStorage.removeItem('artnft_user_token');
+        localStorage.removeItem('artnft_user_details');
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('isAdminAuthenticated');
+    }
+    toast({
+        title: 'Continuing as Guest',
+        description: 'Exploring the marketplace. Some features may be limited.',
+    });
     router.push('/home');
   };
 
   const handleAdminAccess = () => {
-    localStorage.setItem('isAdminAuthenticated', 'true');
+    // This simulates a quick dev pathway, actual admin auth is on /admin/login
+    // For safety, clear user tokens if any exist
+     if (typeof window !== 'undefined') {
+        localStorage.removeItem('artnft_user_token');
+        localStorage.removeItem('artnft_user_details');
+        localStorage.setItem('isAdminAuthenticated', 'true'); // Mock admin auth for direct nav
+    }
     toast({
-        title: 'Admin Access (Dev)',
-        description: 'Proceeding to admin dashboard.',
+        title: 'Admin Access (Dev Shortcut)',
+        description: 'Proceeding to admin dashboard. Regular admin login is at /admin/login.',
     });
     router.push('/admin/dashboard');
   };
+  
+  if (!isMounted) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-welcome-artistic p-4">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-welcome-artistic p-4">
@@ -38,38 +95,49 @@ export default function WelcomePage() {
             Join a vibrant community of artists and collectors.
           </p>
         </div>
-        <div className="space-y-4">
+        <div className="space-y-3">
           <Button asChild className="w-full" size="lg" variant="default">
             <Link href="/login">Log In</Link>
           </Button>
           <Button asChild className="w-full" size="lg" variant="secondary">
             <Link href="/signup">Sign Up</Link>
           </Button>
-          <Button onClick={handleGuestNavigation} className="w-full" size="lg" variant="outline">
-            Continue as Guest
-          </Button>
-          
-          <Separator />
-
-          <Button onClick={handleAdminAccess} className="w-full" size="lg" variant="outline">
-            <Shield className="mr-2 h-4 w-4" /> Continue to Admin Panel (Dev)
-          </Button>
+          {showGuestLogin && (
+            <Button onClick={handleGuestNavigation} className="w-full" size="lg" variant="outline">
+              Continue as Guest
+            </Button>
+          )}
         </div>
-
-        <div className="text-xs text-muted-foreground space-y-1 pt-4">
-            <p>For development/testing:</p>
-            <p><strong>User:</strong> testuser@artnft.com</p>
-            <p><strong>Password:</strong> password123</p>
-        </div>
-
-        <div className="pt-2">
-          <Button variant="link" asChild className="text-muted-foreground hover:text-primary">
-            <Link href="https://github.com/jagdish-pulpet/artnft" target="_blank" rel="noopener noreferrer">
-              <Github className="mr-2 h-5 w-5" />
-              View on GitHub
-            </Link>
-          </Button>
-        </div>
+        
+        {(showAdminAccessShortcut || showGitHubLink || showUserCredsDisplay) && (
+          <>
+            <Separator />
+            <Card className="bg-muted/50 border-dashed text-left p-3">
+              <CardContent className="p-0 text-xs space-y-1.5">
+                <p className="font-medium text-muted-foreground mb-1.5 text-center">Developer Shortcuts:</p>
+                {showAdminAccessShortcut && (
+                  <Button onClick={handleAdminAccess} className="w-full justify-start h-auto py-1.5 px-2 text-xs" size="sm" variant="ghost">
+                    <Shield className="mr-2 h-3.5 w-3.5" /> Go to Admin Panel
+                  </Button>
+                )}
+                {showGitHubLink && (
+                  <Button variant="link" asChild className="text-muted-foreground hover:text-primary h-auto p-0 text-xs justify-start">
+                    <Link href="https://github.com/jagdish-pulpet/artnft" target="_blank" rel="noopener noreferrer">
+                      <Github className="mr-1.5 h-3.5 w-3.5" />
+                      View Project on GitHub
+                    </Link>
+                  </Button>
+                )}
+                {showUserCredsDisplay && (
+                  <div className="text-xs text-muted-foreground space-y-0.5 pt-1.5 mt-1.5 border-t">
+                      <p><strong>Test User:</strong> {USER_EMAIL_FOR_DISPLAY}</p>
+                      <p><strong>Password:</strong> {USER_PASSWORD_FOR_DISPLAY}</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </>
+        )}
 
       </div>
     </div>
