@@ -505,6 +505,22 @@ body {
   top: 50%;
 }
 
+.-bottom-16 {
+  bottom: -4rem;
+}
+
+.-left-16 {
+  left: -4rem;
+}
+
+.-right-16 {
+  right: -4rem;
+}
+
+.-top-16 {
+  top: -4rem;
+}
+
 .z-0 {
   z-index: 0;
 }
@@ -845,6 +861,10 @@ body {
   height: 100svh;
 }
 
+.h-32 {
+  height: 8rem;
+}
+
 .max-h-24 {
   max-height: 6rem;
 }
@@ -895,6 +915,10 @@ body {
 
 .min-h-svh {
   min-height: 100svh;
+}
+
+.min-h-\[20px\] {
+  min-height: 20px;
 }
 
 .w-0 {
@@ -1686,6 +1710,10 @@ body {
   background-color: rgb(254 249 195 / var(--tw-bg-opacity, 1));
 }
 
+.bg-white\/20 {
+  background-color: #fff3;
+}
+
 .fill-current {
   fill: currentColor;
 }
@@ -2018,6 +2046,10 @@ body {
   font-weight: 600;
 }
 
+.font-light {
+  font-weight: 300;
+}
+
 .uppercase {
   text-transform: uppercase;
 }
@@ -2184,6 +2216,10 @@ body {
   color: rgb(161 98 7 / var(--tw-text-opacity, 1));
 }
 
+.text-white\/80 {
+  color: #fffc;
+}
+
 .underline {
   text-decoration-line: underline;
 }
@@ -2219,6 +2255,10 @@ body {
 
 .opacity-90 {
   opacity: .9;
+}
+
+.opacity-30 {
+  opacity: .3;
 }
 
 .shadow-2xl {
@@ -2365,12 +2405,20 @@ body {
   transition-timing-function: cubic-bezier(.4, 0, .2, 1);
 }
 
+.delay-500 {
+  transition-delay: .5s;
+}
+
 .duration-200 {
   transition-duration: .2s;
 }
 
 .duration-300 {
   transition-duration: .3s;
+}
+
+.duration-150 {
+  transition-duration: .15s;
 }
 
 .ease-in-out {
@@ -2419,6 +2467,14 @@ body {
 
 .duration-300 {
   animation-duration: .3s;
+}
+
+.duration-150 {
+  animation-duration: .15s;
+}
+
+.delay-500 {
+  animation-delay: .5s;
 }
 
 .ease-in-out {
@@ -3691,6 +3747,10 @@ body {
     max-width: 28rem;
   }
 
+  .md\:max-w-sm {
+    max-width: 24rem;
+  }
+
   .md\:flex-grow {
     flex-grow: 1;
   }
@@ -3930,6 +3990,20 @@ body {
 
 .\[\&\>button\]\:hidden > button {
   display: none;
+}
+
+.\[\&\>div\]\:bg-gradient-to-r > div {
+  background-image: linear-gradient(to right, var(--tw-gradient-stops));
+}
+
+.\[\&\>div\]\:from-accent > div {
+  --tw-gradient-from: hsl(var(--accent)) var(--tw-gradient-from-position);
+  --tw-gradient-to: hsl(var(--accent) / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+
+.\[\&\>div\]\:to-primary > div {
+  --tw-gradient-to: hsl(var(--primary)) var(--tw-gradient-to-position);
 }
 
 .\[\&\>span\:last-child\]\:truncate > span:last-child {
