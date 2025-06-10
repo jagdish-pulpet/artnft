@@ -1,0 +1,16 @@
+{
+  "node": {
+    "6022f5df794c1f4dd5a93d70cf4487cfc4a54603b2": {
+      "workers": {
+        "app/(app)/improve-text/page": {
+          "moduleId": "[project]/.next-internal/server/app/(app)/improve-text/page/actions.js { ACTIONS_MODULE0 => \"[project]/src/lib/actions.ts [app-rsc] (ecmascript)\" } [app-rsc] (server actions loader, ecmascript)",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/(app)/improve-text/page": "action-browser"
+      }
+    }
+  },
+  "edge": {}
+}

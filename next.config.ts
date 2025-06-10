@@ -1,7 +1,9 @@
+
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
   /* config options here */
+  output: 'standalone',
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -16,7 +18,16 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 's2.coinmarketcap.com',
+        port: '',
+        pathname: '/static/img/coins/**',
+      }
     ],
+  },
+  experimental: {
+    allowedDevOrigins: ['https://9000-firebase-studio-1749297919077.cluster-w5vd22whf5gmav2vgkomwtc4go.cloudworkstations.dev'],
   },
 };
 

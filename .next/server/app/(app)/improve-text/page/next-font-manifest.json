@@ -1,0 +1,11 @@
+{
+  "pages": {},
+  "app": {
+    "[project]/src/app/(app)/improve-text/page": [
+      "static/media/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw-s.p.0faac26c.woff2",
+      "static/media/or3aQ6P12_iJxAIgLa78DkrbXsDgk0oVDaDPYLanFLHpPf2TbBG_df3_vbgKBM6YoggA_vpO_7cHM524-s.p.152fb264.woff2"
+    ]
+  },
+  "appUsingSizeAdjust": true,
+  "pagesUsingSizeAdjust": false
+}
