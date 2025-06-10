@@ -23,7 +23,7 @@ export default function SettingsPage() {
   useEffect(() => {
     setIsMounted(true);
     const storedTheme = localStorage.getItem('theme');
-    if (storedTheme === 'dark' || (!storedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    if (storedTheme === 'dark' || (!storedTheme && typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       document.documentElement.classList.add('dark');
       setIsDarkMode(true);
     } else {
@@ -33,7 +33,7 @@ export default function SettingsPage() {
   }, []);
 
   useEffect(() => {
-    if (!isMounted) return; 
+    if (!isMounted) return;
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
       localStorage.setItem('theme', 'dark');
@@ -48,12 +48,21 @@ export default function SettingsPage() {
   };
 
   const handleLogout = () => {
+    // Clear user authentication data from localStorage
+    if (typeof window !== 'undefined') {
+        localStorage.removeItem('artnft_user_token');
+        localStorage.removeItem('artnft_user_details');
+        // Also clear admin auth if it exists, for good measure
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('isAdminAuthenticated');
+    }
     toast({ title: 'Logged Out', description: 'You have been successfully logged out.' });
     router.push('/welcome');
   };
 
   if (!isMounted) {
     // Keep UI consistent, actual switch state handled by useEffect
+    // You could return a loader here if preferred for initial mount
   }
 
   return (
@@ -66,11 +75,11 @@ export default function SettingsPage() {
                 <CardTitle className="text-3xl font-bold font-headline">Settings</CardTitle>
                 <CardDescription>Manage your account, preferences, and app settings.</CardDescription>
               </div>
-              <Button 
-                variant="outline" 
-                size="icon" 
-                onClick={handleLogout} 
-                className="rounded-full border-destructive/50 text-destructive hover:bg-destructive/10 focus-visible:ring-destructive" 
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={handleLogout}
+                className="rounded-full border-destructive/50 text-destructive hover:bg-destructive/10 focus-visible:ring-destructive"
                 aria-label="Log out"
               >
                 <LogOut className="h-6 w-6" />
