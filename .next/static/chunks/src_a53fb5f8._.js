@@ -1209,7 +1209,7 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
-const BACKEND_URL = ("TURBOPACK compile-time value", "http://localhost:5000") || 'http://localhost:5000';
+const BACKEND_URL = ("TURBOPACK compile-time value", "https://9000-firebase-studio-1749550509227.cluster-sumfw3zmzzhzkx4mpvz3ogth4y.cloudworkstations.dev") || 'http://localhost:5000';
 // --- Updated Mock Data (to align with schema.sql for user_001_id) ---
 // User ID from schema.sql for TestUser01
 const loggedInUserId = 'usr_00000000-0000-0000-0000-000000000001';
