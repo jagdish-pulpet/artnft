@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import ArtNFTLogo from '@/components/ArtNFTLogo';
 import { Loader2, Sparkles } from 'lucide-react';
-import { Progress } from '@/components/ui/progress'; // Added Progress component
+import { Progress } from '@/components/ui/progress'; 
 
-const SPLASH_DURATION = 3000; // 3 seconds
-const PROGRESS_UPDATE_INTERVAL = 100; // Update progress every 100ms
+const SPLASH_DURATION = 3000; 
+const PROGRESS_UPDATE_INTERVAL = 100; 
 
 export default function SplashScreen() {
   const router = useRouter();
@@ -40,23 +40,26 @@ export default function SplashScreen() {
         });
       }, PROGRESS_UPDATE_INTERVAL);
 
-      messageTimer = setInterval(() => {
-        const messages = [
+      const messages = [
           "Polishing Pixels...",
           "Connecting to the Metaverse...",
           "Unveiling Masterpieces...",
           "Sparking Creativity...",
           "Almost There!"
         ];
-        setLoadingMessage(messages[Math.floor(Math.random() * messages.length)]);
-      }, SPLASH_DURATION / 4);
+      let messageIndex = 0;
+      setLoadingMessage(messages[messageIndex]); 
+      messageTimer = setInterval(() => {
+        messageIndex = (messageIndex + 1) % messages.length;
+        setLoadingMessage(messages[messageIndex]);
+      }, SPLASH_DURATION / messages.length);
 
       navigationTimer = setTimeout(() => {
         clearInterval(progressTimer);
         clearInterval(messageTimer);
         setProgress(100);
         setLoadingMessage("Welcome!");
-        setIsLoadingComplete(true); // Mark loading as complete
+        setIsLoadingComplete(true); 
       }, SPLASH_DURATION);
     }
 
@@ -65,7 +68,7 @@ export default function SplashScreen() {
       clearInterval(messageTimer);
       clearTimeout(navigationTimer);
     };
-  }, [isMounted, isLoadingComplete]); // Re-run if isLoadingComplete changes (e.g. for cleanup)
+  }, [isMounted, isLoadingComplete]);
 
   useEffect(() => {
     if (isLoadingComplete && isMounted) {
@@ -74,6 +77,7 @@ export default function SplashScreen() {
   }, [isLoadingComplete, isMounted, router]);
 
   if (!isMounted) {
+    // Minimal loader for pre-mount phase
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-rainbow-swirl text-white p-4">
         <ArtNFTLogo size="large" className="text-white" />
@@ -83,8 +87,17 @@ export default function SplashScreen() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-rainbow-swirl text-white p-4 overflow-hidden">
-      <div className="text-center space-y-8 relative">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-rainbow-swirl text-white p-4 overflow-hidden relative">
+      {/* Ripple Container */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="relative w-1 h-1"> {/* Center point for ripples */}
+          <div className="ripple" style={{ width: '200px', height: '200px', animationDelay: '0s' }}></div>
+          <div className="ripple" style={{ width: '200px', height: '200px', animationDelay: '1s' }}></div>
+          <div className="ripple" style={{ width: '200px', height: '200px', animationDelay: '2s' }}></div>
+        </div>
+      </div>
+
+      <div className="text-center space-y-8 relative z-10"> {/* Ensure content is above ripples */}
         <div className="absolute -top-16 -left-16 opacity-30">
           <Sparkles className="h-32 w-32 text-white/70 animate-pulse" />
         </div>

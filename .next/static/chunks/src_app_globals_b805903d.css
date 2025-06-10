@@ -769,6 +769,10 @@ body {
   height: 1rem;
 }
 
+.h-1 {
+  height: .25rem;
+}
+
 .h-10 {
   height: 2.5rem;
 }
@@ -2523,6 +2527,25 @@ body {
   100% {
     background-position: 0%;
   }
+}
+
+@keyframes ripple-effect {
+  0% {
+    opacity: .7;
+    transform: scale(.5);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(2.5);
+  }
+}
+
+.ripple {
+  border: 2px solid hsl(var(--primary-foreground) / .3);
+  border-radius: 50%;
+  animation: 3s ease-out infinite ripple-effect;
+  position: absolute;
 }
 
 .file\:border-0::file-selector-button {

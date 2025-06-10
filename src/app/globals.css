@@ -33,6 +33,25 @@
   100% { background-position: 0% 50%; }
 }
 
+/* Ripple Animation */
+@keyframes ripple-effect {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid hsl(var(--primary-foreground) / 0.3); /* White with transparency */
+  animation: ripple-effect 3s infinite ease-out;
+}
+
 
 @layer base {
   :root {
