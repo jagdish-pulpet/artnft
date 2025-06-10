@@ -7,15 +7,17 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import {
-  Search as SearchIcon, Palette, Camera, Music2, ToyBrick, Globe, Bitcoin, Sparkles, Grid, // Corrected Sparkles and Grid imports
-  Package, PlusSquare, Newspaper, ArrowRight, Users, Award, Flame, UserPlus, UserCheck, Activity, Bell
+  Search as SearchIcon, Palette, Camera, Music2, ToyBrick, Globe, Bitcoin, Sparkles, Grid,
+  Package, PlusSquare, Newspaper, ArrowRight, Users, Award, Flame, UserPlus, UserCheck, Activity, Bell,
+  ArrowLeft, X as XIcon // Added ArrowLeft and XIcon
 } from 'lucide-react';
 import Link from 'next/link';
 import type { LucideIcon } from 'lucide-react';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, type FormEvent } from 'react'; // Added useRef
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { useRouter } from 'next/navigation'; // Added useRouter
 
 // User IDs from schema.sql
 const user_001_id = 'usr_00000000-0000-0000-0000-000000000001';
@@ -25,22 +27,17 @@ const user_009_id = 'usr_00000000-0000-0000-0000-000000000009'; // SynthMusician
 const user_010_id = 'usr_00000000-0000-0000-0000-000000000010';
 
 // NFT IDs from schema.sql (ensure all used IDs are defined here)
-const nft_id_001 = 'nft_00000000-0000-0000-0000-MOCK00000001'; // My First Abstract (TestUser01)
-const nft_id_002 = 'nft_00000000-0000-0000-0000-MOCK00000002'; // Pixel Pal (TestUser01)
-const nft_id_003 = 'nft_00000000-0000-0000-0000-MOCK00000003'; // Dream Weaver #1 (ArtIsLife)
-const nft_id_004 = 'nft_00000000-0000-0000-0000-MOCK00000004'; // Ephemeral Light (ArtIsLife)
-const nft_id_007 = 'nft_00000000-0000-0000-0000-MOCK00000007'; // Cybernetic Orb (DigitalCreatorPro)
-const nft_id_008 = 'nft_00000000-0000-0000-0000-MOCK00000008'; // Mech Suit Alpha (DigitalCreatorPro)
-const nft_id_009 = 'nft_00000000-0000-0000-0000-MOCK00000009'; // Retro Wave Loop (SynthMusician)
-const nft_id_012 = 'nft_00000000-0000-0000-0000-MOCK00000012'; // Pixel Forest Scene (PixelPioneer)
-const nft_id_013 = 'nft_00000000-0000-0000-0000-MOCK00000013'; // Pixel Dragonling (PixelPioneer)
-const nft_id_014 = 'nft_00000000-0000-0000-0000-MOCK00000014'; // Generative Swirls #7 (CryptoGallery)
-const nft_id_015 = 'nft_00000000-0000-0000-0000-MOCK00000015'; // Mountain Vista Photo (ArtViewer22)
-const nft_id_019 = 'nft_00000000-0000-0000-0000-MOCK00000019'; // Pixel Mage Character (PixelPioneer)
-const nft_id_020 = 'nft_00000000-0000-0000-0000-MOCK00000020'; // Serene Lake Photograph (ArtViewer22)
-const nft_id_021 = 'nft_00000000-0000-0000-0000-MOCK00000021'; // Chillhop Beat "Sunset" (SynthMusician)
-const nft_id_022 = 'nft_00000000-0000-0000-0000-MOCK00000022'; // Cyberpunk Alleyway 3D (DigitalCreatorPro)
-const nft_id_025 = 'nft_00000000-0000-0000-0000-MOCK00000025'; // Collectible Card #007 (NFTCollectorGal)
+const nft_id_001 = 'nft_00000000-0000-0000-0000-MOCK00000001';
+const nft_id_003 = 'nft_00000000-0000-0000-0000-MOCK00000003';
+const nft_id_004 = 'nft_00000000-0000-0000-0000-MOCK00000004';
+const nft_id_007 = 'nft_00000000-0000-0000-0000-MOCK00000007';
+const nft_id_008 = 'nft_00000000-0000-0000-0000-MOCK00000008';
+const nft_id_009 = 'nft_00000000-0000-0000-0000-MOCK00000009';
+const nft_id_012 = 'nft_00000000-0000-0000-0000-MOCK00000012';
+const nft_id_019 = 'nft_00000000-0000-0000-0000-MOCK00000019';
+const nft_id_020 = 'nft_00000000-0000-0000-0000-MOCK00000020';
+const nft_id_021 = 'nft_00000000-0000-0000-0000-MOCK00000021';
+const nft_id_022 = 'nft_00000000-0000-0000-0000-MOCK00000022';
 
 
 const latestActivityNFTs: NFTCardProps[] = [
@@ -59,9 +56,9 @@ const popularCollections: NFTCardProps[] = [
 ];
 
 const nftsFromFollowedArtists: NFTCardProps[] = [
-    { id: nft_id_003, imageUrl: 'https://placehold.co/400x400.png', title: 'Dream Weaver #1', price: '1.2 ETH', artistName: 'ArtIsLife', dataAiHint: 'surreal landscape' }, // ArtIsLife is followed by TestUser01
-    { id: nft_id_012, imageUrl: 'https://placehold.co/400x400.png', title: 'Pixel Forest Scene', price: '0.5 ETH', artistName: 'PixelPioneer', dataAiHint: 'pixel forest' }, // PixelPioneer is followed by TestUser01
-    { id: nft_id_008, imageUrl: 'https://placehold.co/400x400.png', title: 'Mech Suit Alpha', price: '3.5 ETH', artistName: 'DigitalCreatorPro', dataAiHint: 'mech suit' }, // DigitalCreatorPro is NOT followed by TestUser01 in schema, adjust if needed or assume general featured
+    { id: nft_id_003, imageUrl: 'https://placehold.co/400x400.png', title: 'Dream Weaver #1', price: '1.2 ETH', artistName: 'ArtIsLife', dataAiHint: 'surreal landscape' }, 
+    { id: nft_id_012, imageUrl: 'https://placehold.co/400x400.png', title: 'Pixel Forest Scene', price: '0.5 ETH', artistName: 'PixelPioneer', dataAiHint: 'pixel forest' }, 
+    { id: nft_id_008, imageUrl: 'https://placehold.co/400x400.png', title: 'Mech Suit Alpha', price: '3.5 ETH', artistName: 'DigitalCreatorPro', dataAiHint: 'mech suit' }, 
 ];
 
 
@@ -83,7 +80,7 @@ const categories: Category[] = [
   { name: 'Pixel Art', icon: Grid, href: '/category/pixel-art', dataAiHint: '8bit character' },
 ];
 
-const userName = "TestUser01";
+const userName = "TestUser01"; // Placeholder for logged-in user
 
 interface CommunityHighlightItem {
   id: string;
@@ -98,7 +95,7 @@ interface CommunityHighlightItem {
 const communityHighlights: CommunityHighlightItem[] = [
   { id: 'ch1', title: 'Artist Spotlight: PixelPioneer', description: 'Discover stunning pixel art creations by PixelPioneer.', imageUrl: 'https://placehold.co/300x150.png', dataAiHint: 'pixel artist', href: `/profile/${user_010_id}`, icon: Users },
   { id: 'ch2', title: 'Featured NFT: Cybernetic Orb', description: 'A mesmerizing 3D creation by DigitalCreatorPro. Explore the future!', imageUrl: 'https://placehold.co/300x150.png', dataAiHint: 'cyberpunk orb', href: `/nft/${nft_id_007}`, icon: Award },
-  { id: 'ch3', title: 'ArtNFT Platform Update v1.3', description: 'New features including enhanced profiles and collections!', href: '#', icon: Newspaper }, // Placeholder href
+  { id: 'ch3', title: 'ArtNFT Platform Update v1.3', description: 'New features including enhanced profiles and collections!', href: '#', icon: Newspaper },
 ];
 
 interface ArtistSpotlightData {
@@ -123,10 +120,14 @@ const MIN_SCROLL_DELTA = 5;
 
 export default function HomePage() {
   const { toast } = useToast();
-  // TestUser01 (usr_001...) follows ArtIsLife (usr_002...) and PixelPioneer (usr_010...) according to schema.sql mock data
+  const router = useRouter();
   const [followedArtists, setFollowedArtists] = useState<Set<string>>(new Set([user_002_id, user_010_id]));
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+
+  const [isMobileSearchActive, setIsMobileSearchActive] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const mobileSearchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const initialScrollY = window.scrollY;
@@ -139,7 +140,11 @@ export default function HomePage() {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
+      if (isMobileSearchActive) { // Keep header visible if mobile search is active
+        setIsHeaderVisible(true);
+        setLastScrollY(currentScrollY);
+        return;
+      }
       if (currentScrollY <= SCROLL_THRESHOLD) {
         setIsHeaderVisible(true);
       } else {
@@ -154,8 +159,13 @@ export default function HomePage() {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, [lastScrollY, isMobileSearchActive]);
 
+  useEffect(() => {
+    if (isMobileSearchActive && mobileSearchInputRef.current) {
+      mobileSearchInputRef.current.focus();
+    }
+  }, [isMobileSearchActive]);
 
   const handleFollowToggle = (artistId: string, artistName: string) => {
     setFollowedArtists(prev => {
@@ -171,45 +181,132 @@ export default function HomePage() {
     });
   };
 
+  const handleSearchSubmit = (e?: FormEvent) => {
+    if (e) e.preventDefault();
+    if (searchTerm.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
+      if (isMobileSearchActive) {
+        setIsMobileSearchActive(false);
+      }
+      // setSearchTerm(''); // Optionally clear after search
+    }
+  };
+
+  const toggleMobileSearch = () => {
+    setIsMobileSearchActive(prev => !prev);
+    if (isMobileSearchActive) setSearchTerm(''); // Clear search term when closing
+  };
+
   return (
     <AppLayout>
       <div className="max-w-full md:max-w-7xl mx-auto">
         <header className={cn(
-          "flex flex-col md:flex-row justify-between items-center mb-6 py-3 sticky top-0 bg-background z-20 px-4 md:px-0 border-b",
+          "sticky top-0 bg-background z-20 border-b px-4",
           "transition-transform duration-300 ease-in-out",
-          isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
+          isHeaderVisible ? 'translate-y-0' : '-translate-y-full',
+          isMobileSearchActive ? 'h-16 py-0' : 'py-3 md:h-auto'
         )}>
-          <div className="flex items-center w-full md:w-auto mb-3 md:mb-0">
-            <ArtNFTLogo />
-          </div>
-          <div className="flex items-center w-full md:w-auto md:flex-grow md:justify-center px-0 md:px-4">
-            <div className="flex items-center flex-grow max-w-xs sm:max-w-sm md:max-w-md">
-              <Input
-                type="search"
-                placeholder="Search anything..."
-                className="flex-grow"
-              />
-              <Button variant="default" size="icon" className="ml-2 shrink-0">
-                <SearchIcon className="h-5 w-5" />
-              </Button>
-            </div>
-          </div>
-          <div className="hidden md:flex items-center space-x-3">
-            <Link href="/profile" className="hover:text-primary transition-colors">
-              <div className="text-right">
-                  <p className="text-xs text-muted-foreground">Hello,</p>
-                  <p className="text-sm font-semibold text-foreground -mt-1">{userName}</p>
-              </div>
-            </Link>
-            <Button variant="ghost" size="icon" asChild>
-                <Link href="/notifications" aria-label="Notifications">
-                    <Bell className="h-5 w-5" />
-                </Link>
-            </Button>
+          <div className={cn(
+            "flex items-center w-full h-full",
+            isMobileSearchActive ? "justify-between gap-2" : "justify-between md:gap-4"
+          )}>
+
+            {/* Mobile Search Active State */}
+            {isMobileSearchActive && (
+              <>
+                <Button variant="ghost" size="icon" onClick={toggleMobileSearch} className="shrink-0">
+                  <ArrowLeft className="h-5 w-5" />
+                </Button>
+                <form onSubmit={handleSearchSubmit} className="flex-grow relative">
+                  <Input
+                    ref={mobileSearchInputRef}
+                    type="search"
+                    placeholder="Search ArtNFT..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full h-10 pr-10"
+                    autoFocus
+                  />
+                  {searchTerm && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setSearchTerm('')}
+                      className="absolute right-0 top-1/2 -translate-y-1/2 h-10 w-10"
+                      aria-label="Clear search"
+                    >
+                      <XIcon className="h-4 w-4" />
+                    </Button>
+                  )}
+                </form>
+                <Button type="submit" onClick={() => handleSearchSubmit()} size="icon" className="shrink-0">
+                  <SearchIcon className="h-5 w-5" />
+                </Button>
+              </>
+            )}
+
+            {/* Default Header State (Mobile and Desktop) */}
+            {!isMobileSearchActive && (
+              <>
+                {/* Logo */}
+                <div className="flex items-center">
+                  <ArtNFTLogo />
+                </div>
+
+                {/* Desktop Search Form */}
+                <form onSubmit={handleSearchSubmit} className="hidden md:flex flex-grow max-w-md relative mx-4">
+                  <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    type="search"
+                    placeholder="Search NFTs, artists..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-16 h-10 rounded-full"
+                  />
+                  {searchTerm && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setSearchTerm('')}
+                      className="absolute right-10 top-1/2 -translate-y-1/2 h-7 w-7"
+                      aria-label="Clear search"
+                    >
+                      <XIcon className="h-4 w-4" />
+                    </Button>
+                  )}
+                  <Button type="submit" variant="default" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full">
+                    <SearchIcon className="h-4 w-4" />
+                  </Button>
+                </form>
+
+                {/* Actions (Mobile Search Toggle & Desktop User Info) */}
+                <div className="flex items-center gap-2">
+                  <Button variant="ghost" size="icon" onClick={toggleMobileSearch} className="md:hidden">
+                    <SearchIcon className="h-5 w-5" />
+                  </Button>
+                  <div className="hidden md:flex items-center space-x-3">
+                    <Link href="/profile" className="hover:text-primary transition-colors">
+                      <div className="text-right">
+                          <p className="text-xs text-muted-foreground">Hello,</p>
+                          <p className="text-sm font-semibold text-foreground -mt-1">{userName}</p>
+                      </div>
+                    </Link>
+                    <Button variant="ghost" size="icon" asChild>
+                        <Link href="/notifications" aria-label="Notifications">
+                            <Bell className="h-5 w-5" />
+                        </Link>
+                    </Button>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </header>
 
-        <div className="px-4 md:px-0 space-y-12">
+        {/* Main content of the home page */}
+        <div className={cn("px-4 md:px-0 space-y-12", isMobileSearchActive ? "pt-4" : "pt-6 md:pt-0")}>
 
             {/* Hero Section */}
             <section className="relative bg-muted/30 rounded-lg overflow-hidden p-8 md:p-12 text-center md:text-left shadow-lg">
