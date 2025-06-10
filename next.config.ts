@@ -27,10 +27,8 @@ const nextConfig: NextConfig = {
     ],
   },
   experimental: {
-    allowedDevOrigins: [
-        'https://6000-firebase-studio-1749550509227.cluster-sumfw3zmzzhzkx4mpvz3ogth4y.cloudworkstations.dev',
-        'https://9000-firebase-studio-1749550509227.cluster-sumfw3zmzzhzkx4mpvz3ogth4y.cloudworkstations.dev'
-    ],
+    // allowedDevOrigins was removed from here as it caused a startup error.
+    // The cross-origin warnings might reappear.
   },
 };
 

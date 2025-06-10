@@ -981,10 +981,6 @@ body {
   width: 6rem;
 }
 
-.w-28 {
-  width: 7rem;
-}
-
 .w-3 {
   width: .75rem;
 }
@@ -1033,6 +1029,10 @@ body {
   width: var(--sidebar-width);
 }
 
+.w-\[100px\] {
+  width: 100px;
+}
+
 .w-\[120px\] {
   width: 120px;
 }
@@ -1063,10 +1063,6 @@ body {
 
 .w-full {
   width: 100%;
-}
-
-.w-\[100px\] {
-  width: 100px;
 }
 
 .min-w-0 {
