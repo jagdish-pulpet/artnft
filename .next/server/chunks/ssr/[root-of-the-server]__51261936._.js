@@ -283,7 +283,6 @@ const USER_PASSWORD_FOR_DISPLAY = 'adminpass';
 function WelcomePage() {
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
     const { toast } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$toast$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useToast"])();
-    // State for feature toggles
     const [showGuestLogin, setShowGuestLogin] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(true);
     const [showAdminAccessShortcut, setShowAdminAccessShortcut] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(true);
     const [showGitHubLink, setShowGitHubLink] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(true);
@@ -291,12 +290,17 @@ function WelcomePage() {
     const [isMounted, setIsMounted] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         setIsMounted(true);
+    }, []);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        if (!isMounted) return; // Only run after component has mounted
         if ("TURBOPACK compile-time falsy", 0) {
             "TURBOPACK unreachable";
         }
-    }, []);
+    }, [
+        isMounted,
+        router
+    ]);
     const handleGuestNavigation = ()=>{
-        // Clear any existing user/admin auth state for guest mode
         if ("TURBOPACK compile-time falsy", 0) {
             "TURBOPACK unreachable";
         }
@@ -307,16 +311,15 @@ function WelcomePage() {
         router.push('/home');
     };
     const handleAdminAccess = ()=>{
-        // This simulates a quick dev pathway, actual admin auth is on /admin/login
-        // For safety, clear user tokens if any exist
         if ("TURBOPACK compile-time falsy", 0) {
             "TURBOPACK unreachable";
+        // localStorage.setItem('isAdminAuthenticated', 'true'); // This line might be better handled by the admin login page itself
         }
         toast({
-            title: 'Admin Access (Dev Shortcut)',
-            description: 'Proceeding to admin dashboard. Regular admin login is at /admin/login.'
+            title: 'Redirecting to Admin Panel',
+            description: 'Please log in with admin credentials.'
         });
-        router.push('/admin/dashboard');
+        router.push('/admin/login'); // Go to admin login, not directly to dashboard
     };
     if (!isMounted) {
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -325,12 +328,12 @@ function WelcomePage() {
                 className: "h-12 w-12 animate-spin text-primary"
             }, void 0, false, {
                 fileName: "[project]/src/app/welcome/page.tsx",
-                lineNumber: 81,
+                lineNumber: 94,
                 columnNumber: 9
             }, this)
         }, void 0, false, {
             fileName: "[project]/src/app/welcome/page.tsx",
-            lineNumber: 80,
+            lineNumber: 93,
             columnNumber: 7
         }, this);
     }
@@ -343,7 +346,7 @@ function WelcomePage() {
                     className: "mx-auto"
                 }, void 0, false, {
                     fileName: "[project]/src/app/welcome/page.tsx",
-                    lineNumber: 89,
+                    lineNumber: 102,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -353,7 +356,7 @@ function WelcomePage() {
                             children: "Welcome to ArtNFT"
                         }, void 0, false, {
                             fileName: "[project]/src/app/welcome/page.tsx",
-                            lineNumber: 91,
+                            lineNumber: 104,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -361,13 +364,13 @@ function WelcomePage() {
                             children: "Join a vibrant community of artists and collectors."
                         }, void 0, false, {
                             fileName: "[project]/src/app/welcome/page.tsx",
-                            lineNumber: 94,
+                            lineNumber: 107,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/welcome/page.tsx",
-                    lineNumber: 90,
+                    lineNumber: 103,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -383,12 +386,12 @@ function WelcomePage() {
                                 children: "Log In"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/welcome/page.tsx",
-                                lineNumber: 100,
+                                lineNumber: 113,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/welcome/page.tsx",
-                            lineNumber: 99,
+                            lineNumber: 112,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -401,12 +404,12 @@ function WelcomePage() {
                                 children: "Sign Up"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/welcome/page.tsx",
-                                lineNumber: 103,
+                                lineNumber: 116,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/welcome/page.tsx",
-                            lineNumber: 102,
+                            lineNumber: 115,
                             columnNumber: 11
                         }, this),
                         showGuestLogin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -417,20 +420,20 @@ function WelcomePage() {
                             children: "Continue as Guest"
                         }, void 0, false, {
                             fileName: "[project]/src/app/welcome/page.tsx",
-                            lineNumber: 106,
+                            lineNumber: 119,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/welcome/page.tsx",
-                    lineNumber: 98,
+                    lineNumber: 111,
                     columnNumber: 9
                 }, this),
                 (showAdminAccessShortcut || showGitHubLink || showUserCredsDisplay) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$separator$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Separator"], {}, void 0, false, {
                             fileName: "[project]/src/app/welcome/page.tsx",
-                            lineNumber: 114,
+                            lineNumber: 127,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$card$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Card"], {
@@ -443,7 +446,7 @@ function WelcomePage() {
                                         children: "Developer Shortcuts:"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/welcome/page.tsx",
-                                        lineNumber: 117,
+                                        lineNumber: 130,
                                         columnNumber: 17
                                     }, this),
                                     showAdminAccessShortcut && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -456,14 +459,14 @@ function WelcomePage() {
                                                 className: "mr-2 h-3.5 w-3.5"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/welcome/page.tsx",
-                                                lineNumber: 120,
+                                                lineNumber: 133,
                                                 columnNumber: 21
                                             }, this),
                                             " Go to Admin Panel"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/welcome/page.tsx",
-                                        lineNumber: 119,
+                                        lineNumber: 132,
                                         columnNumber: 19
                                     }, this),
                                     showGitHubLink && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$button$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -479,19 +482,19 @@ function WelcomePage() {
                                                     className: "mr-1.5 h-3.5 w-3.5"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/welcome/page.tsx",
-                                                    lineNumber: 126,
+                                                    lineNumber: 139,
                                                     columnNumber: 23
                                                 }, this),
                                                 "View Project on GitHub"
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/welcome/page.tsx",
-                                            lineNumber: 125,
+                                            lineNumber: 138,
                                             columnNumber: 21
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/welcome/page.tsx",
-                                        lineNumber: 124,
+                                        lineNumber: 137,
                                         columnNumber: 19
                                     }, this),
                                     showUserCredsDisplay && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -503,7 +506,7 @@ function WelcomePage() {
                                                         children: "Test User:"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/welcome/page.tsx",
-                                                        lineNumber: 133,
+                                                        lineNumber: 146,
                                                         columnNumber: 26
                                                     }, this),
                                                     " ",
@@ -511,7 +514,7 @@ function WelcomePage() {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/welcome/page.tsx",
-                                                lineNumber: 133,
+                                                lineNumber: 146,
                                                 columnNumber: 23
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -520,7 +523,7 @@ function WelcomePage() {
                                                         children: "Password:"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/welcome/page.tsx",
-                                                        lineNumber: 134,
+                                                        lineNumber: 147,
                                                         columnNumber: 26
                                                     }, this),
                                                     " ",
@@ -528,24 +531,24 @@ function WelcomePage() {
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/welcome/page.tsx",
-                                                lineNumber: 134,
+                                                lineNumber: 147,
                                                 columnNumber: 23
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/welcome/page.tsx",
-                                        lineNumber: 132,
+                                        lineNumber: 145,
                                         columnNumber: 19
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/welcome/page.tsx",
-                                lineNumber: 116,
+                                lineNumber: 129,
                                 columnNumber: 15
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/app/welcome/page.tsx",
-                            lineNumber: 115,
+                            lineNumber: 128,
                             columnNumber: 13
                         }, this)
                     ]
@@ -553,12 +556,12 @@ function WelcomePage() {
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/welcome/page.tsx",
-            lineNumber: 88,
+            lineNumber: 101,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/app/welcome/page.tsx",
-        lineNumber: 87,
+        lineNumber: 100,
         columnNumber: 5
     }, this);
 }
