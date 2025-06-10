@@ -266,7 +266,7 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
-const BACKEND_URL = ("TURBOPACK compile-time value", "http://localhost:5000") || 'http://localhost:5000';
+const BACKEND_URL = ("TURBOPACK compile-time value", "https://9000-firebase-studio-1749550509227.cluster-sumfw3zmzzhzkx4mpvz3ogth4y.cloudworkstations.dev") || 'http://localhost:5000';
 function SignUpPage() {
     _s();
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();

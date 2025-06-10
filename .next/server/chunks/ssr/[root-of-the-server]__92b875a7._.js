@@ -254,7 +254,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$ui$2f$s
 ;
 ;
 ;
-const BACKEND_URL = ("TURBOPACK compile-time value", "http://localhost:5000") || 'http://localhost:5000';
+const BACKEND_URL = ("TURBOPACK compile-time value", "https://9000-firebase-studio-1749550509227.cluster-sumfw3zmzzhzkx4mpvz3ogth4y.cloudworkstations.dev") || 'http://localhost:5000';
 function SignUpPage() {
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
     const { toast } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$hooks$2f$use$2d$toast$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useToast"])();

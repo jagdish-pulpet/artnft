@@ -2206,6 +2206,10 @@ body {
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
 }
 
+.text-white\/70 {
+  color: #ffffffb3;
+}
+
 .text-white\/80 {
   color: #fffc;
 }
@@ -2499,6 +2503,26 @@ body {
 
 .dark .bg-welcome-artistic {
   background-image: linear-gradient(to bottom right, hsl(var(--primary) / .3), hsl(var(--accent) / .3));
+}
+
+.bg-rainbow-swirl {
+  background-size: 200% 200%;
+  background-image: linear-gradient(-45deg, hsl(var(--destructive) / .8), hsl(var(--accent) / .8), hsl(var(--primary) / .8), hsl(var(--chart-2) / .8), hsl(var(--chart-4) / .8), hsl(var(--destructive) / .8));
+  animation: 15s infinite rainbowSwirlAnimation;
+}
+
+@keyframes rainbowSwirlAnimation {
+  0% {
+    background-position: 0%;
+  }
+
+  50% {
+    background-position: 100%;
+  }
+
+  100% {
+    background-position: 0%;
+  }
 }
 
 .file\:border-0::file-selector-button {
@@ -3996,14 +4020,14 @@ body {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
 
-.\[\&\>div\]\:from-accent > div {
-  --tw-gradient-from: hsl(var(--accent)) var(--tw-gradient-from-position);
-  --tw-gradient-to: hsl(var(--accent) / 0) var(--tw-gradient-to-position);
+.\[\&\>div\]\:from-white\/70 > div {
+  --tw-gradient-from: #ffffffb3 var(--tw-gradient-from-position);
+  --tw-gradient-to: #fff0 var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
 
-.\[\&\>div\]\:to-primary > div {
-  --tw-gradient-to: hsl(var(--primary)) var(--tw-gradient-to-position);
+.\[\&\>div\]\:to-white > div {
+  --tw-gradient-to: #fff var(--tw-gradient-to-position);
 }
 
 .\[\&\>span\:last-child\]\:truncate > span:last-child {
