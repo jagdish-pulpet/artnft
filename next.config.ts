@@ -27,7 +27,10 @@ const nextConfig: NextConfig = {
     ],
   },
   experimental: {
-    // allowedDevOrigins: ['https://9000-firebase-studio-1749297919077.cluster-w5vd22whf5gmav2vgkomwtc4go.cloudworkstations.dev'], // Removed due to unrecognized key error
+    allowedDevOrigins: [
+        'https://6000-firebase-studio-1749550509227.cluster-sumfw3zmzzhzkx4mpvz3ogth4y.cloudworkstations.dev',
+        'https://9000-firebase-studio-1749550509227.cluster-sumfw3zmzzhzkx4mpvz3ogth4y.cloudworkstations.dev'
+    ],
   },
 };
 
