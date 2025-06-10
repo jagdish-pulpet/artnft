@@ -21,6 +21,7 @@ import { cn } from '@/lib/utils';
 import { useState, useEffect, type FormEvent } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation'; // Added this import
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
 
@@ -188,7 +189,7 @@ export default function DashboardPage() {
       });
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || `Failed to fetch profile (${response.status})`);
+        throw new Error(errorData.error?.message || errorData.error || `Failed to fetch profile (${response.status})`);
       }
       const data: UserProfileData = await response.json();
       setUserProfile(data);
@@ -225,7 +226,7 @@ export default function DashboardPage() {
       });
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || `Failed to fetch owned NFTs (${response.status})`);
+        throw new Error(errorData.error?.message || errorData.error || `Failed to fetch owned NFTs (${response.status})`);
       }
       const data: { data: NFTCardProps[] } = await response.json(); // Assuming backend wraps in 'data'
       setOwnedNfts(data.data || []);
@@ -239,12 +240,14 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchUserProfile();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]); // Add router to dependencies if it's used in fetchUserProfile for redirects
 
   useEffect(() => {
     if (userProfile?.id) {
       fetchOwnedNfts(userProfile.id);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userProfile?.id]);
 
 
@@ -302,6 +305,10 @@ export default function DashboardPage() {
             avatar_url: editAvatarUrl,
         };
         setUserProfile(updatedSimulatedProfile);
+        if(localStorage.getItem('artnft_user_details')) {
+            localStorage.setItem('artnft_user_details', JSON.stringify(updatedSimulatedProfile));
+        }
+
 
         toast({ title: "Profile Updated!", description: "Your profile has been successfully updated (Simulated)." });
         setIsEditProfileOpen(false);
