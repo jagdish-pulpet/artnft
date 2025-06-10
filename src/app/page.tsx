@@ -8,17 +8,29 @@ import { Loader2 } from 'lucide-react';
 
 export default function SplashScreen() {
   const router = useRouter();
-  const [isShowingSplash, setIsShowingSplash] = useState(true);
+  const [isLoadingComplete, setIsLoadingComplete] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsShowingSplash(false); // Hide loader before navigating
-      router.push('/welcome');
-    }, 2000); 
+    setIsMounted(true); // Signal that the component has mounted
+  }, []);
 
-    // Clear the timer if the component unmounts before the timeout finishes
+  useEffect(() => {
+    if (!isMounted) return; // Don't run timeout logic until mounted
+
+    const timer = setTimeout(() => {
+      setIsLoadingComplete(true); // Mark loading as complete
+    }, 3000); // Increased splash visibility to 3 seconds for testing
+
     return () => clearTimeout(timer);
-  }, [router]); 
+  }, [isMounted]); // Depend on isMounted
+
+  useEffect(() => {
+    if (isLoadingComplete && isMounted) { // Ensure component is mounted before navigating
+      // Only navigate after loading is marked as complete
+      router.push('/welcome');
+    }
+  }, [isLoadingComplete, router, isMounted]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-artistic-gradient text-white p-4">
@@ -27,10 +39,20 @@ export default function SplashScreen() {
         <p className="text-xl font-medium">
           Discover, Create, and Trade Digital Art.
         </p>
-        {isShowingSplash && (
+        {!isLoadingComplete && isMounted && ( // Show loader only if not complete AND mounted
           <div className="flex items-center justify-center pt-8">
             <Loader2 className="h-8 w-8 animate-spin text-white" />
+            <p className="ml-2">Loading ArtNFT...</p>
           </div>
+        )}
+        {isLoadingComplete && isMounted && ( // Show redirecting message only when it's actually about to happen
+            <p className="pt-8 text-sm">Redirecting...</p>
+        )}
+        {!isMounted && ( // Fallback loader if component is somehow rendered before mount effect
+             <div className="flex items-center justify-center pt-8">
+                <Loader2 className="h-8 w-8 animate-spin text-white" />
+                <p className="ml-2">Initializing...</p>
+            </div>
         )}
       </div>
     </div>
