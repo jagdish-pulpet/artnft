@@ -1,11 +1,10 @@
 
 // src/models/Category.model.ts
-import { DataTypes, Model, type Sequelize, type ModelCtor, type Optional } from 'sequelize';
-// Import NFTInstance if association is defined here
-// import type { NFTInstance } from './NFT.model'; 
+import { DataTypes, Model, type Sequelize, type ModelCtor, type Optional, type HasManyGetAssociationsMixin } from 'sequelize';
+import type { NFTInstance } from './NFT.model'; 
 
 export interface CategoryAttributes {
-  id?: number;
+  id?: number; // SERIAL PK
   name: string;
   slug: string;
   description?: string | null;
@@ -15,11 +14,12 @@ export interface CategoryAttributes {
 }
 
 export interface CategoryInstance extends Model<CategoryAttributes, Optional<CategoryAttributes, 'id' | 'createdAt' | 'updatedAt'>>, CategoryAttributes {
-  // Define associations here, e.g.
-  // getNfts: HasManyGetAssociationsMixin<NFTInstance>;
+  // Define associations here
+  getNfts: HasManyGetAssociationsMixin<NFTInstance>;
 }
 
-export default (sequelize: Sequelize): ModelCtor<CategoryInstance> => {
+// Renamed the function to avoid conflict with the model name
+export default function initCategoryModel(sequelize: Sequelize): ModelCtor<CategoryInstance> {
   const Category = sequelize.define<CategoryInstance>('Category', {
     id: {
       type: DataTypes.INTEGER,
@@ -58,12 +58,14 @@ export default (sequelize: Sequelize): ModelCtor<CategoryInstance> => {
     }
   });
 
-  // Category.associate = (models) => {
-  //   Category.hasMany(models.NFT, {
-  //     foreignKey: 'category_id',
-  //     as: 'nfts',
-  //   });
-  // };
+  (Category as any).associate = (models: any) => {
+    Category.hasMany(models.NFT, {
+      foreignKey: 'category_id',
+      as: 'nfts',
+      onDelete: 'SET NULL', // If a category is deleted, NFTs in it will have category_id set to NULL
+      onUpdate: 'CASCADE'
+    });
+  };
 
   return Category;
 };

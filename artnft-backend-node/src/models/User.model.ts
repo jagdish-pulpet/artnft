@@ -1,7 +1,8 @@
 
 // src/models/User.model.ts
-import { DataTypes, Model, type Sequelize, type ModelCtor, type Optional } from 'sequelize';
+import { DataTypes, Model, type Sequelize, type ModelCtor, type Optional, type HasManyGetAssociationsMixin, type HasManyAddAssociationMixin, type HasManyCreateAssociationMixin } from 'sequelize';
 import bcrypt from 'bcryptjs';
+import type { NFTInstance } from './NFT.model'; // Assuming NFTInstance will be defined
 
 // Attributes for creating a User
 export interface UserAttributes {
@@ -20,7 +21,17 @@ export interface UserAttributes {
 // Attributes of a User instance (includes all UserAttributes and methods)
 export interface UserInstance extends Model<UserAttributes, Optional<UserAttributes, 'id' | 'role' | 'createdAt' | 'updatedAt'>>, UserAttributes {
   isValidPassword(password: string): Promise<boolean>;
-  // Define associations here if needed, e.g., getCreatedNfts: HasManyGetAssociationsMixin<NFTInstance>;
+  
+  // Define association methods
+  getCreatedNfts: HasManyGetAssociationsMixin<NFTInstance>;
+  addCreatedNft: HasManyAddAssociationMixin<NFTInstance, string>; // string for NFT's PK (UUID)
+  createCreatedNft: HasManyCreateAssociationMixin<NFTInstance>;
+
+  getOwnedNfts: HasManyGetAssociationsMixin<NFTInstance>;
+  addOwnedNft: HasManyAddAssociationMixin<NFTInstance, string>;
+  createOwnedNft: HasManyCreateAssociationMixin<NFTInstance>;
+
+  // Add other association mixins as needed for Bids, Favorites, Collections etc.
 }
 
 export default (sequelize: Sequelize): ModelCtor<UserInstance> => {
@@ -93,18 +104,24 @@ export default (sequelize: Sequelize): ModelCtor<UserInstance> => {
   User.prototype.isValidPassword = async function(password: string): Promise<boolean> {
     return bcrypt.compare(password, this.password_hash);
   };
-
-  // Static method (though not typically used this way with instance methods available)
-  // User.hashPassword = async function(password: string): Promise<string> {
-  //   const salt = await bcrypt.genSalt(10);
-  //   return bcrypt.hash(password, salt);
-  // };
   
-  // Define associations within a static associate method or after all models are defined
-  // User.associate = (models) => {
-  //   User.hasMany(models.NFT, { as: 'createdNfts', foreignKey: 'creator_id' });
-  //   User.hasMany(models.NFT, { as: 'ownedNfts', foreignKey: 'owner_id' });
-  // };
+  // Static method for associations
+  (User as any).associate = (models: any) => { // Use 'any' for models for simplicity in associate methods
+    User.hasMany(models.NFT, { 
+        as: 'createdNfts', 
+        foreignKey: 'creator_id',
+        onDelete: 'RESTRICT', // Prevent deleting user if they created NFTs
+        onUpdate: 'CASCADE'
+    });
+    User.hasMany(models.NFT, { 
+        as: 'ownedNfts', 
+        foreignKey: 'owner_id',
+        onDelete: 'SET NULL', // If user is deleted, their owned NFTs become ownerless (or handle differently)
+        onUpdate: 'CASCADE'
+    });
+    // Add other associations like Bids, Favorites, Collections, Notifications, UserFollows here
+    // e.g., User.hasMany(models.Collection, { foreignKey: 'user_id', as: 'collections' });
+  };
 
   return User;
 };

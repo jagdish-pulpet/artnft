@@ -1,9 +1,8 @@
 
 // src/models/NFT.model.ts
-import { DataTypes, Model, type Sequelize, type ModelCtor, type Optional } from 'sequelize';
-// Import UserInstance and CategoryInstance if associations are defined here
-// import type { UserInstance } from './User.model';
-// import type { CategoryInstance } from './Category.model';
+import { DataTypes, Model, type Sequelize, type ModelCtor, type Optional, type BelongsToGetAssociationMixin } from 'sequelize';
+import type { UserInstance } from './User.model';
+import type { CategoryInstance } from './Category.model';
 
 
 export type NftStatusType = 'pending_moderation' | 'listed' | 'on_auction' | 'sold' | 'hidden' | 'draft';
@@ -32,13 +31,15 @@ export interface NFTAttributes {
 }
 
 export interface NFTInstance extends Model<NFTAttributes, Optional<NFTAttributes, 'id' | 'currency_symbol' | 'status' | 'is_auction' | 'view_count' | 'createdAt' | 'updatedAt'>>, NFTAttributes {
-    // Define associations here, e.g.
-    // getCreator: BelongsToGetAssociationMixin<UserInstance>;
-    // getOwner: BelongsToGetAssociationMixin<UserInstance>;
-    // getCategory: BelongsToGetAssociationMixin<CategoryInstance>;
+    // Define associations here
+    getCreator: BelongsToGetAssociationMixin<UserInstance>;
+    getOwner: BelongsToGetAssociationMixin<UserInstance>;
+    getCategory: BelongsToGetAssociationMixin<CategoryInstance>;
+    // getCollection: BelongsToGetAssociationMixin<CollectionInstance>; // If Collection model exists
+    // getBids: HasManyGetAssociationsMixin<BidInstance>; // If Bid model exists
 }
 
-export default (sequelize: Sequelize): ModelCtor<NFTInstance> => {
+export default function initNFTModel(sequelize: Sequelize): ModelCtor<NFTInstance> {
   const NFT = sequelize.define<NFTInstance>('NFT', {
     id: {
       type: DataTypes.UUID,
@@ -62,7 +63,7 @@ export default (sequelize: Sequelize): ModelCtor<NFTInstance> => {
       },
     },
     price_eth: {
-      type: DataTypes.DECIMAL(18, 8), // Sequelize handles this with string/number conversion
+      type: DataTypes.DECIMAL(18, 8), 
       allowNull: true,
     },
     currency_symbol: {
@@ -100,7 +101,7 @@ export default (sequelize: Sequelize): ModelCtor<NFTInstance> => {
         allowNull: true,
     },
     tags: {
-      type: DataTypes.JSONB, // Use JSONB for PostgreSQL
+      type: DataTypes.JSONB, 
       allowNull: true,
     },
     metadata_url: {
@@ -125,11 +126,28 @@ export default (sequelize: Sequelize): ModelCtor<NFTInstance> => {
     underscored: true,
   });
 
-  // NFT.associate = (models) => {
-  //   NFT.belongsTo(models.User, { foreignKey: 'creator_id', as: 'creator' });
-  //   NFT.belongsTo(models.User, { foreignKey: 'owner_id', as: 'owner' });
-  //   NFT.belongsTo(models.Category, { foreignKey: 'category_id', as: 'category' });
-  // };
+  (NFT as any).associate = (models: any) => {
+    NFT.belongsTo(models.User, { 
+        foreignKey: 'creator_id', 
+        as: 'creator',
+        onDelete: 'RESTRICT', // Prevent user deletion if they created NFTs
+        onUpdate: 'CASCADE'
+    });
+    NFT.belongsTo(models.User, { 
+        foreignKey: 'owner_id', 
+        as: 'owner',
+        onDelete: 'SET NULL', // If owner deleted, NFT owner_id becomes NULL
+        onUpdate: 'CASCADE'
+    });
+    NFT.belongsTo(models.Category, { 
+        foreignKey: 'category_id', 
+        as: 'category',
+        onDelete: 'SET NULL', // If category deleted, NFT category_id becomes NULL
+        onUpdate: 'CASCADE'
+    });
+    // Example: NFT.belongsTo(models.Collection, { foreignKey: 'collection_id', as: 'collection' });
+    // Example: NFT.hasMany(models.Bid, { foreignKey: 'nft_id', as: 'bids' });
+  };
 
   return NFT;
 };
