@@ -30,7 +30,7 @@ const dummyUsersForSeeding = [
         username: 'DigitalExplorer',
         avatar_url: 'https://placehold.co/150x150.png?text=DE',
         bio: 'Exploring the vast universe of digital art and NFTs. Always curious.',
-        cover_image_url: 'https://placehold.co/600x200.png?text=Explorer+Banner'
+        cover_image_url: 'https://placehold.co/600x200.png?text=Digital+World+Banner' // Updated
     }
   },
   {
@@ -40,7 +40,7 @@ const dummyUsersForSeeding = [
         username: 'NFTCollectorPro',
         avatar_url: 'https://placehold.co/150x150.png?text=NP',
         bio: 'Seasoned collector focusing on generative art and rare collectibles.',
-        cover_image_url: 'https://placehold.co/600x200.png?text=Collector+Banner'
+        cover_image_url: 'https://placehold.co/600x200.png?text=Generative+Art+View' // Updated
     }
   },
   {
@@ -50,7 +50,7 @@ const dummyUsersForSeeding = [
         username: 'PixelPainter',
         avatar_url: 'https://placehold.co/150x150.png?text=PP',
         bio: 'Creating vibrant worlds one pixel at a time. Lover of retro and modern digital art.',
-        cover_image_url: 'https://placehold.co/400x150.png?text=PixelArt+Cover'
+        cover_image_url: 'https://placehold.co/600x200.png?text=Pixel+Art+Studio' // Updated
     }
   },
   {
@@ -60,7 +60,7 @@ const dummyUsersForSeeding = [
         username: 'MetaverseMaven',
         avatar_url: 'https://placehold.co/150x150.png?text=MM',
         bio: 'Virtual world enthusiast and digital asset trader.',
-        cover_image_url: 'https://placehold.co/600x200.png?text=Metaverse+Banner'
+        cover_image_url: 'https://placehold.co/600x200.png?text=VR+Landscape' // Updated
     }
   },
   {
@@ -70,27 +70,27 @@ const dummyUsersForSeeding = [
         username: 'ArtNFTGallery',
         avatar_url: 'https://placehold.co/150x150.png?text=AG',
         bio: 'Curating the finest digital art for the ArtNFT Marketplace.',
-        cover_image_url: 'https://placehold.co/600x200.png?text=Gallery+Banner'
+        cover_image_url: 'https://placehold.co/600x200.png?text=Modern+Gallery+View' // Updated
     }
   },
   {
-    email: 'testuser@artnft.com', // Original test user
+    email: 'testuser@artnft.com',
     password: 'password123',
     profileData: {
         username: 'AppTester01',
         avatar_url: 'https://placehold.co/150x150.png?text=AT',
         bio: 'Dedicated to testing and experiencing the ArtNFT platform.',
-        cover_image_url: 'https://placehold.co/600x200.png?text=Test+Banner'
+        cover_image_url: 'https://placehold.co/600x200.png?text=Test+Pattern+Banner'
     }
   },
    {
-    email: 'admin@artnft.com', // Original admin user
+    email: 'admin@artnft.com',
     password: 'adminpass',
     profileData: {
         username: 'ArtNFTAdminConsole',
         avatar_url: 'https://placehold.co/150x150.png?text=AC',
         bio: 'Platform Administrator for ArtNFT Marketplace. Managing operations.',
-        cover_image_url: 'https://placehold.co/600x200.png?text=Admin+Banner'
+        cover_image_url: 'https://placehold.co/600x200.png?text=Admin+Control+Panel'
     }
   },
   {
@@ -100,7 +100,7 @@ const dummyUsersForSeeding = [
         username: 'AliceArt',
         avatar_url: 'https://placehold.co/150x150.png?text=AA',
         bio: 'Lover of bright colors and bold statements in digital form.',
-        cover_image_url: 'https://placehold.co/600x200.png?text=Alice+Banner'
+        cover_image_url: 'https://placehold.co/600x200.png?text=Colorful+Abstract+Art'
     }
   },
   {
@@ -110,7 +110,7 @@ const dummyUsersForSeeding = [
         username: 'BobCollects',
         avatar_url: 'https://placehold.co/150x150.png?text=BC',
         bio: 'Searching for the rarest and most unique digital collectibles.',
-        cover_image_url: 'https://placehold.co/600x200.png?text=Bob+Banner'
+        cover_image_url: 'https://placehold.co/600x200.png?text=Rare+Items+Showcase'
     }
   },
   {
@@ -120,7 +120,7 @@ const dummyUsersForSeeding = [
         username: 'CharlieCreates',
         avatar_url: 'https://placehold.co/150x150.png?text=CC',
         bio: 'Generative artist exploring the intersection of code and aesthetics.',
-        cover_image_url: 'https://placehold.co/600x200.png?text=Charlie+Banner'
+        cover_image_url: 'https://placehold.co/600x200.png?text=Algorithmic+Patterns'
     }
   }
 ];
@@ -150,7 +150,7 @@ async function seedInitialCategories(): Promise<Map<string, string>> {
             .from('categories')
             .upsert(
                 { slug: catData.slug, name: catData.name, description: catData.description },
-                { onConflict: 'slug', ignoreDuplicates: false }
+                { onConflict: 'slug', ignoreDuplicates: false } // Changed to false to ensure upsert logic triggers if name/desc needs update
             )
             .select('id, name')
             .single();
@@ -158,11 +158,10 @@ async function seedInitialCategories(): Promise<Map<string, string>> {
         if (error) {
             console.error(`Error seeding category "${catData.name}":`, error.message);
         } else if (data) {
-            console.log(`Category "${data.name}" (ID: ${data.id}) seeded/verified.`);
             categoryMap.set(data.name, data.id);
         }
     }
-    console.log('Category seeding finished.');
+    console.log(`Category seeding finished. ${categoryMap.size} categories processed/verified.`);
     return categoryMap;
 }
 
@@ -196,8 +195,8 @@ async function seedUserCollections(userId: string, username: string): Promise<st
     const numCollections = Math.floor(Math.random() * 2) + 1; // 1 or 2 collections per user
 
     for (let i = 0; i < numCollections; i++) {
-        const collectionName = i === 0 ? `${username}'s Picks` : `My ${getRandomElement(nftTitlePrefixes)} Collection`;
-        const collectionDescription = `A curated collection by ${username}.`;
+        const collectionName = i === 0 ? `${username}'s Curated Works` : `My ${getRandomElement(nftTitlePrefixes)} Collection`;
+        const collectionDescription = `A special collection by ${username}.`;
         
         const { data, error } = await supabase
             .from('collections')
@@ -208,7 +207,6 @@ async function seedUserCollections(userId: string, username: string): Promise<st
         if (error) {
             console.error(`Error seeding collection "${collectionName}" for ${username}:`, error.message);
         } else if (data) {
-            console.log(`Seeded collection: "${collectionName}" for ${username} (ID: ${data.id})`);
             collectionIds.push(data.id);
         }
     }
@@ -216,7 +214,7 @@ async function seedUserCollections(userId: string, username: string): Promise<st
 }
 
 
-async function seedNftsForUser(userId: string, artistName: string, categoryMap: Map<string, string>, nftSet: NftSeedData[], collectionIds: string[] = [], isSpecificSet: boolean = false): Promise<string[]> {
+async function seedNftsForUser(userId: string, artistName: string, categoryMap: Map<string, string>, nftSet: NftSeedData[], collectionIds: string[] = []): Promise<string[]> {
     const createdNftIds: string[] = [];
     if (categoryMap.size === 0) {
         console.warn(`No categories available for user ${artistName}. Skipping NFT seeding for this set.`);
@@ -227,14 +225,14 @@ async function seedNftsForUser(userId: string, artistName: string, categoryMap: 
 
     for (const nftData of nftSet) {
         const randomCategoryEntry = getRandomElement(categoryEntries);
-        const categoryId = randomCategoryEntry[1]; 
         const categoryName = randomCategoryEntry[0]; 
+        const categoryId = randomCategoryEntry[1]; 
 
         const createdAt = nftData.created_at_offset_days
             ? new Date(Date.now() - nftData.created_at_offset_days * 24 * 60 * 60 * 1000).toISOString()
             : new Date().toISOString();
 
-        const assignedCollectionId = collectionIds.length > 0 && Math.random() < 0.5 ? getRandomElement(collectionIds) : null;
+        const assignedCollectionId = collectionIds.length > 0 && Math.random() < 0.7 ? getRandomElement(collectionIds) : null; // Higher chance to be in a collection
 
         const nftToInsert = {
             owner_id: userId,
@@ -245,8 +243,8 @@ async function seedNftsForUser(userId: string, artistName: string, categoryMap: 
             price: nftData.price,
             artist_name: artistName,
             status: nftData.status || 'listed',
-            category: categoryName,
-            category_id: categoryId,
+            category: categoryName, // Store category name directly
+            category_id: categoryId, // Store category_id FK
             collection_id: assignedCollectionId,
             created_at: createdAt,
             updated_at: createdAt,
@@ -257,9 +255,6 @@ async function seedNftsForUser(userId: string, artistName: string, categoryMap: 
         if (error) {
             console.error(`Error seeding NFT "${nftData.title}" for ${artistName} (Category: ${categoryName}, Price: ${nftData.price}):`, error.message, error.details ? JSON.stringify(error.details) : '');
         } else if (data) {
-            if (!isSpecificSet) {
-                // console.log(`Seeded generic NFT: "${nftData.title}" for ${artistName}`);
-            }
             createdNftIds.push(data.id);
         }
     }
@@ -268,14 +263,12 @@ async function seedNftsForUser(userId: string, artistName: string, categoryMap: 
 
 async function seedUserFavorites(userId: string, allNftIds: string[], userOwnedNftIds: string[]) {
     if (allNftIds.length === 0) {
-        console.warn(`No NFTs available to favorite for user ID ${userId}.`);
         return;
     }
     const numFavorites = Math.floor(Math.random() * 4) + 2; // 2 to 5 favorites
     const availableNftsToFavorite = allNftIds.filter(id => !userOwnedNftIds.includes(id));
 
     if (availableNftsToFavorite.length === 0) {
-        console.warn(`No NFTs available for user ID ${userId} to favorite (excluding their own).`);
         return;
     }
 
@@ -287,13 +280,9 @@ async function seedUserFavorites(userId: string, allNftIds: string[], userOwnedN
     for (const nftId of selectedNftIdsForFavorites) {
         const { error } = await supabase.from('favorites').insert({ user_id: userId, nft_id: nftId });
         if (error) {
-            if (error.code === '23505') { // Unique violation, already favorited (shouldn't happen with Set logic but good fallback)
-                // console.warn(`User ${userId} already favorited NFT ${nftId}. Skipping.`);
-            } else {
+            if (error.code !== '23505') { // Ignore unique violation (already favorited)
                 console.error(`Error adding favorite for user ${userId} on NFT ${nftId}:`, error.message);
             }
-        } else {
-            // console.log(`User ${userId} favorited NFT ${nftId}`);
         }
     }
 }
@@ -304,11 +293,11 @@ async function seedDevUsersAndProfiles() {
 
   const categoryMap = await seedInitialCategories();
   let pixelPainterUserId: string | null = null;
-  let pixelPainterArtistName: string = 'PixelPainter';
+  let pixelPainterArtistName: string = 'PixelPainter'; // Default if not found
   
   const allSeededUserIds: string[] = [];
   const allSeededNftIds: string[] = [];
-  const userOwnedNftMap: Map<string, string[]> = new Map(); // Map<userId, nftId[]>
+  const userOwnedNftMap: Map<string, string[]> = new Map(); 
 
 
   for (const userData of dummyUsersForSeeding) {
@@ -324,7 +313,6 @@ async function seedDevUsersAndProfiles() {
 
     if (signUpError) {
       if (signUpError.message.includes('User already registered') || signUpError.message.includes('already registered') || signUpError.message.includes('Email rate limit exceeded')) {
-        console.warn(`User ${userData.email} likely already exists or rate limit hit. Attempting to fetch their ID by signing in.`);
         const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
             email: userData.email,
             password: userData.password,
@@ -343,19 +331,20 @@ async function seedDevUsersAndProfiles() {
       authUser = signUpData.user;
       session = signUpData.session;
       if (authUser) {
-        console.log(`User ${userData.email} signed up successfully. User ID: ${authUser.id}`);
+        console.log(`User ${userData.email} signed up. User ID: ${authUser.id}`);
       }
     }
     
-    if (session) {
+    if (session && supabase.auth.signOut) { // Check if signOut exists (it should)
         const { error: signOutError } = await supabase.auth.signOut();
         if (signOutError) {
             console.warn(`Could not sign out temporary session for ${userData.email}: ${signOutError.message}`);
         }
     }
 
+
     if (!authUser || !authUser.id) {
-      console.error(`Could not obtain a valid User ID for ${userData.email}. Skipping further processing for this user.`);
+      console.error(`Could not obtain User ID for ${userData.email}. Skipping.`);
       continue;
     }
     allSeededUserIds.push(authUser.id);
@@ -377,12 +366,12 @@ async function seedDevUsersAndProfiles() {
     if (profileError) {
       console.error(`Error creating/updating profile for ${userData.profileData.username} (User ID: ${authUser.id}):`, profileError.message);
     } else {
-      console.log(`Profile for ${userData.profileData.username} (User ID: ${authUser.id}) created/updated successfully.`);
+      console.log(`Profile for ${userData.profileData.username} (ID: ${authUser.id}) processed.`);
       
       const userCollectionIds = await seedUserCollections(authUser.id, userData.profileData.username);
 
       if (userData.email !== 'artist_creator@artnft.io') {
-        const numGenericNfts = Math.floor(Math.random() * 2) + 2;
+        const numGenericNfts = Math.floor(Math.random() * 2) + 2; // 2-3 NFTs
         const userNftsData: NftSeedData[] = [];
         for (let i = 0; i < numGenericNfts; i++) {
             userNftsData.push({
@@ -397,7 +386,6 @@ async function seedDevUsersAndProfiles() {
         const createdIds = await seedNftsForUser(authUser.id, userData.profileData.username || 'Unknown Artist', categoryMap, userNftsData, userCollectionIds);
         allSeededNftIds.push(...createdIds);
         userOwnedNftMap.get(authUser.id)?.push(...createdIds);
-        console.log(`Seeded ${createdIds.length} generic NFTs for ${userData.profileData.username}.`);
       }
 
       if (userData.email === 'artist_creator@artnft.io') {
@@ -412,33 +400,33 @@ async function seedDevUsersAndProfiles() {
     const pixelPainterCollections = await seedUserCollections(pixelPainterUserId, pixelPainterArtistName);
     
     const latestNftsData: NftSeedData[] = [];
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 15; i++) {
         latestNftsData.push({
             title: `Latest Gem ${i + 1}: ${getRandomElement(nftTitlePrefixes)} ${getRandomElement(nftTitleSuffixes)}`,
             description: getRandomElement(nftDescriptions),
             image_url: `https://placehold.co/600x400.png?text=Latest${i + 1}`,
             price: parseFloat((Math.random() * 3 + 0.5).toFixed(2)),
             dataAiHint: getRandomElement(dataAiHints),
-            created_at_offset_days: Math.floor(i / 5), // 0-4 days
+            created_at_offset_days: Math.floor(i / 4), // 0-3 days
         });
     }
-    const latestCreatedIds = await seedNftsForUser(pixelPainterUserId, pixelPainterArtistName, categoryMap, latestNftsData, pixelPainterCollections, true);
+    const latestCreatedIds = await seedNftsForUser(pixelPainterUserId, pixelPainterArtistName, categoryMap, latestNftsData, pixelPainterCollections);
     allSeededNftIds.push(...latestCreatedIds);
     userOwnedNftMap.get(pixelPainterUserId)?.push(...latestCreatedIds);
     console.log(`Seeded ${latestCreatedIds.length} 'Latest' NFTs for ${pixelPainterArtistName}.`);
 
     const popularNftsData: NftSeedData[] = [];
-     for (let i = 0; i < 20; i++) {
+     for (let i = 0; i < 15; i++) {
         popularNftsData.push({
             title: `Popular Choice ${i + 1}: ${getRandomElement(nftTitlePrefixes)} ${getRandomElement(nftTitleSuffixes)}`,
             description: getRandomElement(nftDescriptions),
             image_url: `https://placehold.co/600x400.png?text=Popular${i + 1}`,
             price: parseFloat((Math.random() * 5 + 1).toFixed(2)),
             dataAiHint: getRandomElement(dataAiHints),
-            created_at_offset_days: 30 + Math.floor(i / 2), // 30-39 days ago
+            created_at_offset_days: 30 + Math.floor(i / 3), // 30-34 days ago
         });
     }
-    const popularCreatedIds = await seedNftsForUser(pixelPainterUserId, pixelPainterArtistName, categoryMap, popularNftsData, pixelPainterCollections, true);
+    const popularCreatedIds = await seedNftsForUser(pixelPainterUserId, pixelPainterArtistName, categoryMap, popularNftsData, pixelPainterCollections);
     allSeededNftIds.push(...popularCreatedIds);
     userOwnedNftMap.get(pixelPainterUserId)?.push(...popularCreatedIds);
     console.log(`Seeded ${popularCreatedIds.length} 'Popular' NFTs for ${pixelPainterArtistName}.`);
@@ -467,6 +455,8 @@ seedDevUsersAndProfiles().catch((e) => {
 // Ensure your database schema includes:
 // - `profiles`: id (UUID PK, FK to auth.users), username (TEXT UNIQUE), avatar_url (TEXT), bio (TEXT), cover_image_url (TEXT), updated_at (TIMESTAMPTZ)
 // - `categories`: id (UUID PK), name (TEXT UNIQUE), slug (TEXT UNIQUE), description (TEXT)
-// - `collections`: id (UUID PK), user_id (UUID FK to auth.users), name (TEXT), description (TEXT)
-// - `nfts`: id (UUID PK), owner_id (UUID FK to auth.users), creator_id (UUID FK to auth.users), title (TEXT), description (TEXT), image_url (TEXT), price (NUMERIC), artist_name (TEXT), status (TEXT), category (TEXT), category_id (UUID FK to categories), collection_id (UUID FK to collections, nullable), created_at (TIMESTAMPTZ), updated_at (TIMESTAMPTZ)
-// - `favorites`: user_id (UUID FK to auth.users), nft_id (UUID FK to nfts), created_at (TIMESTAMPTZ), PRIMARY KEY (user_id, nft_id)
+// - `collections`: id (UUID PK), user_id (UUID FK to auth.users), name (TEXT), description (TEXT), created_at (TIMESTAMPTZ)
+// - `nfts`: id (UUID PK), owner_id (UUID FK to auth.users), creator_id (UUID FK to auth.users), title (TEXT), description (TEXT), image_url (TEXT), price (NUMERIC), artist_name (TEXT), status (TEXT), category (TEXT), category_id (UUID FK to categories.id), collection_id (UUID FK to collections.id, nullable), created_at (TIMESTAMPTZ), updated_at (TIMESTAMPTZ)
+// - `favorites`: user_id (UUID FK to auth.users), nft_id (UUID FK to nfts.id), created_at (TIMESTAMPTZ), PRIMARY KEY (user_id, nft_id)
+
+// Remember to add RLS policies to these tables.
