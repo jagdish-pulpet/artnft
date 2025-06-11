@@ -7,15 +7,25 @@ import type { NFT, NFTOwner } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Tag, Users, CalendarDays, Palette, ShoppingCart, History, Layers, Twitter, Link as LinkIcon, Share2, MessageCircle } from 'lucide-react';
+import { Tag, Users, CalendarDays, Palette, ShoppingCart, History, Layers, Twitter, Link as LinkIcon, Share2, MessageCircle, CreditCard, Info, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import NftCard from '@/components/nft-card';
 import { useToast } from '@/hooks/use-toast';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+
+// Inline SVG for Discord icon
+const DiscordIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <title>Discord</title>
+    <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4404.8648-.6083 1.2495a18.2971 18.2971 0 00-5.4846 0 16.004 16.004 0 00-.6177-1.2495.077.077 0 00-.0785-.037A19.7151 19.7151 0 003.6796 4.3698a.077.077 0 00-.0379.0844A18.0032 18.0032 0 002.3251 9.6002a16.1165 16.1165 0 001.6193 5.3888s.4499.3807.7057.6092a14.4737 14.4737 0 002.4638 1.5756.077.077 0 00.0943-.0238A12.7115 12.7115 0 0010.0251 16.15s.3692-.2667.6689-.5338a14.1283 14.1283 0 002.4201-1.6537.077.077 0 00.0943.0238 14.9319 14.9319 0 002.4634-1.5752s.4499-.3807.7057-.6092A16.1165 16.1165 0 0021.6748 9.6002a18.0032 18.0032 0 00-1.318-5.146.077.077 0 00-.038-.0844zm-5.4744 6.6222a2.1586 2.1586 0 01-2.1664 2.1775 2.1586 2.1586 0 01-2.1664-2.1775 2.1586 2.1586 0 012.1664-2.1775 2.1586 2.1586 0 012.1664 2.1775zm-6.4062 0a2.1586 2.1586 0 01-2.1664 2.1775 2.1586 2.1586 0 01-2.1664-2.1775 2.1586 2.1586 0 012.1664-2.1775 2.1586 2.1586 0 012.1664 2.1775z" fill="currentColor"/>
+  </svg>
+);
 
 interface NftDetailsPageProps {
   params: { id: string };
 }
+
+const MAIN_HEADER_HEIGHT_APPROX = 70; // Approximate height of the main sticky header in pixels
 
 export default function NftDetailsPage({ params }: NftDetailsPageProps) {
   const { toast } = useToast();
@@ -23,6 +33,27 @@ export default function NftDetailsPage({ params }: NftDetailsPageProps) {
   const [nft, setNft] = useState<NFT | undefined>(undefined);
   const [relatedNfts, setRelatedNfts] = useState<NFT[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showStickyHeader, setShowStickyHeader] = useState(false);
+
+  const nftDetailsSectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (nftDetailsSectionRef.current) {
+        const { top } = nftDetailsSectionRef.current.getBoundingClientRect();
+        if (top < MAIN_HEADER_HEIGHT_APPROX && !showStickyHeader) {
+          setShowStickyHeader(true);
+        } else if (top >= MAIN_HEADER_HEIGHT_APPROX && showStickyHeader) {
+          setShowStickyHeader(false);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [showStickyHeader]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -35,7 +66,7 @@ export default function NftDetailsPage({ params }: NftDetailsPageProps) {
     if (foundNft) {
       const related = foundNft.relatedCollectionIds?.flatMap(collectionId => getMockNftsByCollectionId(collectionId))
         .filter(relatedNft => relatedNft && relatedNft.id !== foundNft.id)
-        .slice(0, 3) || []; // Ensure we only take up to 3 related NFTs
+        .slice(0, 3) || [];
       setRelatedNfts(related as NFT[]);
     }
     setIsLoading(false);
@@ -52,32 +83,56 @@ export default function NftDetailsPage({ params }: NftDetailsPageProps) {
   }
 
   if (!nft) {
-    return <div className="text-center py-12 text-lg font-medium text-destructive">NFT not found.</div>;
+    return <div className="text-center py-12 text-lg font-medium text-destructive flex items-center justify-center gap-2"><Info className="w-6 h-6" />NFT not found.</div>;
   }
 
-  const copyLinkToClipboard = () => {
-    navigator.clipboard.writeText(currentUrl).then(() => {
+  const copyToClipboard = (text: string, message: string) => {
+    navigator.clipboard.writeText(text).then(() => {
       toast({
-        title: "Link Copied!",
-        description: "The NFT page URL has been copied to your clipboard.",
+        title: "Copied to Clipboard!",
+        description: message,
         variant: "default",
       });
     }).catch(err => {
       console.error('Failed to copy: ', err);
       toast({
         title: "Error",
-        description: "Could not copy link to clipboard.",
+        description: "Could not copy to clipboard.",
         variant: "destructive",
       });
     });
   };
+  
+  const copyLinkToClipboard = () => copyToClipboard(currentUrl, "The NFT page URL has been copied.");
 
   const twitterShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`Check out this amazing NFT: ${nft.title}!`)}&url=${encodeURIComponent(currentUrl)}`;
+  
+  const discordShareMessage = `Check out this NFT: "${nft.title}" on ArtNFT! ${currentUrl}`;
 
   return (
-    <div className="space-y-8 sm:space-y-10">
-      <Card className="overflow-hidden shadow-xl rounded-lg">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-0"> {/* Changed to md:grid-cols-5 for better ratio */}
+    <div className="space-y-8 sm:space-y-10 relative">
+      {/* Sticky Sub-Header */}
+      {showStickyHeader && (
+        <div className="fixed top-0 left-0 right-0 bg-card shadow-lg p-3 sm:p-4 z-40 animate-in slide-in-from-top-8 duration-300" style={{paddingTop: `${MAIN_HEADER_HEIGHT_APPROX + 10}px`}}>
+          <div className="container mx-auto flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 overflow-hidden">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 relative rounded-md overflow-hidden bg-muted flex-shrink-0">
+                <Image src={nft.imageUrl} alt={nft.title} fill className="object-cover" sizes="56px" />
+              </div>
+              <div>
+                <h2 className="text-base sm:text-lg font-semibold truncate text-card-foreground">{nft.title}</h2>
+                <p className="text-sm text-primary font-medium">{nft.price} ETH</p>
+              </div>
+            </div>
+            <Button size="sm" className="bg-accent text-accent-foreground hover:bg-accent/90 flex-shrink-0 px-3 sm:px-4">
+              <ShoppingCart className="mr-1 sm:mr-2 h-4 w-4 sm:h-5 sm:w-5" /> Buy Now
+            </Button>
+          </div>
+        </div>
+      )}
+
+      <Card ref={nftDetailsSectionRef} className="overflow-hidden shadow-xl rounded-lg">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-0">
           <div className="md:col-span-3 relative aspect-square md:aspect-auto min-h-[350px] sm:min-h-[450px] md:min-h-full">
             <Image
               src={nft.imageUrl}
@@ -138,6 +193,9 @@ export default function NftDetailsPage({ params }: NftDetailsPageProps) {
                   <Button variant="outline" size="sm" onClick={() => window.open(twitterShareUrl, '_blank')} className="flex-1">
                     <Twitter className="w-4 h-4 mr-2 text-[#1DA1F2]" /> Twitter
                   </Button>
+                  <Button variant="outline" size="sm" onClick={() => copyToClipboard(discordShareMessage, 'Discord share message copied!')} className="flex-1">
+                    <DiscordIcon className="w-4 h-4 mr-2 text-[#5865F2]" /> Discord
+                  </Button>
                   <Button variant="outline" size="sm" onClick={copyLinkToClipboard} className="flex-1">
                     <LinkIcon className="w-4 h-4 mr-2" /> Copy Link
                   </Button>
@@ -181,7 +239,6 @@ export default function NftDetailsPage({ params }: NftDetailsPageProps) {
           <div className="text-center text-muted-foreground py-8">
             <p className="mb-2">Comments and social feed coming soon!</p>
             <p className="text-sm">Be the first to share your thoughts once this feature is live.</p>
-            {/* Placeholder for future comment input and display */}
           </div>
         </CardContent>
       </Card>
@@ -198,4 +255,5 @@ export default function NftDetailsPage({ params }: NftDetailsPageProps) {
       )}
     </div>
   );
-}
+
+    
