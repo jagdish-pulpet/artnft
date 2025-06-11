@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-  UserCircle, Bell, ShieldCheck, HelpCircle, LogOut, Palette, KeyRound, Wallet, Mail, Moon, Sun
+  UserCircle, Bell, ShieldCheck, HelpCircle, LogOut, Palette, KeyRound, Wallet, Mail, Moon, Sun, Loader2
 } from 'lucide-react';
 import Link from 'next/link';
 import { Switch } from '@/components/ui/switch';
@@ -13,12 +13,14 @@ import { Separator } from '@/components/ui/separator';
 import { useRouter } from 'next/navigation';
 import AppLayout from '@/components/AppLayout';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase/client'; // Import Supabase client
 
 export default function SettingsPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -47,13 +49,48 @@ export default function SettingsPage() {
     setIsDarkMode(prevMode => !prevMode);
   };
 
-  const handleLogout = () => {
-    toast({ title: 'Logged Out', description: 'You have been successfully logged out.' });
-    router.push('/welcome');
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    const { error } = await supabase.auth.signOut();
+    
+    // Clear any local flags, like admin status
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('isAdminAuthenticated');
+      // Supabase client handles clearing its own session from localStorage
+    }
+
+    setIsLoggingOut(false);
+
+    if (error) {
+      toast({ variant: 'destructive', title: 'Logout Failed', description: error.message });
+    } else {
+      toast({ title: 'Logged Out', description: 'You have been successfully logged out.' });
+      router.push('/welcome');
+    }
   };
 
+  // Placeholder for functions - to be implemented with Supabase
+  const handleChangeEmail = () => toast({ title: 'Feature Coming Soon', description: 'Changing email will be implemented with Supabase.'});
+  const handleChangePassword = () => toast({ title: 'Feature Coming Soon', description: 'Changing password will be implemented with Supabase.'});
+  const handleConnectWallet = () => router.push('/connect-wallet');
+
+
   if (!isMounted) {
-    // Keep UI consistent, actual switch state handled by useEffect
+    // Render a minimal loading state or null to avoid UI flicker / hydration errors for theme switch
+    return (
+      <AppLayout>
+        <div className="p-4 md:p-8 max-w-2xl mx-auto">
+          <Card className="shadow-xl border-border animate-pulse">
+            <CardHeader className="border-b h-24 bg-muted/50"></CardHeader>
+            <CardContent className="pt-6 space-y-8">
+              <div className="space-y-4 h-32 bg-muted/30 rounded-md"></div>
+              <div className="space-y-4 h-48 bg-muted/30 rounded-md"></div>
+              <div className="space-y-4 h-32 bg-muted/30 rounded-md"></div>
+            </CardContent>
+          </Card>
+        </div>
+      </AppLayout>
+    );
   }
 
   return (
@@ -72,8 +109,9 @@ export default function SettingsPage() {
                 onClick={handleLogout} 
                 className="rounded-full border-destructive/50 text-destructive hover:bg-destructive/10 focus-visible:ring-destructive" 
                 aria-label="Log out"
+                disabled={isLoggingOut}
               >
-                <LogOut className="h-6 w-6" />
+                {isLoggingOut ? <Loader2 className="h-6 w-6 animate-spin"/> : <LogOut className="h-6 w-6" />}
               </Button>
             </div>
           </CardHeader>
@@ -81,9 +119,9 @@ export default function SettingsPage() {
 
             <div className="space-y-4">
               <h3 className="text-xl font-semibold flex items-center text-foreground"><UserCircle className="mr-3 h-6 w-6 text-primary" />Account</h3>
-              <Button variant="outline" className="w-full justify-start text-base py-6"><Mail className="mr-2 h-5 w-5" />Change Email</Button>
-              <Button variant="outline" className="w-full justify-start text-base py-6"><KeyRound className="mr-2 h-5 w-5" />Change Password</Button>
-              <Button variant="outline" className="w-full justify-start text-base py-6"><Wallet className="mr-2 h-5 w-5" />Connect Wallet (Simulated)</Button>
+              <Button variant="outline" className="w-full justify-start text-base py-6" onClick={handleChangeEmail}><Mail className="mr-2 h-5 w-5" />Change Email</Button>
+              <Button variant="outline" className="w-full justify-start text-base py-6" onClick={handleChangePassword}><KeyRound className="mr-2 h-5 w-5" />Change Password</Button>
+              <Button variant="outline" className="w-full justify-start text-base py-6" onClick={handleConnectWallet}><Wallet className="mr-2 h-5 w-5" />Connect Wallet (Simulated)</Button>
             </div>
 
             <Separator />

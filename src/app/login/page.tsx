@@ -10,9 +10,8 @@ import { useRouter } from 'next/navigation';
 import { useState, type FormEvent, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Mail } from 'lucide-react';
-import { Separator } from '@/components/ui/separator'; // Keep separator for structure
-
-// const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'; // Removed
+import { Separator } from '@/components/ui/separator';
+import { supabase } from '@/lib/supabase/client'; // Import Supabase client
 
 export default function LogInPage() {
   const router = useRouter();
@@ -22,69 +21,47 @@ export default function LogInPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   
-  // Feature toggle state for admin access button
   const [showAdminAccess, setShowAdminAccess] = useState(true);
-  const FT_LOGIN_ADMIN_ACCESS_KEY = 'artnft_ft_login_admin_access'; // Ensure this key is managed by your feature toggle admin page
+  const FT_LOGIN_ADMIN_ACCESS_KEY = 'artnft_ft_login_admin_access'; 
 
   useEffect(() => {
     setIsMounted(true);
-    // Load feature toggle state for admin access button
     const adminAccessEnabled = localStorage.getItem(FT_LOGIN_ADMIN_ACCESS_KEY) !== 'false';
     setShowAdminAccess(adminAccessEnabled);
-  }, []);
+
+    // Check if user is already logged in (e.g. from a previous session)
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        router.replace('/home'); // Redirect if already logged in
+      }
+    };
+    checkSession();
+
+  }, [router]);
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    try {
-      // TODO: Replace with Supabase authentication call
-      // const response = await fetch(`${BACKEND_URL}/api/users/login`, {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify({ email, password }),
-      // });
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-      // const data = await response.json();
+    setIsLoading(false);
 
-      // if (response.ok) {
-      //   localStorage.setItem('userToken', data.token); // Store the token
-      //   localStorage.removeItem('isAdminAuthenticated'); // Clear admin auth if any
-      //   toast({
-      //     title: 'Login Successful',
-      //     description: 'Welcome back!',
-      //   });
-      //   router.push('/home');
-      // } else {
-      //   toast({
-      //     variant: 'destructive',
-      //     title: 'Login Failed',
-      //     description: data.error || 'Invalid email or password. Please try again.',
-      //   });
-      // }
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      toast({
-        title: 'Login In Progress',
-        description: 'Login functionality is being updated to use Supabase. Please try again later.',
-        variant: 'default'
-      });
-      
-    } catch (error) {
-      console.error('Login error:', error);
-      let errorMessage = 'An unexpected error occurred. Please try again later.';
-      // Check if it's a network error (Failed to fetch) - This specific check might be less relevant now
-      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
-        errorMessage = `Could not connect to the authentication service. Please check your network or try again later.`;
-      }
-      toast({
-        variant: 'destructive',
-        title: 'Login Error',
-        description: errorMessage,
-      });
-    } finally {
-      setIsLoading(false);
+    if (error) {
+      toast({ variant: 'destructive', title: 'Login Failed', description: error.message });
+    } else if (data.session && data.user) {
+      // Supabase client handles session storage automatically.
+      // No need to manually set items like 'supabase_session' or 'artnft_user_email'
+      localStorage.removeItem('isAdminAuthenticated'); // Ensure admin flag is cleared if a regular user logs in
+      toast({ title: 'Login Successful', description: 'Welcome back!' });
+      router.push('/home');
+    } else {
+      // This case might occur if there's an issue not caught by `error` but session/user is still null
+      toast({ variant: 'destructive', title: 'Login Failed', description: 'Invalid email or password, or another issue occurred.' });
     }
   };
   

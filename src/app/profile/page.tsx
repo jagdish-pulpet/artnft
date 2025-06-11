@@ -15,83 +15,52 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
-// Removed: import { GraphQLClient, gql } from 'graphql-request';
+import { supabase } from '@/lib/supabase/client'; // Import Supabase client
+import type { User } from '@supabase/supabase-js'; // Import User type
+import { useToast } from '@/hooks/use-toast'; // Import useToast
+import { useRouter } from 'next/navigation'; // Import useRouter
 import { Skeleton } from '@/components/ui/skeleton';
 
-// --- GraphQL Related (Placeholder/Mock Data Usage) ---
-// Removed: const GRAPHQL_ENDPOINT = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT || 'http://localhost:4000/graphql';
-// Removed: const gqlClient = new GraphQLClient(GRAPHQL_ENDPOINT);
-
-const MOCK_USER_ID = "user_creative_123"; 
-
-// Removed: GraphQL query definitions (GET_USER_OWNED_NFTS_QUERY, etc.)
-// They were not being used as the actual fetch calls were commented out.
-
-// Mock data simulating what would have been fetched
-const mockOwnedNftsFromGraphQL: NFTCardProps[] = [
-  { id: 'gql_owned1', imageUrl: 'https://placehold.co/300x300.png', title: 'GQL Owned Abstract #1', price: 'Purchased for 0.5 ETH', artistName: 'UserCreative', dataAiHint:"abstract art" },
-  { id: 'gql_owned2', imageUrl: 'https://placehold.co/300x300.png', title: 'My GQL Cyber Pet', price: 'Purchased for 1.2 ETH', artistName: 'UserCreative', dataAiHint:"cyberpunk animal" },
+const mockOwnedNftsData: NFTCardProps[] = [
+  { id: 'owned1', imageUrl: 'https://placehold.co/300x300.png', title: 'My Abstract #1', price: 'Purchased for 0.5 ETH', artistName: 'UserCreative', dataAiHint:"abstract art" },
+  { id: 'owned2', imageUrl: 'https://placehold.co/300x300.png', title: 'My Cyber Pet', price: 'Purchased for 1.2 ETH', artistName: 'UserCreative', dataAiHint:"cyberpunk animal" },
 ];
 
-const mockFavoritedNftsFromGraphQL: NFTCardProps[] = [
-  { id: 'gql_fav1', imageUrl: 'https://placehold.co/300x300.png', title: 'GQL Pixelated Serenity', price: '0.8 ETH', artistName: '8BitWonder', dataAiHint:"pixel art" },
+const mockFavoritedNftsData: NFTCardProps[] = [
+  { id: 'fav1', imageUrl: 'https://placehold.co/300x300.png', title: 'Pixelated Serenity', price: '0.8 ETH', artistName: '8BitWonder', dataAiHint:"pixel art" },
 ];
 
-interface TransactionGQL { // Kept interface for mock data structure
+interface Transaction {
     id: string;
     type: 'Purchase' | 'Sale' | 'Mint' | 'Bid_Placed' | 'Bid_Received' | 'Listing';
     item: string;
     amount: string;
     date: string; 
     status: 'Completed' | 'Pending' | 'Failed';
+    icon: LucideIcon;
 }
 
-const mockTransactionHistoryFromGraphQL: TransactionGQL[] = [
-    { id: 't1', type: 'Purchase', item: 'Cosmic Explorer GQL', amount: '3.0 ETH', date: '2023-10-15T10:00:00Z', status: 'Completed' },
-    { id: 't2', type: 'Sale', item: 'My Old Artwork GQL', amount: '0.5 ETH', date: '2023-09-20T14:30:00Z', status: 'Completed' },
-    { id: 't3', type: 'Mint', item: 'Digital Landscape GQL', amount: '0.02 ETH (Gas)', date: '2023-08-01T11:00:00Z', status: 'Completed' },
+const mockTransactionHistoryData: Transaction[] = [
+    { id: 't1', type: 'Purchase', item: 'Cosmic Explorer', amount: '3.0 ETH', date: '2023-10-15T10:00:00Z', status: 'Completed', icon: ShoppingCart },
+    { id: 't2', type: 'Sale', item: 'My Old Artwork', amount: '0.5 ETH', date: '2023-09-20T14:30:00Z', status: 'Completed', icon: Tag },
+    { id: 't3', type: 'Mint', item: 'Digital Landscape', amount: '0.02 ETH (Gas)', date: '2023-08-01T11:00:00Z', status: 'Completed', icon: PackagePlus },
 ];
 
-interface ActivityItemGQL { // Kept interface for mock data structure
+interface ActivityItem {
   id: string;
-  iconName: 'PackagePlus' | 'Tag' | 'HandCoins' | 'Heart' | 'ShoppingCart' | 'UserPlus';
+  icon: LucideIcon;
   message: string;
   timestamp: string; 
   href?: string;
 }
-const mockRecentActivityFromGraphQL: ActivityItemGQL[] = [
-  { id: 'ra1', iconName: 'PackagePlus', message: "You minted 'Cyber Sunrise GQL'", timestamp: '2023-11-10T10:00:00Z', href: '/nft/owned3' },
-  { id: 'ra2', iconName: 'Tag', message: "You listed 'Neon Dreams GQL' for 1.2 ETH", timestamp: '2023-11-10T05:00:00Z', href: '/nft/1' },
-  { id: 'ra3', iconName: 'Heart', message: "You favorited 'Galaxy Bloom GQL'", timestamp: '2023-11-08T00:00:00Z', href: '/nft/r1'},
+const mockRecentActivityData: ActivityItem[] = [
+  { id: 'ra1', icon: PackagePlus, message: "You minted 'Cyber Sunrise'", timestamp: '2023-11-10T10:00:00Z', href: '/nft/owned3' },
+  { id: 'ra2', icon: Tag, message: "You listed 'Neon Dreams' for 1.2 ETH", timestamp: '2023-11-10T05:00:00Z', href: '/nft/1' },
+  { id: 'ra3', icon: Heart, message: "You favorited 'Galaxy Bloom'", timestamp: '2023-11-08T00:00:00Z', href: '/nft/r1'},
 ];
 
-// --- END Mock Data Section ---
-
 const userItemsForSaleCount = 5;
-const userTotalEarnings = "12.5 ETH";
-
-interface Transaction extends TransactionGQL {
-    icon: LucideIcon;
-}
-interface ActivityItem extends ActivityItemGQL {
-  icon: LucideIcon;
-}
-
-const iconMap: Record<string, LucideIcon> = {
-  Purchase: ShoppingCart,
-  Sale: Tag,
-  Mint: PackagePlus,
-  Bid_Placed: Gavel,
-  Bid_Received: HandCoins,
-  Listing: FileText,
-  PackagePlus: PackagePlus,
-  HandCoins: HandCoins,
-  Heart: Heart,
-  ShoppingCart: ShoppingCart,
-  UserPlus: UserPlus,
-  Default: ActivityIconComponent, 
-};
-
+const userTotalEarnings = "12.5 ETH"; // This will remain mock for now
 
 const LoadingNFTSkeleton = () => (
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -128,7 +97,6 @@ const LoadingListSkeleton = ({ count = 3 }: { count?: number }) => (
     </div>
 );
 
-
 const EmptyState = ({ icon: Icon, title, message, ctaLink, ctaText }: { icon: LucideIcon, title: string, message: string, ctaLink?: string, ctaText?: string }) => (
   <Card className="text-center py-12 border-dashed">
     <CardContent className="flex flex-col items-center">
@@ -151,8 +119,12 @@ const ErrorState = ({ message, onRetry }: { message: string, onRetry?: () => voi
   </Card>
 );
 
-
 export default function DashboardPage() {
+  const router = useRouter();
+  const { toast } = useToast();
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
+  
   const [ownedNfts, setOwnedNfts] = useState<NFTCardProps[]>([]);
   const [isLoadingOwned, setIsLoadingOwned] = useState(true);
   const [errorOwned, setErrorOwned] = useState<string | null>(null);
@@ -169,159 +141,148 @@ export default function DashboardPage() {
   const [isLoadingActivity, setIsLoadingActivity] = useState(true);
   const [errorActivity, setErrorActivity] = useState<string | null>(null);
 
-
-  const fetchOwnedNfts = async () => {
-    setIsLoadingOwned(true);
-    setErrorOwned(null);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      // Replace with actual API call to your Node.js backend
-      // Example: const response = await fetch(`/api/users/${MOCK_USER_ID}/owned-nfts`);
-      // const data = await response.json();
-      // setOwnedNfts(data.nfts);
-      setOwnedNfts(mockOwnedNftsFromGraphQL); 
-    } catch (err) {
-      console.error("Failed to fetch owned NFTs:", err);
-      let message = "An unknown error occurred.";
-      if (err instanceof Error && String(err.message).toLowerCase().includes("fetch")) {
-        message = "Could not connect to the server. Please ensure the backend server is running or check your network.";
-      } else if (err instanceof Error) {
-        message = err.message;
-      }
-      setErrorOwned(message);
-    } finally {
-      setIsLoadingOwned(false);
-    }
-  };
-
-  const fetchFavoritedNfts = async () => {
-    setIsLoadingFavorites(true);
-    setErrorFavorites(null);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1200)); 
-      // Replace with actual API call
-      setFavoritedNfts(mockFavoritedNftsFromGraphQL); 
-    } catch (err) {
-      console.error("Failed to fetch favorited NFTs:", err);
-      let message = "An unknown error occurred.";
-       if (err instanceof Error && String(err.message).toLowerCase().includes("fetch")) {
-        message = "Could not connect to the server. Please ensure the backend server is running or check your network.";
-      } else if (err instanceof Error) {
-        message = err.message;
-      }
-      setErrorFavorites(message);
-    } finally {
-      setIsLoadingFavorites(false);
-    }
-  };
-
-  const fetchTransactionHistory = async () => {
-    setIsLoadingHistory(true);
-    setErrorHistory(null);
-    try {
-        await new Promise(resolve => setTimeout(resolve, 800)); 
-        // Replace with actual API call
-        const transformedHistory = mockTransactionHistoryFromGraphQL.map(tx => ({
-            ...tx,
-            icon: iconMap[tx.type] || iconMap.Default,
-        }));
-        setTransactionHistory(transformedHistory);
-    } catch (err) {
-        console.error("Failed to fetch transaction history:", err);
-        let message = "An unknown error occurred.";
-        if (err instanceof Error && String(err.message).toLowerCase().includes("fetch")) {
-            message = "Could not connect to the server for history. Please ensure the backend server is running or check your network.";
-        } else if (err instanceof Error) {
-            message = err.message;
-        }
-        setErrorHistory(message);
-    } finally {
-        setIsLoadingHistory(false);
-    }
-  };
-
-  const fetchRecentActivity = async () => {
-    setIsLoadingActivity(true);
-    setErrorActivity(null);
-    try {
-        await new Promise(resolve => setTimeout(resolve, 900)); 
-        // Replace with actual API call
-        const transformedActivity = mockRecentActivityFromGraphQL.map(act => ({
-            ...act,
-            icon: iconMap[act.iconName] || iconMap.Default,
-        }));
-        setRecentActivity(transformedActivity);
-    } catch (err) {
-        console.error("Failed to fetch recent activity:", err);
-        let message = "An unknown error occurred.";
-        if (err instanceof Error && String(err.message).toLowerCase().includes("fetch")) {
-            message = "Could not connect to the server for activity. Please ensure the backend server is running or check your network.";
-        } else if (err instanceof Error) {
-            message = err.message;
-        }
-        setErrorActivity(message);
-    } finally {
-        setIsLoadingActivity(false);
-    }
-  };
-  
   useEffect(() => {
-    fetchOwnedNfts();
-    fetchFavoritedNfts();
-    fetchTransactionHistory();
-    fetchRecentActivity();
-  }, []);
+    const fetchUserAndData = async () => {
+      setIsLoadingUser(true);
+      const { data: { user: currentUser }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError || !currentUser) {
+        toast({ variant: "destructive", title: "Authentication Error", description: "Could not fetch user session. Please log in."});
+        router.push('/login');
+        setIsLoadingUser(false);
+        return;
+      }
+      setUser(currentUser);
+      setIsLoadingUser(false);
 
+      // Once user is fetched, fetch their specific data (simulated for now)
+      fetchOwnedNfts(currentUser.id);
+      fetchFavoritedNfts(currentUser.id);
+      fetchTransactionHistory(currentUser.id);
+      fetchRecentActivity(currentUser.id);
+    };
+
+    fetchUserAndData();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      const newCurrentUser = session?.user ?? null;
+      setUser(newCurrentUser);
+      if (event === 'SIGNED_OUT') {
+        router.push('/login');
+      } else if (event === 'SIGNED_IN' && newCurrentUser) {
+        // If user just signed in, refetch their data
+        fetchOwnedNfts(newCurrentUser.id);
+        fetchFavoritedNfts(newCurrentUser.id);
+        fetchTransactionHistory(newCurrentUser.id);
+        fetchRecentActivity(newCurrentUser.id);
+      }
+    });
+
+    return () => {
+      authListener?.subscription.unsubscribe();
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router, toast]);
+
+
+  const fetchOwnedNfts = async (userId: string) => {
+    setIsLoadingOwned(true); setErrorOwned(null);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 700)); // Simulate API latency
+      // In a real app: const { data, error } = await supabase.from('nfts').select('*').eq('owner_id', userId);
+      setOwnedNfts(mockOwnedNftsData); // Using mock data
+    } catch (err) { setErrorOwned("Failed to fetch owned NFTs."); } finally { setIsLoadingOwned(false); }
+  };
+
+  const fetchFavoritedNfts = async (userId: string) => {
+    setIsLoadingFavorites(true); setErrorFavorites(null);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 900));
+      // In a real app: const { data, error } = await supabase.from('favorites').select('nfts(*)').eq('user_id', userId);
+      setFavoritedNfts(mockFavoritedNftsData);
+    } catch (err) { setErrorFavorites("Failed to fetch favorited NFTs."); } finally { setIsLoadingFavorites(false); }
+  };
+
+  const fetchTransactionHistory = async (userId: string) => {
+    setIsLoadingHistory(true); setErrorHistory(null);
+    try {
+        await new Promise(resolve => setTimeout(resolve, 600));
+        // In a real app: const { data, error } = await supabase.from('transactions').select('*').eq('user_id', userId).order('date', { ascending: false });
+        setTransactionHistory(mockTransactionHistoryData);
+    } catch (err) { setErrorHistory("Failed to fetch transaction history."); } finally { setIsLoadingHistory(false); }
+  };
+
+  const fetchRecentActivity = async (userId: string) => {
+    setIsLoadingActivity(true); setErrorActivity(null);
+    try {
+        await new Promise(resolve => setTimeout(resolve, 800));
+        // In a real app: const { data, error } = await supabase.from('activities').select('*').eq('user_id', userId).order('timestamp', { ascending: false });
+        setRecentActivity(mockRecentActivityData);
+    } catch (err) { setErrorActivity("Failed to fetch recent activity."); } finally { setIsLoadingActivity(false); }
+  };
+
+  const profileDisplayName = user?.email ? user.email.split('@')[0] : (isLoadingUser ? 'Loading...' : 'User');
 
   return (
     <AppLayout>
       <div className="p-4 md:p-8 max-w-5xl mx-auto">
-        <Card className="mb-8 shadow-xl overflow-hidden border-border">
-          <div className="bg-muted/20 p-6 md:p-8">
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-              <Image 
-                src="https://placehold.co/120x120.png" 
-                alt="User Profile" 
-                width={120} 
-                height={120} 
-                className="rounded-full border-4 border-card shadow-md object-cover"
-                data-ai-hint="profile avatar"
-              />
-              <div className="text-center sm:text-left flex-grow">
-                <CardTitle className="text-3xl font-bold font-headline">CreativeUser123</CardTitle>
-                <CardDescription className="text-md mt-1">
-                  Passionate digital art collector and aspiring generative artist. Exploring the frontiers of web3 creativity. Joined 2023.
-                </CardDescription>
-                <div className="mt-4 flex gap-2 justify-center sm:justify-start">
-                  <Button variant="default" size="sm">
-                    <Edit3 className="h-4 w-4 mr-2" /> Edit Profile
-                  </Button>
-                  <Button variant="outline" size="sm" asChild>
-                    <Link href="/settings"><Settings className="h-4 w-4 mr-2" /> Settings</Link>
-                  </Button>
+        {isLoadingUser ? (
+           <Card className="mb-8 shadow-xl overflow-hidden border-border animate-pulse">
+             <div className="bg-muted/20 p-6 md:p-8"><Skeleton className="h-24 w-full"/></div>
+             <CardFooter className="p-4 bg-card border-t grid grid-cols-2 gap-4 text-center text-sm sm:grid-cols-4 sm:gap-2">
+                {[...Array(4)].map((_,i) => <div key={i}><Skeleton className="h-5 w-12 mx-auto"/><Skeleton className="h-4 w-20 mx-auto mt-1"/></div>)}
+             </CardFooter>
+           </Card>
+        ) : user ? (
+            <Card className="mb-8 shadow-xl overflow-hidden border-border">
+            <div className="bg-muted/20 p-6 md:p-8">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+                <Image 
+                    src={user.user_metadata?.avatar_url || "https://placehold.co/120x120.png"} 
+                    alt="User Profile" 
+                    width={120} 
+                    height={120} 
+                    className="rounded-full border-4 border-card shadow-md object-cover"
+                    data-ai-hint="profile avatar"
+                />
+                <div className="text-center sm:text-left flex-grow">
+                    <CardTitle className="text-3xl font-bold font-headline">{profileDisplayName}</CardTitle>
+                    <CardDescription className="text-md mt-1">
+                    {user.user_metadata?.bio || "Digital art enthusiast. Exploring web3."}
+                    </CardDescription>
+                    <div className="mt-4 flex gap-2 justify-center sm:justify-start">
+                    <Button variant="default" size="sm">
+                        <Edit3 className="h-4 w-4 mr-2" /> Edit Profile
+                    </Button>
+                    <Button variant="outline" size="sm" asChild>
+                        <Link href="/settings"><Settings className="h-4 w-4 mr-2" /> Settings</Link>
+                    </Button>
+                    </div>
                 </div>
-              </div>
+                </div>
             </div>
-          </div>
-          <CardFooter className="p-4 bg-card border-t grid grid-cols-2 gap-4 text-center text-sm sm:grid-cols-4 sm:gap-2">
-            <div>
-                <p className="font-semibold text-lg text-primary">{isLoadingOwned ? <Loader2 className="h-5 w-5 animate-spin inline"/> : ownedNfts.length}</p>
-                <p className="text-muted-foreground">NFTs Owned</p>
-            </div>
-            <div>
-                <p className="font-semibold text-lg text-primary">{isLoadingFavorites ? <Loader2 className="h-5 w-5 animate-spin inline"/> : favoritedNfts.length}</p>
-                <p className="text-muted-foreground">Favorites</p>
-            </div>
-            <div>
-                <p className="font-semibold text-lg text-primary">{isLoadingHistory ? <Loader2 className="h-5 w-5 animate-spin inline"/> : userItemsForSaleCount}</p>
-                <p className="text-muted-foreground">Items for Sale</p>
-            </div>
-             <div>
-                <p className="font-semibold text-lg text-primary">{userTotalEarnings}</p>
-                <p className="text-muted-foreground">Total Earnings</p>
-            </div>
-          </CardFooter>
-        </Card>
+            <CardFooter className="p-4 bg-card border-t grid grid-cols-2 gap-4 text-center text-sm sm:grid-cols-4 sm:gap-2">
+                <div>
+                    <p className="font-semibold text-lg text-primary">{isLoadingOwned ? <Loader2 className="h-5 w-5 animate-spin inline"/> : ownedNfts.length}</p>
+                    <p className="text-muted-foreground">NFTs Owned</p>
+                </div>
+                <div>
+                    <p className="font-semibold text-lg text-primary">{isLoadingFavorites ? <Loader2 className="h-5 w-5 animate-spin inline"/> : favoritedNfts.length}</p>
+                    <p className="text-muted-foreground">Favorites</p>
+                </div>
+                <div>
+                    <p className="font-semibold text-lg text-primary">{userItemsForSaleCount}</p>
+                    <p className="text-muted-foreground">Items for Sale</p>
+                </div>
+                <div>
+                    <p className="font-semibold text-lg text-primary">{userTotalEarnings}</p>
+                    <p className="text-muted-foreground">Total Earnings</p>
+                </div>
+            </CardFooter>
+            </Card>
+        ) : (
+            <ErrorState message="User not found. Please log in again." onRetry={() => router.push('/login')} />
+        )}
         
         <Card className="mb-8 shadow-lg border-border">
             <CardHeader>
@@ -360,7 +321,7 @@ export default function DashboardPage() {
             {isLoadingOwned ? (
               <LoadingNFTSkeleton />
             ) : errorOwned ? (
-              <ErrorState message={errorOwned} onRetry={fetchOwnedNfts} />
+              <ErrorState message={errorOwned} onRetry={() => user && fetchOwnedNfts(user.id)} />
             ) : ownedNfts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {ownedNfts.map(nft => <NFTCard key={nft.id} {...nft} />)}
@@ -380,7 +341,7 @@ export default function DashboardPage() {
              {isLoadingFavorites ? (
               <LoadingNFTSkeleton />
             ) : errorFavorites ? (
-              <ErrorState message={errorFavorites} onRetry={fetchFavoritedNfts} />
+              <ErrorState message={errorFavorites} onRetry={() => user && fetchFavoritedNfts(user.id)} />
             ) : favoritedNfts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {favoritedNfts.map(nft => <NFTCard key={nft.id} {...nft} />)}
@@ -406,7 +367,7 @@ export default function DashboardPage() {
                     {isLoadingHistory ? (
                         <LoadingListSkeleton count={3}/>
                     ) : errorHistory ? (
-                        <ErrorState message={errorHistory} onRetry={fetchTransactionHistory} />
+                        <ErrorState message={errorHistory} onRetry={() => user && fetchTransactionHistory(user.id)} />
                     ) : transactionHistory.length > 0 ? (
                         <ul className="divide-y divide-border">
                             {transactionHistory.map(tx => {
@@ -470,7 +431,7 @@ export default function DashboardPage() {
                 {isLoadingActivity ? (
                     <LoadingListSkeleton count={4} />
                 ) : errorActivity ? (
-                    <ErrorState message={errorActivity} onRetry={fetchRecentActivity} />
+                    <ErrorState message={errorActivity} onRetry={() => user && fetchRecentActivity(user.id)} />
                 ) : recentActivity.length > 0 ? (
                   <div className="space-y-4">
                     {recentActivity.map(item => {
@@ -513,9 +474,3 @@ export default function DashboardPage() {
     </AppLayout>
   );
 }
-    
-    
-
-    
-
-
