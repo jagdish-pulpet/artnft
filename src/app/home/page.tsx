@@ -147,20 +147,20 @@ export default function HomePage() {
     try {
       const { data, error } = await supabase
         .from('nfts')
-        .select('id, title, image_url, artist_name, status') // Removed 'price' from select
+        .select('id, title, image_url, status') // Removed 'price' and 'artist_name'
         .eq('status', 'listed')
         .order('created_at', { ascending: false })
         .limit(6);
 
       if (error) throw error;
-      const formattedNfts: NFTCardProps[] = data.map((nft: any) => ({ // Added type any for nft temporarily
+      const formattedNfts: NFTCardProps[] = data.map((nft: any) => ({
         id: nft.id,
         imageUrl: nft.image_url || 'https://placehold.co/400x400.png',
         title: nft.title,
         price: 'Price N/A', // Placeholder as price column is missing or causes error
         // TODO: Add a 'price' column (NUMERIC) to your 'nfts' table in Supabase.
-        // price: nft.price ? `${nft.price} ETH` : 'N/A', // Original line, uncomment after fixing DB
-        artistName: nft.artist_name || 'Unknown Artist',
+        artistName: 'Unknown Artist', // Placeholder as artist_name column might be missing
+        // TODO: Add an 'artist_name' column (TEXT) to your 'nfts' table in Supabase or join with profiles.
         dataAiHint: 'nft image'
       }));
       setLatestActivityNFTs(formattedNfts);
@@ -190,20 +190,20 @@ export default function HomePage() {
     try {
       const { data, error } = await supabase
         .from('nfts')
-        .select('id, title, image_url, artist_name, status') // Removed 'price' from select
+        .select('id, title, image_url, status') // Removed 'price' and 'artist_name'
         .eq('status', 'listed')
         .order('created_at', { ascending: true }) 
         .limit(3);
 
       if (error) throw error;
-      const formattedNfts: NFTCardProps[] = data.map((nft: any) => ({ // Added type any for nft temporarily
+      const formattedNfts: NFTCardProps[] = data.map((nft: any) => ({ 
         id: nft.id,
         imageUrl: nft.image_url || 'https://placehold.co/400x400.png',
         title: nft.title,
-        price: 'Price N/A', // Placeholder as price column is missing or causes error
-        // TODO: Add a 'price' column (NUMERIC) to your 'nfts' table in Supabase.
-        // price: nft.price ? `${nft.price} ETH` : 'N/A', // Original line, uncomment after fixing DB
-        artistName: nft.artist_name || 'Unknown Artist',
+        price: 'Price N/A', // Placeholder
+        // TODO: Add a 'price' column (NUMERIC) to your 'nfts' table.
+        artistName: 'Unknown Artist', // Placeholder
+        // TODO: Add an 'artist_name' column (TEXT) to your 'nfts' table or join.
         dataAiHint: 'nft image'
       }));
       setPopularCollections(formattedNfts);
@@ -220,7 +220,7 @@ export default function HomePage() {
           detailedErrorMessage = "Error fetching popular NFTs: Non-serializable error object caught.";
         }
       }
-      console.error(detailedErrorMessage, err); // Log the constructed message and the original error object
+      console.error(detailedErrorMessage, err); 
       setErrorPopular( (err && err.message) ? err.message : "Could not fetch popular NFTs.");
     } finally {
       setIsLoadingPopular(false);
@@ -509,4 +509,6 @@ export default function HomePage() {
     </AppLayout>
   );
 }
+    
+
     
