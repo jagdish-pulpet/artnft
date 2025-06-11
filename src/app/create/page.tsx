@@ -17,6 +17,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { UploadCloud, ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { useState, Fragment } from 'react';
@@ -54,12 +55,11 @@ export default function CreateNftPage() {
       royaltyPercentage: 5,
       image: undefined,
     },
-    mode: 'onChange', // Show errors as user types
+    mode: 'onChange', 
   });
 
   const onSubmit = (data: NftFormValues) => {
     console.log('NFT data:', data);
-    // Here you would typically handle file upload and minting process
     toast({
       title: 'NFT Submitted!',
       description: `${data.title} has been submitted for listing.`,
@@ -146,7 +146,7 @@ export default function CreateNftPage() {
                 ${form.formState.errors.image ? 'border-destructive' : 'border-border'}
                 ${imagePreview ? 'bg-muted/50' : 'bg-secondary hover:bg-muted'}`}>
                 {imagePreview ? (
-                  <img src={imagePreview} alt="Preview" className="h-full w-full object-contain rounded-lg p-2" />
+                  <img src={imagePreview} alt="Preview" className="h-full w-full object-contain rounded-lg p-2" data-ai-hint="artwork preview" />
                 ) : (
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
                     <UploadCloud className="w-10 h-10 mb-3 text-muted-foreground" />
@@ -244,25 +244,47 @@ export default function CreateNftPage() {
     const values = form.getValues();
     return (
       <div className="space-y-6">
-        <h3 className="text-xl font-semibold text-center mb-4">Review Your NFT Details</h3>
+        <h3 className="text-xl font-semibold text-center mb-6">Review Your NFT Details</h3>
         {imagePreview && (
-          <div className="mb-4 border rounded-lg overflow-hidden shadow-sm">
-            <img src={imagePreview} alt="NFT Preview" className="w-full max-h-80 object-contain bg-muted p-2" />
+          <div className="mb-6 border rounded-lg overflow-hidden shadow-sm">
+            <img src={imagePreview} alt="NFT Preview" className="w-full max-h-80 object-contain bg-muted p-2" data-ai-hint="artwork preview" />
           </div>
         )}
-        <div className="space-y-3 text-sm">
-          <div className="flex justify-between"><span className="font-medium text-muted-foreground">Title:</span> <span className="text-right">{values.title}</span></div>
-          <div className="flex justify-between"><span className="font-medium text-muted-foreground">Art Style:</span> <span className="text-right">{values.artStyle}</span></div>
-          <div className="flex justify-between"><span className="font-medium text-muted-foreground">Price:</span> <span className="text-right">{values.price} ETH</span></div>
-          <div className="flex justify-between"><span className="font-medium text-muted-foreground">Royalty:</span> <span className="text-right">{values.royaltyPercentage}%</span></div>
-          <div><span className="font-medium text-muted-foreground">Description:</span> <p className="text-foreground/80 mt-1 whitespace-pre-wrap">{values.description}</p></div>
+        <div className="space-y-4">
+          <div>
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Title</p>
+            <p className="text-foreground">{values.title || 'N/A'}</p>
+          </div>
+          <Separator />
+          <div>
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Art Style</p>
+            <p className="text-foreground">{values.artStyle || 'N/A'}</p>
+          </div>
+          <Separator />
+          <div>
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Price</p>
+            <p className="text-foreground">{values.price} ETH</p>
+          </div>
+          <Separator />
+          <div>
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Royalty Percentage</p>
+            <p className="text-foreground">{values.royaltyPercentage}%</p>
+          </div>
+          <Separator />
+          <div>
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Description</p>
+            <p className="text-foreground/90 mt-1 whitespace-pre-wrap leading-relaxed">
+              {values.description || 'N/A'}
+            </p>
+          </div>
         </div>
-        <Card className="bg-secondary/50 p-4">
+
+        <Card className="bg-secondary/50 p-4 mt-6">
             <p className="text-xs text-secondary-foreground">
                 Estimated Minting Fee: <span className="font-semibold">~0.0X ETH</span> (This is a placeholder and actual fees may vary based on network conditions.)
             </p>
         </Card>
-        <p className="text-xs text-muted-foreground text-center">
+        <p className="text-xs text-muted-foreground text-center mt-4">
           By clicking "Mint and List NFT", you agree to ArtNFT's terms and conditions for minting.
         </p>
       </div>
@@ -272,13 +294,13 @@ export default function CreateNftPage() {
   return (
     <div className="max-w-2xl mx-auto">
       <Card className="shadow-xl">
-        <CardHeader className="text-center">
-          <CardTitle className="font-headline text-2xl sm:text-3xl">Create & List Your NFT</CardTitle>
+        <CardHeader className="text-center border-b pb-6">
+          <CardTitle className="font-headline text-2xl sm:text-3xl">Create &amp; List Your NFT</CardTitle>
           <CardDescription>
             {STEPS.find(step => step.id === currentStep)?.name || 'Complete the steps to mint your NFT'}
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6"> {/* Adjusted pt-6 for content after bordered header */}
           {renderStepIndicator()}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -308,5 +330,4 @@ export default function CreateNftPage() {
     </div>
   );
 }
-
     
