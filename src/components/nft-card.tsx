@@ -2,9 +2,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { NFT } from '@/types';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'; // Removed CardTitle as we'll use a custom h3
 import { Button } from '@/components/ui/button';
-import { Tag } from 'lucide-react';
+import { Heart, Share2, ShoppingBag, UserCircle2 } from 'lucide-react'; // Added new icons
 
 interface NftCardProps {
   nft: NFT;
@@ -12,10 +12,10 @@ interface NftCardProps {
 
 export default function NftCard({ nft }: NftCardProps) {
   return (
-    <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg flex flex-col h-full">
-      <Link href={`/nfts/${nft.id}`} className="block group">
+    <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg flex flex-col h-full group">
+      <Link href={`/nfts/${nft.id}`} className="block" aria-label={`View details for ${nft.title}`}>
         <CardHeader className="p-0">
-          <div className="aspect-square relative w-full">
+          <div className="aspect-square relative w-full overflow-hidden"> {/* Added overflow-hidden for image scaling */}
             <Image
               src={nft.imageUrl}
               alt={nft.title}
@@ -27,24 +27,38 @@ export default function NftCard({ nft }: NftCardProps) {
           </div>
         </CardHeader>
       </Link>
-      <CardContent className="p-4 flex-grow">
+      <CardContent className="p-3 space-y-1.5 flex-grow"> {/* Reduced padding, added specific space */}
         <Link href={`/nfts/${nft.id}`} className="block">
-          <CardTitle className="text-lg font-headline mb-1 hover:text-accent transition-colors">{nft.title}</CardTitle>
+          <h3 className="text-md font-semibold group-hover:text-accent transition-colors truncate" title={nft.title}>
+            {nft.title}
+          </h3>
         </Link>
-        <p className="text-sm text-muted-foreground mb-2">By {nft.artist}</p>
-        <p className="text-xs text-foreground bg-secondary py-1 px-2 rounded-full inline-block">{nft.artStyle}</p>
+        <div className="flex items-center text-xs text-muted-foreground">
+          <UserCircle2 className="w-3.5 h-3.5 mr-1 flex-shrink-0" /> {/* Placeholder avatar */}
+          <span className="truncate" title={nft.artist}>{nft.artist}</span>
+        </div>
+        <p className="text-xs text-foreground bg-secondary py-0.5 px-1.5 rounded-full inline-block capitalize" title={nft.artStyle}>
+          {nft.artStyle}
+        </p>
       </CardContent>
-      <CardFooter className="p-4 flex justify-between items-center border-t">
-        <div className="text-lg font-semibold text-primary-foreground">
+      <CardFooter className="p-3 flex justify-between items-center border-t mt-auto"> {/* mt-auto to push footer down if content is short */}
+        <div className="text-lg font-semibold text-primary">
           {nft.price} ETH
         </div>
-        <Link href={`/nfts/${nft.id}`}>
-          <Button variant="outline" className="border-accent text-accent hover:bg-accent hover:text-accent-foreground">
-            View Details
+        <div className="flex items-center space-x-1"> {/* Reduced space for tighter icons */}
+          <Button variant="ghost" size="icon" className="w-8 h-8 hover:bg-accent/20" aria-label="Like NFT" title="Like">
+            <Heart className="w-4 h-4" />
           </Button>
-        </Link>
+          <Button variant="ghost" size="icon" className="w-8 h-8 hover:bg-accent/20" aria-label="Share NFT" title="Share">
+            <Share2 className="w-4 h-4" />
+          </Button>
+          <Link href={`/nfts/${nft.id}`} passHref>
+            <Button variant="ghost" size="icon" className="w-8 h-8 hover:bg-accent/20" aria-label="Bid on or Buy NFT" title="Bid/Buy">
+              <ShoppingBag className="w-4 h-4" />
+            </Button>
+          </Link>
+        </div>
       </CardFooter>
     </Card>
   );
 }
-
