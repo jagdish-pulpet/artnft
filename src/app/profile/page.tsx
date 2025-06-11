@@ -18,9 +18,9 @@ export default function ProfilePage() {
           <Image
             src="https://placehold.co/1200x400.png" 
             alt="User Cover Photo"
-            layout="fill"
-            objectFit="cover"
-            className="opacity-80"
+            fill
+            sizes="100vw"
+            className="object-cover opacity-80"
             data-ai-hint="abstract background"
           />
         </div>
@@ -30,8 +30,9 @@ export default function ProfilePage() {
               <Image
                 src="https://placehold.co/200x200.png"
                 alt="User Avatar"
-                layout="fill"
-                objectFit="cover"
+                fill
+                sizes="(max-width: 639px) 8rem, 9rem"
+                className="object-cover"
                 data-ai-hint="avatar person"
               />
             </div>

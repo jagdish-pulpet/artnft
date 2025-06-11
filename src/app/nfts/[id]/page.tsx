@@ -1,7 +1,8 @@
+
 'use client';
 
 import Image from 'next/image';
-import { getMockNftById, getMockNftsByCollectionId, mockNfts } from '@/lib/mock-data';
+import { getMockNftById, getMockNftsByCollectionId } from '@/lib/mock-data';
 import type { NFT, NFTOwner } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,13 +17,6 @@ interface NftDetailsPageProps {
   params: { id: string };
 }
 
-// generateStaticParams can remain if you intend to pre-render these pages
-// export async function generateStaticParams() {
-// return mockNfts.map((nft) => ({
-// id: nft.id,
-//   }));
-// }
-
 export default function NftDetailsPage({ params }: NftDetailsPageProps) {
   const { toast } = useToast();
   const [currentUrl, setCurrentUrl] = useState('');
@@ -30,7 +24,9 @@ export default function NftDetailsPage({ params }: NftDetailsPageProps) {
   const [relatedNfts, setRelatedNfts] = useState<NFT[]>([]);
 
   useEffect(() => {
-    setCurrentUrl(window.location.href);
+    if (typeof window !== 'undefined') {
+      setCurrentUrl(window.location.href);
+    }
     const foundNft = getMockNftById(params.id);
     setNft(foundNft);
 
@@ -74,9 +70,9 @@ export default function NftDetailsPage({ params }: NftDetailsPageProps) {
             <Image
               src={nft.imageUrl}
               alt={nft.title}
-              layout="fill"
-              objectFit="contain"
-              className="bg-muted p-4"
+              fill
+              sizes="(max-width: 767px) 100vw, 50vw"
+              className="object-contain bg-muted p-4"
               data-ai-hint={`${nft.artStyle?.split(' ')[0] ?? 'nft'} art`}
             />
           </div>

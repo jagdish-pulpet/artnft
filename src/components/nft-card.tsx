@@ -13,15 +13,15 @@ interface NftCardProps {
 export default function NftCard({ nft }: NftCardProps) {
   return (
     <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg flex flex-col h-full">
-      <Link href={`/nfts/${nft.id}`} className="block">
+      <Link href={`/nfts/${nft.id}`} className="block group">
         <CardHeader className="p-0">
           <div className="aspect-square relative w-full">
             <Image
               src={nft.imageUrl}
               alt={nft.title}
-              layout="fill"
-              objectFit="cover"
-              className="transition-transform duration-300 group-hover:scale-105"
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
               data-ai-hint={`${nft.artStyle.split(' ')[0]} art`}
             />
           </div>
