@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -90,4 +91,48 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+}
+
+@keyframes rainbow-swirl-animation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.bg-rainbow-swirl {
+  background: linear-gradient(135deg, 
+    hsl(var(--primary)), 
+    hsl(var(--accent)), 
+    hsl(var(--primary) / 0.8), 
+    hsl(var(--accent) / 0.8), 
+    hsl(var(--primary))
+  );
+  background-size: 300% 300%; /* Adjusted for a smoother, less busy swirl */
+  animation: rainbow-swirl-animation 20s ease infinite;
+}
+
+@keyframes ripple-animation {
+  0% {
+    transform: scale(0.1); /* Start smaller for a more subtle appearance */
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(5); /* Adjust scale for desired ripple size */
+    opacity: 0;
+  }
+}
+
+.ripple {
+  position: absolute;
+  left: 50%; /* Center ripple horizontally */
+  top: 50%;  /* Center ripple vertically */
+  transform: translate(-50%, -50%); /* Ensure actual center */
+  border-radius: 50%;
+  background-color: hsla(0, 0%, 100%, 0.2); /* Ripple color with HSL for theme consistency */
+  animation: ripple-animation 3s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smoother easing */
+}
+
+/* Dark mode ripple */
+.dark .ripple {
+  background-color: hsla(var(--accent-foreground), 0.1);
 }

@@ -1,67 +1,141 @@
 
 'use client';
 
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Gem, ArrowRight, UserPlus } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import ArtNFTLogo from '@/components/ArtNFTLogo';
+import { Loader2, Sparkles } from 'lucide-react';
+import { Progress } from '@/components/ui/progress'; 
 
-export default function LandingPage() {
-  const [showContent, setShowContent] = useState(false);
+const SPLASH_DURATION = 3000; 
+const PROGRESS_UPDATE_INTERVAL = 100; 
+
+export default function SplashScreen() {
+  const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
+  const [isLoadingComplete, setIsLoadingComplete] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [loadingMessage, setLoadingMessage] = useState("Initializing Artiverse...");
 
   useEffect(() => {
-    // Simulate a loading animation or delay for content to appear
-    const timer = setTimeout(() => {
-      setShowContent(true);
-    }, 500); // Adjust delay as needed
-    return () => clearTimeout(timer);
+    setIsMounted(true);
   }, []);
 
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-background to-primary/20 p-4 text-center overflow-hidden">
-      <div className="absolute inset-0 z-0">
-        {/* Enhanced: Activated subtle animated particle background */}
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-accent/40 via-accent/20 to-transparent animate-pulse"></div>
-      </div>
-      
-      <div className={`z-10 flex flex-col items-center transition-opacity duration-1000 ease-in-out ${showContent ? 'opacity-100' : 'opacity-0'}`}>
-        <Gem className="w-20 h-20 sm:w-28 sm:h-28 text-accent mb-6 transform transition-all duration-500 ease-out group-hover:scale-110 animate-float" />
-        
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-headline font-bold text-primary-foreground mb-3">
-          ArtNFT
-        </h1>
-        <p className="text-lg sm:text-xl text-foreground/80 mb-10 max-w-md sm:max-w-xl">
-          Discover, collect, and create extraordinary NFTs. Your gateway to the future of digital ownership.
-        </p>
+  useEffect(() => {
+    if (!isMounted) return;
 
-        <div className="space-y-4 sm:space-y-0 sm:flex sm:flex-row sm:gap-6 w-full max-w-xs sm:max-w-md">
-          <Link href="/home" className="w-full sm:w-auto">
-            <Button size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90 shadow-lg transition-transform hover:scale-105 focus:ring-2 focus:ring-accent focus:ring-offset-2">
-              Explore Marketplace <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
-          <Link href="/profile" className="w-full sm:w-auto">
-            <Button variant="outline" size="lg" className="w-full border-foreground/30 text-foreground hover:bg-foreground/5 shadow-lg transition-transform hover:scale-105 focus:ring-2 focus:ring-foreground/50 focus:ring-offset-2">
-              Sign Up / Login <UserPlus className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
+    let progressTimer: NodeJS.Timeout | undefined;
+    let messageTimer: NodeJS.Timeout | undefined;
+    let navigationTimer: NodeJS.Timeout | undefined;
+
+    if (!isLoadingComplete) {
+      progressTimer = setInterval(() => {
+        setProgress(oldProgress => {
+          if (oldProgress >= 100) {
+            if (progressTimer) clearInterval(progressTimer);
+            return 100;
+          }
+          const diff = Math.random() * 10;
+          return Math.min(oldProgress + diff, 100);
+        });
+      }, PROGRESS_UPDATE_INTERVAL);
+
+      const messages = [
+          "Polishing Pixels...",
+          "Connecting to the Metaverse...",
+          "Unveiling Masterpieces...",
+          "Sparking Creativity...",
+          "Almost There!"
+        ];
+      let messageIndex = 0;
+      setLoadingMessage(messages[messageIndex]); 
+      messageTimer = setInterval(() => {
+        messageIndex = (messageIndex + 1) % messages.length;
+        setLoadingMessage(messages[messageIndex]);
+      }, SPLASH_DURATION / messages.length);
+
+      navigationTimer = setTimeout(() => {
+        if (progressTimer) clearInterval(progressTimer);
+        if (messageTimer) clearInterval(messageTimer);
+        setProgress(100);
+        setLoadingMessage("Welcome!");
+        setIsLoadingComplete(true); 
+      }, SPLASH_DURATION);
+    }
+
+    return () => {
+      if (progressTimer) clearInterval(progressTimer);
+      if (messageTimer) clearInterval(messageTimer);
+      if (navigationTimer) clearTimeout(navigationTimer);
+    };
+  }, [isMounted, isLoadingComplete]);
+
+  useEffect(() => {
+    if (isLoadingComplete && isMounted) {
+      // Add a small delay before navigating to ensure "Welcome!" message is visible
+      const navTimeout = setTimeout(() => {
+        router.push('/welcome');
+      }, 500);
+      return () => clearTimeout(navTimeout);
+    }
+  }, [isLoadingComplete, isMounted, router]);
+
+  if (!isMounted) {
+    // Minimal loader for pre-mount phase
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-rainbow-swirl text-white p-4">
+        <ArtNFTLogo size="large" className="text-white" />
+        <p className="mt-4 text-xl font-medium">Loading ArtNFT...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-rainbow-swirl text-white p-4 overflow-hidden relative">
+      {/* Ripple Container */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="relative w-1 h-1"> {/* Center point for ripples */}
+          <div className="ripple" style={{ width: '200px', height: '200px', animationDelay: '0s' }}></div>
+          <div className="ripple" style={{ width: '200px', height: '200px', animationDelay: '1s' }}></div>
+          <div className="ripple" style={{ width: '200px', height: '200px', animationDelay: '2s' }}></div>
         </div>
       </div>
 
+      <div className="text-center space-y-8 relative z-10"> {/* Ensure content is above ripples */}
+        <div className="absolute -top-16 -left-16 opacity-30">
+          <Sparkles className="h-32 w-32 text-white/70 animate-pulse" />
+        </div>
+        <div className="absolute -bottom-16 -right-16 opacity-30">
+          <Sparkles className="h-32 w-32 text-white/70 animate-pulse delay-500" />
+        </div>
+        
+        <div className="relative z-10">
+          <ArtNFTLogo size="large" className="text-white animate-pulse-slow mb-4" />
+          <p className="text-xl font-light tracking-wider">
+            Discover, Create, and Trade Digital Art.
+          </p>
+        </div>
+
+        <div className="w-full max-w-xs md:max-w-sm space-y-3 relative z-10">
+          {!isLoadingComplete ? (
+            <>
+              <Progress value={progress} className="w-full h-2 bg-white/20 [&>div]:bg-gradient-to-r [&>div]:from-white/70 [&>div]:to-white transition-all duration-150 ease-linear" />
+              <p className="text-sm text-white/80 min-h-[20px]">{loadingMessage}</p>
+            </>
+          ) : (
+            <Loader2 className="h-8 w-8 text-white animate-spin mx-auto" />
+          )}
+        </div>
+      </div>
       <style jsx global>{`
-        @keyframes float {
-          0% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-          100% { transform: translateY(0px); }
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 0.8; transform: scale(0.98); }
+          50% { opacity: 1; transform: scale(1.02); }
         }
-        .animate-float {
-          animation: float 3s ease-in-out infinite;
+        .animate-pulse-slow {
+          animation: pulse-slow 3s infinite ease-in-out;
         }
       `}</style>
-
-      <footer className={`absolute bottom-6 sm:bottom-8 text-center w-full z-10 transition-opacity duration-1000 ease-in-out ${showContent ? 'opacity-100' : 'opacity-0'}`}>
-        <p className="text-xs sm:text-sm text-muted-foreground">&copy; {new Date().getFullYear()} ArtNFT. All rights reserved.</p>
-      </footer>
     </div>
   );
 }
