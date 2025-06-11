@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Mail } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/lib/supabase/client';
+import type { AuthError } from '@supabase/supabase-js';
 
 export default function LogInPage() {
   const router = useRouter();
@@ -49,7 +50,16 @@ export default function LogInPage() {
     setIsLoading(false);
 
     if (error) {
-      toast({ variant: 'destructive', title: 'Login Failed', description: error.message });
+      if (error.message.toLowerCase().includes('email not confirmed')) {
+        toast({ 
+            variant: 'destructive', 
+            title: 'Email Not Confirmed', 
+            description: 'Please check your email inbox (and spam folder) for a confirmation link. Click the link to activate your account before logging in.',
+            duration: 10000, // Longer duration for this important message
+        });
+      } else {
+        toast({ variant: 'destructive', title: 'Login Failed', description: error.message });
+      }
     } else if (data.session && data.user) {
       // Supabase client handles session storage automatically.
       if (typeof window !== 'undefined') {
@@ -58,7 +68,9 @@ export default function LogInPage() {
       toast({ title: 'Login Successful', description: 'Welcome back!' });
       router.push('/home');
     } else {
-      toast({ variant: 'destructive', title: 'Login Failed', description: 'Invalid email or password, or another issue occurred.' });
+      // This case might occur if there's no session but also no specific error (unlikely with signInWithPassword)
+      // or if the user object isn't returned for some reason.
+      toast({ variant: 'destructive', title: 'Login Failed', description: 'Invalid email or password, or an unexpected issue occurred.' });
     }
   };
   

@@ -48,12 +48,31 @@ export default function SignUpPage() {
       toast({ variant: 'destructive', title: 'Sign Up Failed', description: error.message });
     } else {
       // data.user contains the user object, data.session is null if email confirmation is required
-      if (data.session) { // User is signed up and logged in (email confirmation might be off)
+      if (data.session) { // User is signed up and logged in (email confirmation might be off or auto-confirmed)
         toast({ title: 'Sign Up Successful!', description: 'Welcome! You are now logged in.' });
+        // Create a profile entry if it doesn't exist
+        if (data.user) {
+            const { error: profileError } = await supabase
+            .from('profiles')
+            .upsert({ 
+                id: data.user.id, 
+                username: data.user.email?.split('@')[0] || `user-${data.user.id.substring(0,6)}`,
+                updated_at: new Date().toISOString(),
+            }, { onConflict: 'id' });
+            if (profileError) console.warn("Could not create initial profile during signup:", profileError.message);
+        }
         router.push('/home');
       } else if (data.user) { // Email confirmation likely required
-        toast({ title: 'Sign Up Successful!', description: 'Please check your email to confirm your account before logging in.' });
-        router.push('/login');
+        toast({ 
+            title: 'Sign Up Successful! Please Confirm Your Email', 
+            description: 'A confirmation link has been sent to your email address. Please verify your email to log in.',
+            duration: 7000, // Longer duration for this important message
+        });
+        // Profile will be created upon first successful login after confirmation, or you can create a basic one here.
+        // For consistency, it's often better to handle profile creation upon first real login or via a separate profile setup step.
+        // However, if basic profile info is needed immediately (even before confirmation for some backend logic), you could add:
+        // await supabase.from('profiles').upsert({ id: data.user.id, username: data.user.email?.split('@')[0] });
+        router.push('/login'); // Redirect to login, user will confirm email then log in
       } else {
         // Fallback, should not happen if no error and no user/session
         toast({ variant: 'destructive', title: 'Sign Up Issue', description: 'An unexpected issue occurred. Please try again.' });
