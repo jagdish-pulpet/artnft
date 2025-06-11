@@ -63,8 +63,8 @@ export default function Header() {
     <>
       <header className="bg-card border-b border-border shadow-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-3 sm:py-4 flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-2 text-xl font-headline font-bold text-primary-foreground hover:text-accent-foreground transition-colors">
-            <Gem className="w-7 h-7 text-accent" />
+          <Link href="/" className="group flex items-center gap-2 text-xl font-headline font-bold text-primary hover:text-primary/80 transition-colors">
+            <Gem className="w-7 h-7 text-accent group-hover:text-accent/80 transition-colors" />
             ArtNFT
           </Link>
           <nav className="hidden md:flex items-center gap-1">
