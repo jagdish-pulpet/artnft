@@ -13,8 +13,8 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Label } from '@/components/ui/label';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { supabase } from '@/lib/supabase/client'; // Import Supabase client
-import { Skeleton } from '@/components/ui/skeleton'; // For loading states
+import { supabase } from '@/lib/supabase/client';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface DBNFT {
   id: string;
@@ -22,9 +22,9 @@ interface DBNFT {
   image_url: string;
   price: number | null;
   artist_name: string | null;
-  category: string; // Assuming 'digital-art', 'photography' etc.
-  status: string; // Assuming 'listed', 'on_auction' etc.
-  created_at: string; // ISO string
+  category: string;
+  status: string;
+  created_at: string;
 }
 
 const MAX_RECENT_SEARCHES = 5;
@@ -50,7 +50,6 @@ const LoadingNFTSkeleton = ({ count = INITIAL_ITEMS_TO_DISPLAY, viewMode = 'grid
       </div>
     );
   }
-  // List view skeleton
   return (
     <div className="space-y-4">
       {Array(count).fill(0).map((_,i) => (
@@ -77,11 +76,11 @@ export default function SearchPage() {
   const searchParams = useSearchParams();
 
   const [searchTermFromUrl, setSearchTermFromUrl] = useState('');
-  const [allFetchedNfts, setAllFetchedNfts] = useState<DBNFT[]>([]); // Store all results from a given filter set
-  const [displayedNfts, setDisplayedNfts] = useState<NFTCardProps[]>([]); // For UI rendering
+  const [allFetchedNfts, setAllFetchedNfts] = useState<DBNFT[]>([]);
+  const [displayedNfts, setDisplayedNfts] = useState<NFTCardProps[]>([]);
   const [displayedCount, setDisplayedCount] = useState<number>(INITIAL_ITEMS_TO_DISPLAY);
 
-  const [isLoadingResults, setIsLoadingResults] = useState(true); // Start true for initial load
+  const [isLoadingResults, setIsLoadingResults] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
@@ -120,9 +119,9 @@ export default function SearchPage() {
       id: nft.id,
       imageUrl: nft.image_url || 'https://placehold.co/400x400.png',
       title: nft.title,
-      price: nft.price ? `${nft.price} ETH` : 'N/A',
-      artistName: nft.artist_name || 'Unknown Artist',
-      dataAiHint: 'nft image' // Could be improved with category or tags later
+      price: nft.price ? `${nft.price} ETH` : 'N/A', // Use actual price
+      artistName: nft.artist_name || 'Unknown Artist', // Use actual artist name
+      dataAiHint: 'nft image'
     }));
   };
 
@@ -130,13 +129,13 @@ export default function SearchPage() {
     setIsLoadingResults(true);
     setError(null);
     try {
-      let supabaseQuery = supabase.from('nfts').select('*', { count: 'exact' });
+      let supabaseQuery = supabase.from('nfts').select('*, category_id(name, slug)', { count: 'exact' });
 
       if (query) {
         supabaseQuery = supabaseQuery.or(`title.ilike.%${query}%,description.ilike.%${query}%,artist_name.ilike.%${query}%`);
       }
       if (category !== 'all-categories') {
-        supabaseQuery = supabaseQuery.eq('category', category);
+        supabaseQuery = supabaseQuery.eq('category', category); // Assuming 'category' is a TEXT field in 'nfts' table
       }
       if (priceRange !== 'all-prices') {
         if (priceRange === '0-0.5') supabaseQuery = supabaseQuery.lte('price', 0.5);
@@ -146,16 +145,12 @@ export default function SearchPage() {
       if (statusFilterValue !== 'all-status') {
         supabaseQuery = supabaseQuery.eq('status', statusFilterValue);
       } else {
-        // Default to showing only listed or on_auction if no specific status filter
          supabaseQuery = supabaseQuery.in('status', ['listed', 'on_auction']);
       }
       
       const [sortColumn, sortOrder] = sort.split('-');
       supabaseQuery = supabaseQuery.order(sortColumn, { ascending: sortOrder === 'asc' });
       
-      // For initial load or filter change, fetch all matching IDs/count then first page.
-      // For "load more", we'd use range. For simplicity now, fetching all matching and slicing client-side.
-      // A more scalable solution would use range() for pagination.
       const { data, error: dbError, count } = await supabaseQuery;
 
       if (dbError) throw dbError;
@@ -183,15 +178,14 @@ export default function SearchPage() {
   const qFromUrl = searchParams.get('q') || '';
 
   useEffect(() => {
-    setSearchTermFromUrl(qFromUrl); // Update local state reflecting URL
-    // Fetch data whenever relevant search params or filters change
+    setSearchTermFromUrl(qFromUrl);
     fetchNftsFromSupabase(qFromUrl, selectedCategory, selectedPriceRange, selectedStatus, selectedSortOption);
   }, [qFromUrl, selectedCategory, selectedPriceRange, selectedStatus, selectedSortOption, fetchNftsFromSupabase]);
 
 
   useEffect(() => {
     let count = 0;
-    if (qFromUrl) count++; // Count search term as a filter
+    if (qFromUrl) count++;
     if (selectedCategory !== 'all-categories') count++;
     if (selectedPriceRange !== 'all-prices') count++;
     if (selectedStatus !== 'all-status') count++;
@@ -204,7 +198,7 @@ export default function SearchPage() {
     setSelectedPriceRange('all-prices');
     setSelectedStatus('all-status');
     setSelectedSortOption('created_at-desc'); 
-    if (qFromUrl) { // If there's a search term, clear it from URL too
+    if (qFromUrl) {
         router.push('/search');
     }
   };
@@ -414,7 +408,6 @@ export default function SearchPage() {
                                 </p>
                             )}
                              <p className="text-sm text-muted-foreground truncate">
-                                {/* Assuming DBNFT has category string */}
                                 <span className="font-medium">Category:</span> {(allFetchedNfts.find(dbnft => dbnft.id === nft.id)?.category || 'N/A').replace('-', ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                             </p>
                         </div>
@@ -447,4 +440,3 @@ export default function SearchPage() {
     </AppLayout>
   );
 }
-    

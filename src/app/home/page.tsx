@@ -86,15 +86,15 @@ const communityHighlights: CommunityHighlightItem[] = [
 ];
 
 interface ArtistSpotlightData {
-  id: string; // This would be the profile ID (user UUID)
-  name: string; // username from profiles table
+  id: string;
+  name: string;
   bio: string;
-  imageUrl: string; // avatar_url from profiles table
-  profileUrl: string; // e.g., /profile/[id] or /artist/[username]
+  imageUrl: string;
+  profileUrl: string;
   dataAiHint?: string;
 }
 
-const initialArtistsSpotlight: ArtistSpotlightData[] = [ // This should also be fetched
+const initialArtistsSpotlight: ArtistSpotlightData[] = [
   { id: 'artist1', name: 'PixelPioneer', bio: 'Crafting digital worlds, one pixel at a time. Exploring the vast expanse of creativity in the digital realm.', imageUrl: 'https://placehold.co/100x100.png', profileUrl: '/artist/pixelpioneer', dataAiHint: 'artist avatar' },
   { id: 'artist2', name: 'AI Alchemist', bio: 'Fusing art and artificial intelligence to create new forms of expression.', imageUrl: 'https://placehold.co/100x100.png', profileUrl: '/artist/aialchemist', dataAiHint: 'robot artist' },
   { id: 'artist3', name: 'AbstractDreamer', bio: 'Exploring the subconscious through vibrant colors and surreal forms.', imageUrl: 'https://placehold.co/100x100.png', profileUrl: '/artist/abstractdreamer', dataAiHint: 'abstract portrait' },
@@ -115,11 +115,11 @@ export default function HomePage() {
   const [isLoadingLatest, setIsLoadingLatest] = useState(true);
   const [errorLatest, setErrorLatest] = useState<string | null>(null);
 
-  const [popularCollections, setPopularCollections] = useState<NFTCardProps[]>([]); // Placeholder, can fetch similarly
+  const [popularCollections, setPopularCollections] = useState<NFTCardProps[]>([]);
   const [isLoadingPopular, setIsLoadingPopular] = useState(true);
   const [errorPopular, setErrorPopular] = useState<string | null>(null);
   
-  const [nftsFromFollowedArtists, setNftsFromFollowedArtists] = useState<NFTCardProps[]>([]); // Placeholder
+  const [nftsFromFollowedArtists, setNftsFromFollowedArtists] = useState<NFTCardProps[]>([]);
 
   const [followedArtists, setFollowedArtists] = useState<Set<string>>(new Set());
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
@@ -137,7 +137,7 @@ export default function HomePage() {
       if (error && error.code !== 'PGRST116') console.error("Error fetching profile username:", error);
       setProfileUsername(profile?.username || user.email?.split('@')[0] || 'User');
     } else {
-      setProfileUsername('Guest'); // Or handle guest state more explicitly
+      setProfileUsername('Guest');
     }
   }, []);
 
@@ -147,7 +147,7 @@ export default function HomePage() {
     try {
       const { data, error } = await supabase
         .from('nfts')
-        .select('id, title, image_url, status') // Removed 'price' and 'artist_name'
+        .select('id, title, image_url, price, artist_name, status') 
         .eq('status', 'listed')
         .order('created_at', { ascending: false })
         .limit(6);
@@ -157,10 +157,8 @@ export default function HomePage() {
         id: nft.id,
         imageUrl: nft.image_url || 'https://placehold.co/400x400.png',
         title: nft.title,
-        price: 'Price N/A', // Placeholder as price column is missing or causes error
-        // TODO: Add a 'price' column (NUMERIC) to your 'nfts' table in Supabase.
-        artistName: 'Unknown Artist', // Placeholder as artist_name column might be missing
-        // TODO: Add an 'artist_name' column (TEXT) to your 'nfts' table in Supabase or join with profiles.
+        price: nft.price ? `${nft.price} ETH` : 'N/A', 
+        artistName: nft.artist_name || 'Unknown Artist',
         dataAiHint: 'nft image'
       }));
       setLatestActivityNFTs(formattedNfts);
@@ -177,7 +175,7 @@ export default function HomePage() {
           detailedErrorMessage = "Error fetching latest NFTs: Non-serializable error object caught.";
         }
       }
-      console.error(detailedErrorMessage, err); // Log the constructed message and the original error object
+      console.error(detailedErrorMessage, err);
       setErrorLatest( (err && err.message) ? err.message : "Could not fetch latest NFTs.");
     } finally {
       setIsLoadingLatest(false);
@@ -190,9 +188,9 @@ export default function HomePage() {
     try {
       const { data, error } = await supabase
         .from('nfts')
-        .select('id, title, image_url, status') // Removed 'price' and 'artist_name'
-        .eq('status', 'listed')
-        .order('created_at', { ascending: true }) 
+        .select('id, title, image_url, price, artist_name, status')
+        .eq('status', 'listed') 
+        .order('created_at', { ascending: true }) // Older items, assuming popularity means they've been around
         .limit(3);
 
       if (error) throw error;
@@ -200,10 +198,8 @@ export default function HomePage() {
         id: nft.id,
         imageUrl: nft.image_url || 'https://placehold.co/400x400.png',
         title: nft.title,
-        price: 'Price N/A', // Placeholder
-        // TODO: Add a 'price' column (NUMERIC) to your 'nfts' table.
-        artistName: 'Unknown Artist', // Placeholder
-        // TODO: Add an 'artist_name' column (TEXT) to your 'nfts' table or join.
+        price: nft.price ? `${nft.price} ETH` : 'N/A',
+        artistName: nft.artist_name || 'Unknown Artist',
         dataAiHint: 'nft image'
       }));
       setPopularCollections(formattedNfts);
@@ -509,6 +505,3 @@ export default function HomePage() {
     </AppLayout>
   );
 }
-    
-
-    

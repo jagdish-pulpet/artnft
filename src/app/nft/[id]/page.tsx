@@ -15,7 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { Skeleton } from '@/components/ui/skeleton';
-import AppLayout from '@/components/AppLayout'; // Assuming AppLayout is desired here
+import AppLayout from '@/components/AppLayout';
 
 interface NFTData {
   id: string;
@@ -26,8 +26,8 @@ interface NFTData {
   status: string;
   creator_id: string;
   created_at: string;
-  artist_name: string | null; // Denormalized or joined
-  // Auction specific fields if applicable - assuming not for this fetch, but for display logic
+  artist_name: string | null; 
+  category: string | null; // Added category for fetching related NFTs
   auction_end_time?: string | null; 
   current_highest_bid?: number | null;
   starting_bid?: number | null;
@@ -39,13 +39,12 @@ interface ProfileData {
 }
 
 interface Bid {
-  id: string; // bid id
-  bidder_username: string; // username from profiles
+  id: string;
+  bidder_username: string;
   amount: number;
   created_at: string;
 }
 
-// Mock data for bids, as bid table interaction is not defined yet
 const MOCK_BIDS: Bid[] = [
     { id: 'b1', bidder_username: 'CollectorX', amount: 2.6, created_at: new Date(Date.now() - 10 * 60000).toISOString() },
     { id: 'b2', bidder_username: 'ArtFan', amount: 2.5, created_at: new Date(Date.now() - 60 * 60000).toISOString() },
@@ -141,10 +140,9 @@ export default function NFTDetailsPage() {
     setError(null);
 
     try {
-      // Fetch main NFT data
       const { data: mainNft, error: nftError } = await supabase
         .from('nfts')
-        .select('*') // Consider selecting specific columns
+        .select('*, category_id(name, slug)') // Fetching category info if linked
         .eq('id', nftId)
         .single();
 
@@ -152,7 +150,6 @@ export default function NFTDetailsPage() {
       if (!mainNft) throw new Error("NFT not found.");
       setNftData(mainNft as NFTData);
 
-      // Fetch artist (creator) profile
       if (mainNft.creator_id) {
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
@@ -162,28 +159,32 @@ export default function NFTDetailsPage() {
         if (profileError && profileError.code !== 'PGRST116') console.error("Error fetching artist profile:", profileError);
         setArtistProfile(profile as ProfileData | null);
       }
-
-      // Fetch related NFTs (e.g., by same category, excluding current one)
-      const { data: related, error: relatedError } = await supabase
-        .from('nfts')
-        .select('id, title, image_url, price, artist_name')
-        .eq('category', mainNft.category)
-        .neq('id', nftId)
-        .eq('status', 'listed')
-        .limit(4);
       
-      if (relatedError) console.error("Error fetching related NFTs:", relatedError);
-      if (related) {
-        const formattedRelated: NFTCardProps[] = related.map(r => ({
-          id: r.id,
-          imageUrl: r.image_url || 'https://placehold.co/400x400.png',
-          title: r.title,
-          price: r.price ? `${r.price} ETH` : 'N/A',
-          artistName: r.artist_name || 'Unknown Artist',
-          dataAiHint: 'nft image related'
-        }));
-        setRelatedNfts(formattedRelated);
+      const nftCategory = (mainNft.category as any)?.slug || mainNft.category; // Use slug if category is an object, else use the text field
+
+      if (nftCategory) {
+        const { data: related, error: relatedError } = await supabase
+            .from('nfts')
+            .select('id, title, image_url, price, artist_name')
+            .eq('category', nftCategory) // Assuming category is a direct text field for simplicity here
+            .neq('id', nftId)
+            .eq('status', 'listed')
+            .limit(4);
+        
+        if (relatedError) console.error("Error fetching related NFTs:", relatedError);
+        if (related) {
+            const formattedRelated: NFTCardProps[] = related.map(r => ({
+            id: r.id,
+            imageUrl: r.image_url || 'https://placehold.co/400x400.png',
+            title: r.title,
+            price: r.price ? `${r.price} ETH` : 'N/A',
+            artistName: r.artist_name || 'Unknown Artist',
+            dataAiHint: 'nft image related'
+            }));
+            setRelatedNfts(formattedRelated);
+        }
       }
+
 
     } catch (err: any) {
       console.error("Error fetching NFT details:", err);
@@ -199,7 +200,7 @@ export default function NFTDetailsPage() {
 
   useEffect(() => {
     if (!nftData || nftData.status !== 'on_auction' || !nftData.auction_end_time) {
-        setTimeLeft(''); // Clear or set to default if not an auction or no end time
+        setTimeLeft('');
         return;
     }
     const calculateTimeLeft = () => {
@@ -223,7 +224,6 @@ export default function NFTDetailsPage() {
       });
       return;
     }
-    // TODO: Implement actual bid placement logic with Supabase
     toast({
       title: 'Bid Placed (Simulated)!',
       description: `You successfully bid ${bidAmount} ETH for ${nftData?.title}.`,
@@ -232,7 +232,6 @@ export default function NFTDetailsPage() {
   };
 
   const handleBuyNow = () => {
-    // TODO: Implement actual buy now logic
     toast({
       title: 'Purchase Initiated (Simulated)!',
       description: `Proceeding to buy ${nftData?.title} for ${nftData?.price} ETH.`,
@@ -255,7 +254,6 @@ export default function NFTDetailsPage() {
   if (!nftData) return <ErrorState message="NFT data could not be loaded or NFT does not exist." />;
 
   const isAuction = nftData.status === 'on_auction';
-  // Use placeholder for artist name if profile not loaded or artist_name not on nftData
   const displayArtistName = artistProfile?.username || nftData.artist_name || 'Unknown Artist';
   const artistAvatarUrl = artistProfile?.avatar_url || 'https://placehold.co/100x100.png';
 
@@ -288,7 +286,7 @@ export default function NFTDetailsPage() {
               <CardHeader className="pb-4">
                 <CardTitle className="text-3xl md:text-4xl font-bold font-headline">{nftData.title}</CardTitle>
                 <div className="flex items-center space-x-3 mt-3">
-                  <Link href={`/profile/${nftData.creator_id}`} passHref> {/* Adjust link as per your profile routing */}
+                  <Link href={`/profile/${nftData.creator_id}`} passHref>
                     <Image
                       src={artistAvatarUrl}
                       alt={displayArtistName}
@@ -355,7 +353,7 @@ export default function NFTDetailsPage() {
 
 
                 <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                  {nftData.price && nftData.status === 'listed' && (
+                  {nftData.price && (nftData.status === 'listed' || nftData.status === 'on_auction') && (
                     <Button size="lg" className="flex-grow bg-accent hover:bg-accent/90 text-accent-foreground" onClick={handleBuyNow}>
                       Buy Now for {nftData.price} ETH
                     </Button>
@@ -422,4 +420,3 @@ export default function NFTDetailsPage() {
     </AppLayout>
   );
 }
-    
