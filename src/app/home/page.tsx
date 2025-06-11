@@ -97,7 +97,7 @@ interface CommunityHighlightItem {
 }
 
 const communityHighlights: CommunityHighlightItem[] = [
-  { id: 'ch1', title: 'New Artist Spotlight: @PixelPainter', description: 'Discover stunning pixel art creations from a rising star.', imageUrl: 'https://placehold.co/600x300.png?text=Pixel+Art+Showcase', dataAiHint: 'pixel artist showcase', href: '/artist/pixelpainter', icon: Users },
+  { id: 'ch1', title: 'New Artist Spotlight: PixelPainter', description: 'Discover stunning pixel art creations from a rising star.', imageUrl: 'https://placehold.co/600x300.png?text=Pixel+Art+Showcase', dataAiHint: 'pixel artist showcase', href: '/artist/pixelpainter', icon: Users },
   { id: 'ch2', title: 'Upcoming Auction: "Genesis Block"', description: 'A rare collection from the early days of NFTs. Don\'t miss out!', imageUrl: 'https://placehold.co/600x300.png?text=Auction+Preview', dataAiHint: 'nft auction', href: '/auction/genesis-block', icon: Award },
   { id: 'ch3', title: 'ArtNFT Platform Update v1.2', description: 'New features, improved performance, and enhanced user experience are here!', imageUrl: 'https://placehold.co/600x300.png?text=Platform+Update', dataAiHint: 'tech update', href: '/blog/update-v1-2', icon: Newspaper },
 ];
@@ -114,10 +114,10 @@ interface ArtistSpotlightData {
 }
 
 const initialArtistsSpotlight: ArtistSpotlightData[] = [
-  { id: 'artist1', name: 'PixelPioneer', bio: 'Crafting digital worlds, pixel by pixel. Exploring retro aesthetics and modern narratives.', imageUrl: 'https://placehold.co/100x100.png?text=PP', coverImageUrl: 'https://placehold.co/400x150.png?text=PixelArt+Cover', profileUrl: '/artist/pixelpioneer', dataAiHintAvatar: 'pixel artist avatar', dataAiHintCover: 'pixel art banner' },
-  { id: 'artist2', name: 'AI Alchemist', bio: 'Fusing art & AI to create new forms of expression. Delving into neural networks & generative beauty.', imageUrl: 'https://placehold.co/100x100.png?text=AI', coverImageUrl: 'https://placehold.co/400x150.png?text=AI+Art+Cover', profileUrl: '/artist/aialchemist', dataAiHintAvatar: 'robot artist headshot', dataAiHintCover: 'ai generated art' },
-  { id: 'artist3', name: 'AbstractDreamer', bio: 'Exploring the subconscious through vibrant colors and surreal forms that challenge perception.', imageUrl: 'https://placehold.co/100x100.png?text=AD', coverImageUrl: 'https://placehold.co/400x150.png?text=Abstract+Cover', profileUrl: '/artist/abstractdreamer', dataAiHintAvatar: 'abstract portrait person', dataAiHintCover: 'colorful abstract paint' },
-  { id: 'artist4', name: 'SynthwaveSurfer', bio: 'Riding retro-futuristic sound waves with neon-drenched visuals and nostalgic vibes.', imageUrl: 'https://placehold.co/100x100.png?text=SS', coverImageUrl: 'https://placehold.co/400x150.png?text=Synthwave+Cover', profileUrl: '/artist/synthwavesurfer', dataAiHintAvatar: 'retro musician shades', dataAiHintCover: 'neon city' },
+  { id: 'artist1', name: 'PixelPainter', bio: 'Creating vibrant worlds one pixel at a time. Lover of retro and modern digital art.', imageUrl: 'https://placehold.co/100x100.png?text=PP', coverImageUrl: 'https://placehold.co/400x150.png?text=PixelArt+Cover', profileUrl: '/artist/pixelpainter', dataAiHintAvatar: 'pixel artist avatar', dataAiHintCover: 'pixel art banner' },
+  { id: 'artist2', name: 'NFTCollectorPro', bio: 'Seasoned collector focusing on generative art and rare collectibles.', imageUrl: 'https://placehold.co/100x100.png?text=NP', coverImageUrl: 'https://placehold.co/400x150.png?text=Collector+Banner', profileUrl: '/artist/nftcollectorpro', dataAiHintAvatar: 'robot artist headshot', dataAiHintCover: 'ai generated art' },
+  { id: 'artist3', name: 'DigitalExplorer', bio: 'Exploring the vast universe of digital art and NFTs. Always curious.', imageUrl: 'https://placehold.co/100x100.png?text=DE', coverImageUrl: 'https://placehold.co/400x150.png?text=Explorer+Banner', profileUrl: '/artist/digitalexplorer', dataAiHintAvatar: 'abstract portrait person', dataAiHintCover: 'colorful abstract paint' },
+  { id: 'artist4', name: 'MetaverseMaven', bio: 'Virtual world enthusiast and digital asset trader.', imageUrl: 'https://placehold.co/100x100.png?text=MM', coverImageUrl: 'https://placehold.co/400x150.png?text=Metaverse+Cover', profileUrl: '/artist/metaversemaven', dataAiHintAvatar: 'retro musician shades', dataAiHintCover: 'neon city' },
 ];
 
 
@@ -139,9 +139,7 @@ export default function HomePage() {
   const [errorPopular, setErrorPopular] = useState<string | null>(null);
   
   const [nftsFromFollowedArtists, setNftsFromFollowedArtists] = useState<NFTCardProps[]>([]);
-  // For now, we will use mock artists for the "New From Artists You Follow" section.
-  // A full implementation would require fetching followed artists and their NFTs.
-  const [isLoadingFollowed, setIsLoadingFollowed] = useState(false); // Set to true if fetching
+  const [isLoadingFollowed, setIsLoadingFollowed] = useState(false); 
   const [errorFollowed, setErrorFollowed] = useState<string | null>(null);
 
 
@@ -199,7 +197,7 @@ export default function HomePage() {
           detailedErrorMessage = "Error fetching latest NFTs: Non-serializable error object caught.";
         }
       }
-      console.error(detailedErrorMessage, err);
+      console.error(detailedErrorMessage, err); 
       setErrorLatest( (err && err.message) ? err.message : "Could not fetch latest NFTs.");
     } finally {
       setIsLoadingLatest(false);
@@ -240,7 +238,7 @@ export default function HomePage() {
           detailedErrorMessage = "Error fetching popular NFTs: Non-serializable error object caught.";
         }
       }
-      console.error(detailedErrorMessage, err); 
+      console.error(detailedErrorMessage, err);  
       setErrorPopular( (err && err.message) ? err.message : "Could not fetch popular NFTs.");
     } finally {
       setIsLoadingPopular(false);
@@ -253,12 +251,11 @@ export default function HomePage() {
     fetchLatestNfts();
     fetchPopularNfts();
     
-    // Simulate fetching NFTs from followed artists
     setIsLoadingFollowed(true);
     setTimeout(() => {
       const mockFollowedNfts: NFTCardProps[] = [
-          { id: 'follow1', imageUrl: 'https://placehold.co/400x400.png?text=Followed1', title: 'AI Dreams #1', price: '1.0 ETH', artistName: 'AI Alchemist', dataAiHint: 'robot art' },
-          { id: 'follow2', imageUrl: 'https://placehold.co/400x400.png?text=Followed2', title: 'Pixel Adventure', price: '0.6 ETH', artistName: 'PixelPioneer', dataAiHint: 'pixel game character' },
+          { id: 'follow1', imageUrl: 'https://placehold.co/400x400.png?text=Followed1', title: 'AI Dreams #1', price: '1.0 ETH', artistName: 'PixelPainter', dataAiHint: 'robot art' },
+          { id: 'follow2', imageUrl: 'https://placehold.co/400x400.png?text=Followed2', title: 'Pixel Adventure', price: '0.6 ETH', artistName: 'PixelPainter', dataAiHint: 'pixel game character' },
       ];
       setNftsFromFollowedArtists(mockFollowedNfts);
       setIsLoadingFollowed(false);
@@ -297,7 +294,6 @@ export default function HomePage() {
         newSet.add(artistId);
         toast({ title: "Followed (Simulated)!", description: `You are now following ${artistName}.` });
       }
-      // Here you would typically make an API call to Supabase to update the follow status
       return newSet;
     });
   };
@@ -305,11 +301,10 @@ export default function HomePage() {
   return (
     <AppLayout>
       <div className="max-w-full md:max-w-7xl mx-auto">
-        {/* Header remains as is, assuming it's part of AppLayout or handled by GlobalHeader */}
         <header className={cn(
           "flex flex-col md:flex-row justify-between items-center mb-6 py-3 sticky top-0 bg-background/90 backdrop-blur-md z-40 px-4 md:px-0 border-b",
           "transition-transform duration-300 ease-in-out",
-          isHeaderVisible ? 'translate-y-0' : '-translate-y-full md:translate-y-0' // Keep visible on desktop
+          isHeaderVisible ? 'translate-y-0' : '-translate-y-full md:translate-y-0' 
         )}>
           <div className="flex items-center w-full md:w-auto mb-3 md:mb-0">
             <ArtNFTLogo />
@@ -347,7 +342,6 @@ export default function HomePage() {
         </header>
 
         <div className="px-4 md:px-0 space-y-12 md:space-y-16">
-            {/* Hero Section */}
             <section className="relative bg-card rounded-xl overflow-hidden p-8 md:p-12 shadow-2xl text-center md:text-left border">
                 <div className="absolute inset-0 opacity-10 dark:opacity-5 z-0">
                     <Image 
@@ -382,7 +376,6 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* Latest Activity Section */}
             <section>
                 <Card className="border-none shadow-none bg-transparent">
                     <CardHeader className="px-0 pb-4">
@@ -409,7 +402,6 @@ export default function HomePage() {
                 </Card>
             </section>
 
-            {/* New From Artists You Follow Section */}
             <section>
                  <Card className="border-none shadow-none bg-transparent">
                     <CardHeader className="px-0 pb-4">
@@ -443,7 +435,6 @@ export default function HomePage() {
                  </Card>
             </section>
 
-            {/* Artist Spotlights Section */}
             <section id="artist-spotlights">
                 <Card className="border-none shadow-none bg-transparent">
                     <CardHeader className="px-0 pb-4">
@@ -501,13 +492,12 @@ export default function HomePage() {
                             })}
                         </div>
                         ) : (
-                            <LoadingArtistSkeleton count={4} /> // Or a "No artists featured yet" message
+                            <LoadingArtistSkeleton count={4} />
                         )}
                     </CardContent>
                 </Card>
             </section>
 
-            {/* Explore Categories Section */}
             <section id="categories">
                 <Card className="border-none shadow-none bg-transparent">
                     <CardHeader className="px-0 pb-4">
@@ -531,7 +521,6 @@ export default function HomePage() {
                 </Card>
             </section>
 
-            {/* Popular Collections Section */}
              <section>
                 <Card className="border-none shadow-none bg-transparent">
                     <CardHeader className="px-0 pb-4">
@@ -558,7 +547,6 @@ export default function HomePage() {
                 </Card>
             </section>
 
-            {/* Community Highlights Section */}
             <section>
                 <Card className="border-none shadow-none bg-transparent">
                     <CardHeader className="px-0 pb-4">
@@ -616,5 +604,4 @@ export default function HomePage() {
     </AppLayout>
   );
 }
-
     

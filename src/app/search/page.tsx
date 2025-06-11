@@ -22,7 +22,7 @@ interface DBNFT {
   image_url: string;
   price: number | null;
   artist_name: string | null;
-  category: string;
+  category: string; // This should match the 'category' TEXT field in your 'nfts' table
   status: string;
   created_at: string;
 }
@@ -119,8 +119,8 @@ export default function SearchPage() {
       id: nft.id,
       imageUrl: nft.image_url || 'https://placehold.co/400x400.png',
       title: nft.title,
-      price: nft.price ? `${nft.price} ETH` : 'N/A', // Use actual price
-      artistName: nft.artist_name || 'Unknown Artist', // Use actual artist name
+      price: nft.price ? `${nft.price} ETH` : 'N/A',
+      artistName: nft.artist_name || 'Unknown Artist',
       dataAiHint: 'nft image'
     }));
   };
@@ -129,13 +129,16 @@ export default function SearchPage() {
     setIsLoadingResults(true);
     setError(null);
     try {
-      let supabaseQuery = supabase.from('nfts').select('*, category_id(name, slug)', { count: 'exact' });
+      let supabaseQuery = supabase
+        .from('nfts')
+        .select('id, title, image_url, price, artist_name, category, status, created_at', { count: 'exact' });
+
 
       if (query) {
         supabaseQuery = supabaseQuery.or(`title.ilike.%${query}%,description.ilike.%${query}%,artist_name.ilike.%${query}%`);
       }
       if (category !== 'all-categories') {
-        supabaseQuery = supabaseQuery.eq('category', category); // Assuming 'category' is a TEXT field in 'nfts' table
+        supabaseQuery = supabaseQuery.eq('category', category); 
       }
       if (priceRange !== 'all-prices') {
         if (priceRange === '0-0.5') supabaseQuery = supabaseQuery.lte('price', 0.5);
@@ -408,7 +411,7 @@ export default function SearchPage() {
                                 </p>
                             )}
                              <p className="text-sm text-muted-foreground truncate">
-                                <span className="font-medium">Category:</span> {(allFetchedNfts.find(dbnft => dbnft.id === nft.id)?.category || 'N/A').replace('-', ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+                                <span className="font-medium">Category:</span> {(allFetchedNfts.find(dbnft => dbnft.id === nft.id)?.category || 'N/A').replace(/-/g, ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
                             </p>
                         </div>
                         <div className="flex items-center justify-between pt-3">
@@ -440,3 +443,4 @@ export default function SearchPage() {
     </AppLayout>
   );
 }
+    

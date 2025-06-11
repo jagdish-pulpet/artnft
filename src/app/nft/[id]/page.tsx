@@ -27,7 +27,7 @@ interface NFTData {
   creator_id: string;
   created_at: string;
   artist_name: string | null; 
-  category: string | null; // Added category for fetching related NFTs
+  category: string | null; 
   auction_end_time?: string | null; 
   current_highest_bid?: number | null;
   starting_bid?: number | null;
@@ -142,7 +142,7 @@ export default function NFTDetailsPage() {
     try {
       const { data: mainNft, error: nftError } = await supabase
         .from('nfts')
-        .select('*, category_id(name, slug)') // Fetching category info if linked
+        .select('*, category') // Ensure 'category' (TEXT field) is selected
         .eq('id', nftId)
         .single();
 
@@ -160,13 +160,13 @@ export default function NFTDetailsPage() {
         setArtistProfile(profile as ProfileData | null);
       }
       
-      const nftCategory = (mainNft.category as any)?.slug || mainNft.category; // Use slug if category is an object, else use the text field
+      const nftCategoryText = mainNft.category; 
 
-      if (nftCategory) {
+      if (nftCategoryText) {
         const { data: related, error: relatedError } = await supabase
             .from('nfts')
             .select('id, title, image_url, price, artist_name')
-            .eq('category', nftCategory) // Assuming category is a direct text field for simplicity here
+            .eq('category', nftCategoryText) 
             .neq('id', nftId)
             .eq('status', 'listed')
             .limit(4);
@@ -184,7 +184,6 @@ export default function NFTDetailsPage() {
             setRelatedNfts(formattedRelated);
         }
       }
-
 
     } catch (err: any) {
       console.error("Error fetching NFT details:", err);
@@ -286,7 +285,7 @@ export default function NFTDetailsPage() {
               <CardHeader className="pb-4">
                 <CardTitle className="text-3xl md:text-4xl font-bold font-headline">{nftData.title}</CardTitle>
                 <div className="flex items-center space-x-3 mt-3">
-                  <Link href={`/profile/${nftData.creator_id}`} passHref>
+                  <Link href={`/artist/${nftData.creator_id}`} passHref>
                     <Image
                       src={artistAvatarUrl}
                       alt={displayArtistName}
@@ -298,7 +297,7 @@ export default function NFTDetailsPage() {
                   </Link>
                   <div>
                     <p className="text-sm text-muted-foreground">Created by</p>
-                    <Link href={`/profile/${nftData.creator_id}`} className="font-semibold text-primary hover:underline">
+                    <Link href={`/artist/${nftData.creator_id}`} className="font-semibold text-primary hover:underline">
                       {displayArtistName}
                     </Link>
                   </div>
@@ -420,3 +419,4 @@ export default function NFTDetailsPage() {
     </AppLayout>
   );
 }
+    
