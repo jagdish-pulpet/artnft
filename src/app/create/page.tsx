@@ -18,8 +18,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { UploadCloud, Image as ImageIcon, ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react';
-import { useState } from 'react';
+import { UploadCloud, ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { useState, Fragment } from 'react';
 
 const nftSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters'),
@@ -107,24 +107,26 @@ export default function CreateNftPage() {
   
   const renderStepIndicator = () => {
     return (
-      <div className="mb-8 flex items-center justify-center space-x-2 sm:space-x-4">
+      <div className="mb-8 flex w-full items-start justify-between px-2 sm:px-4">
         {STEPS.map((step, index) => (
-          <div key={step.id} className="flex flex-col sm:flex-row items-center">
-            <div
-              className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 transition-colors
-                ${currentStep > step.id ? 'bg-accent border-accent text-accent-foreground' : ''}
-                ${currentStep === step.id ? 'bg-primary border-primary text-primary-foreground scale-110' : 'border-border bg-muted text-muted-foreground'}
-              `}
-            >
-              {currentStep > step.id ? <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" /> : <span className="text-sm sm:text-base">{step.id}</span>}
+          <Fragment key={step.id}>
+            <div className="flex flex-col items-center text-center sm:min-w-[80px] md:min-w-[100px]">
+              <div
+                className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 transition-all duration-300
+                  ${currentStep > step.id ? 'bg-accent border-accent text-accent-foreground' : ''}
+                  ${currentStep === step.id ? 'bg-primary border-primary text-primary-foreground scale-110 ring-2 ring-primary/70 ring-offset-1 ring-offset-background' : 'border-border bg-muted text-muted-foreground'}
+                `}
+              >
+                {currentStep > step.id ? <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" /> : <span className="text-sm sm:text-base font-medium">{step.id}</span>}
+              </div>
+              <p className={`mt-1.5 text-xs sm:text-sm leading-tight transition-colors ${currentStep === step.id ? 'text-primary font-semibold' : 'text-muted-foreground'}`}>
+                {step.name}
+              </p>
             </div>
-            <span className={`hidden sm:block ml-2 text-xs sm:text-sm ${currentStep === step.id ? 'text-primary font-semibold' : 'text-muted-foreground'}`}>
-              {step.name}
-            </span>
-             {index < STEPS.length - 1 && (
-                <div className="hidden sm:block h-px w-8 sm:w-12 bg-border mx-1 sm:mx-2 transition-colors group-data-[completed=true]:bg-accent"></div>
+            {index < STEPS.length - 1 && (
+              <div className={`mt-4 sm:mt-[18px] flex-1 h-[2px] mx-1 sm:mx-2 rounded-full transition-colors duration-300 ${currentStep > step.id ? 'bg-accent' : 'bg-border'}`}></div>
             )}
-          </div>
+          </Fragment>
         ))}
       </div>
     );
