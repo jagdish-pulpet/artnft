@@ -11,32 +11,32 @@ export default function Header() {
           ArtNFT
         </Link>
         <nav className="flex items-center gap-2 sm:gap-4">
-          <Link href="/" legacyBehavior passHref>
+          <Link href="/">
             <Button variant="ghost" className="text-foreground hover:bg-primary hover:text-primary-foreground transition-colors">
               <Home className="w-4 h-4 mr-0 sm:mr-2" /> <span className="hidden sm:inline">Home</span>
             </Button>
           </Link>
-          <Link href="/search" legacyBehavior passHref>
+          <Link href="/search">
             <Button variant="ghost" className="text-foreground hover:bg-primary hover:text-primary-foreground transition-colors">
               <Compass className="w-4 h-4 mr-0 sm:mr-2" /> <span className="hidden sm:inline">Explore</span>
             </Button>
           </Link>
-           <Link href="/recommendations" legacyBehavior passHref>
+           <Link href="/recommendations">
             <Button variant="ghost" className="text-foreground hover:bg-primary hover:text-primary-foreground transition-colors">
               <Sparkles className="w-4 h-4 mr-0 sm:mr-2 text-accent" /> <span className="hidden sm:inline">For You</span>
             </Button>
           </Link>
-          <Link href="/create" legacyBehavior passHref>
+          <Link href="/create">
             <Button variant="ghost" className="text-foreground hover:bg-primary hover:text-primary-foreground transition-colors">
               <PlusCircle className="w-4 h-4 mr-0 sm:mr-2" /> <span className="hidden sm:inline">Create</span>
             </Button>
           </Link>
-          <Link href="/profile" legacyBehavior passHref>
+          <Link href="/profile">
             <Button variant="ghost" className="text-foreground hover:bg-primary hover:text-primary-foreground transition-colors">
               <User className="w-4 h-4 mr-0 sm:mr-2" /> <span className="hidden sm:inline">Profile</span>
             </Button>
           </Link>
-          <Link href="/search" legacyBehavior passHref>
+          <Link href="/search">
             <Button variant="outline" size="icon" className="border-accent text-accent hover:bg-accent hover:text-accent-foreground">
               <Search className="w-4 h-4" />
               <span className="sr-only">Search</span>
