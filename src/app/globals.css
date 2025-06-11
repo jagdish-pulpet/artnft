@@ -3,39 +3,85 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: 'PT Sans', sans-serif; /* Default body font */
+.bg-artistic-gradient {
+  background-image: linear-gradient(to bottom right, hsl(var(--primary) / 0.6), hsl(var(--accent) / 0.6), hsl(var(--primary) / 0.4));
 }
+.bg-welcome-artistic {
+  background-image: linear-gradient(to bottom right, hsl(var(--primary) / 0.2), hsl(var(--accent) / 0.2));
+}
+.dark .bg-welcome-artistic {
+   background-image: linear-gradient(to bottom right, hsl(var(--primary) / 0.3), hsl(var(--accent) / 0.3));
+}
+
+.bg-rainbow-swirl {
+  background-size: 200% 200%;
+  background-image: linear-gradient(
+    -45deg,
+    hsl(var(--destructive) / 0.6),
+    hsl(var(--accent) / 0.6),
+    hsl(var(--primary) / 0.6),
+    hsl(var(--chart-2) / 0.6),
+    hsl(var(--chart-4) / 0.6),
+    hsl(var(--destructive) / 0.6)
+  );
+  animation: rainbowSwirlAnimation 15s ease infinite;
+}
+
+@keyframes rainbowSwirlAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Ripple Animation */
+@keyframes ripple-effect {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid hsl(var(--primary-foreground) / 0.3); /* White with transparency */
+  animation: ripple-effect 3s infinite ease-out;
+}
+
 
 @layer base {
   :root {
-    --background: 0 0% 96.1%; /* Light Gray #F5F5F5 */
-    --foreground: 0 0% 20%; /* Dark Gray for text #333333 */
+    --background: 0 0% 96%; /* #F5F5F5 - Very Light Gray / Almost White */
+    --foreground: 220 15% 25%; /* #353A47 - Cool Dark Gray */
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
+    --card: 0 0% 100%; /* #FFFFFF - White */
+    --card-foreground: 220 15% 25%; /* #353A47 */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
+    --popover: 0 0% 100%; /* #FFFFFF */
+    --popover-foreground: 220 15% 25%; /* #353A47 */
 
-    --primary: 240 67% 97%; /* Soft Lavender #E6E6FA */
-    --primary-foreground: 240 40% 30%; /* Darker Lavender/Blue for text on primary */
+    --primary: 220 65% 50%; /* #3B69CC - Strong Blue */
+    --primary-foreground: 0 0% 100%; /* #FFFFFF - White */
 
-    --secondary: 0 0% 92%; /* Slightly darker than background for secondary elements */
-    --secondary-foreground: 0 0% 15%;
+    --secondary: 220 20% 90%; /* #E0E3EB - Light Cool Gray */
+    --secondary-foreground: 220 15% 35%; /* #4F5564 - Medium-Dark Cool Gray */
 
-    --muted: 0 0% 90%; /* Muted elements */
-    --muted-foreground: 0 0% 40%;
+    --muted: 220 20% 94%; /* #EBEEF3 - Even Lighter Cool Gray */
+    --muted-foreground: 220 15% 55%; /* #7E8491 - Medium Cool Gray */
 
-    --accent: 210 25% 77%; /* Muted Blue #A9BCD0 */
-    --accent-foreground: 210 30% 25%; /* Darker Muted Blue for text on accent */
+    --accent: 330 100% 70%; /* #FF66B3 - Soft Pink */
+    --accent-foreground: 0 0% 100%; /* #FFFFFF - White */
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 88%; /* Border color */
-    --input: 0 0% 92%; /* Input background */
-    --ring: 210 25% 77%; /* Muted Blue for rings */
+    --border: 220 15% 85%; /* #CBD0D9 - Cool Gray Border */
+    --input: 0 0% 100%; /* #FFFFFF - White Input Background */
+    --ring: 220 65% 55%; /* #5C85D6 - Lighter Strong Blue for Ring */
     
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
@@ -43,42 +89,59 @@ body {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
-
   .dark {
-    --background: 0 0% 10%; /* Dark background for dark mode */
-    --foreground: 0 0% 95%; /* Light foreground for dark mode */
+    --background: 220 30% 12%; /* #161B25 - Very Dark Desaturated Blue */
+    --foreground: 220 20% 92%; /* #E3E7F0 - Light Cool Gray */
 
-    --card: 0 0% 15%;
-    --card-foreground: 0 0% 90%;
+    --card: 220 25% 18%; /* #202633 - Dark Blue-Gray Card */
+    --card-foreground: 220 20% 92%; /* #E3E7F0 */
 
-    --popover: 0 0% 15%;
-    --popover-foreground: 0 0% 90%;
+    --popover: 220 25% 18%; /* #202633 */
+    --popover-foreground: 220 20% 92%; /* #E3E7F0 */
 
-    --primary: 240 50% 70%; /* Adjusted Soft Lavender for dark mode */
-    --primary-foreground: 240 67% 97%; /* Light text on primary for dark mode */
+    --primary: 182 100% 60%; /* #33FFFF - Vibrant Electric Blue */
+    --primary-foreground: 220 30% 10%; /* #11121A - Very Dark Blue */
 
-    --secondary: 0 0% 20%;
-    --secondary-foreground: 0 0% 85%;
+    --secondary: 220 25% 25%; /* #31384A - Dark Cool Gray */
+    --secondary-foreground: 220 20% 80%; /* #C4CAD6 - Lighter Cool Gray */
 
-    --muted: 0 0% 25%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 220 25% 22%; /* #2A3040 - Darker Muted Blue-Gray */
+    --muted-foreground: 220 20% 65%; /* #9BA3B5 - Medium-Light Cool Gray */
 
-    --accent: 210 30% 60%; /* Adjusted Muted Blue for dark mode */
-    --accent-foreground: 0 0% 95%; /* Light text on accent for dark mode */
+    --accent: 330 100% 75%; /* #FF80C2 - Soft Pink (lighter for dark mode) */
+    --accent-foreground: 330 100% 10%; /* #330014 - Very Dark Pink/Maroon */
 
-    --destructive: 0 70% 50%;
+    --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 0 0% 25%;
-    --input: 0 0% 20%;
-    --ring: 210 30% 60%; /* Adjusted Muted Blue for rings in dark mode */
-    
+    --border: 220 20% 30%; /* #3E4559 - Dark Cool Gray Border */
+    --input: 220 25% 20%; /* #262C3B - Dark Input Background */
+    --ring: 182 100% 55%; /* Electric Blue Ring for Dark Mode */
+
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
@@ -88,51 +151,5 @@ body {
   }
   body {
     @apply bg-background text-foreground;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
-}
-
-@keyframes rainbow-swirl-animation {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.bg-rainbow-swirl {
-  background: linear-gradient(135deg, 
-    hsl(var(--primary)), 
-    hsl(var(--accent)), 
-    hsl(var(--primary) / 0.8), 
-    hsl(var(--accent) / 0.8), 
-    hsl(var(--primary))
-  );
-  background-size: 300% 300%; /* Adjusted for a smoother, less busy swirl */
-  animation: rainbow-swirl-animation 20s ease infinite;
-}
-
-@keyframes ripple-animation {
-  0% {
-    transform: scale(0.1); /* Start smaller for a more subtle appearance */
-    opacity: 0.6;
-  }
-  100% {
-    transform: scale(5); /* Adjust scale for desired ripple size */
-    opacity: 0;
-  }
-}
-
-.ripple {
-  position: absolute;
-  left: 50%; /* Center ripple horizontally */
-  top: 50%;  /* Center ripple vertically */
-  transform: translate(-50%, -50%); /* Ensure actual center */
-  border-radius: 50%;
-  background-color: hsla(0, 0%, 100%, 0.2); /* Ripple color with HSL for theme consistency */
-  animation: ripple-animation 3s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smoother easing */
-}
-
-/* Dark mode ripple */
-.dark .ripple {
-  background-color: hsla(var(--accent-foreground), 0.1);
 }
