@@ -1,48 +1,68 @@
 
-import NftCard from '@/components/nft-card';
-import { mockNfts } from '@/lib/mock-data';
+'use client';
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Sparkles } from 'lucide-react';
+import { Gem, ArrowRight, UserPlus } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
-export default function HomePage() {
-  const featuredNfts = mockNfts.slice(0, 4); // Display first 4 as featured
+export default function LandingPage() {
+  const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    // Simulate a loading animation or delay
+    const timer = setTimeout(() => {
+      setShowContent(true);
+    }, 500); // Adjust delay as needed for "loading animation" feel
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <div className="space-y-12">
-      <section className="text-center py-12 bg-primary rounded-lg shadow-md">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-headline font-bold text-primary-foreground mb-4">Discover Unique Digital Art</h1>
-        <p className="text-lg text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
-          Explore, collect, and create extraordinary NFTs. ArtNFT is your gateway to the future of digital ownership.
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-background to-primary/20 p-4 text-center overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        {/* Placeholder for animated particles or subtle background graphics */}
+        {/* Example: <div className="absolute inset-0 opacity-5 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-accent/30 to-transparent animate-pulse"></div> */}
+      </div>
+      
+      <div className={`z-10 flex flex-col items-center transition-opacity duration-1000 ease-in-out ${showContent ? 'opacity-100' : 'opacity-0'}`}>
+        <Gem className="w-20 h-20 sm:w-28 sm:h-28 text-accent mb-6 transform transition-all duration-500 ease-out group-hover:scale-110 animate-float" />
+        
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-headline font-bold text-primary-foreground mb-3">
+          ArtNFT
+        </h1>
+        <p className="text-lg sm:text-xl text-foreground/80 mb-10 max-w-md sm:max-w-xl">
+          Discover, collect, and create extraordinary NFTs. Your gateway to the future of digital ownership.
         </p>
-        <Link href="/search" passHref legacyBehavior>
-          <Button size="lg" variant="secondary" className="bg-accent text-accent-foreground hover:bg-accent/90">
-            Explore Marketplace
-          </Button>
-        </Link>
-      </section>
 
-      <section>
-        <h2 className="text-2xl sm:text-3xl font-headline font-semibold mb-6 text-center">Featured NFTs</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {featuredNfts.map((nft) => (
-            <NftCard key={nft.id} nft={nft} />
-          ))}
+        <div className="space-y-4 sm:space-y-0 sm:flex sm:flex-row sm:gap-6 w-full max-w-xs sm:max-w-md">
+          <Link href="/home" className="w-full sm:w-auto">
+            <Button size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90 shadow-lg transition-transform hover:scale-105 focus:ring-2 focus:ring-accent focus:ring-offset-2">
+              Explore Marketplace <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
+          <Link href="/profile" className="w-full sm:w-auto">
+            {/* Assuming /profile can serve as a temporary placeholder for Sign Up / Login */}
+            <Button variant="outline" size="lg" className="w-full border-foreground/30 text-foreground hover:bg-foreground/5 shadow-lg transition-transform hover:scale-105 focus:ring-2 focus:ring-foreground/50 focus:ring-offset-2">
+              Sign Up / Login <UserPlus className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
         </div>
-      </section>
+      </div>
 
-      <section className="bg-card p-8 rounded-lg shadow-md text-center">
-        <Sparkles className="w-12 h-12 text-accent mx-auto mb-4" />
-        <h2 className="text-2xl sm:text-3xl font-headline font-semibold mb-4">Personalized Recommendations</h2>
-        <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
-          Let our AI guide you to NFTs you&apos;ll love. Discover artworks tailored to your unique taste.
-        </p>
-        <Link href="/recommendations" passHref legacyBehavior>
-          <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
-            Get My Recommendations
-          </Button>
-        </Link>
-      </section>
+      <style jsx global>{`
+        @keyframes float {
+          0% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+          100% { transform: translateY(0px); }
+        }
+        .animate-float {
+          animation: float 3s ease-in-out infinite;
+        }
+      `}</style>
+
+      <footer className={`absolute bottom-6 sm:bottom-8 text-center w-full z-10 transition-opacity duration-1000 ease-in-out ${showContent ? 'opacity-100' : 'opacity-0'}`}>
+        <p className="text-xs sm:text-sm text-muted-foreground">&copy; {new Date().getFullYear()} ArtNFT. All rights reserved.</p>
+      </footer>
     </div>
   );
 }

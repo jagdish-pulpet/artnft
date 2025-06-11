@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -21,23 +22,24 @@ export default function Header() {
   };
 
   if (!mounted) {
+    // Basic skeleton to prevent layout shift during mount
     return (
       <header className="bg-card border-b border-border shadow-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-2 text-xl font-headline font-bold text-primary-foreground hover:text-accent-foreground transition-colors">
+          <div className="flex items-center gap-2 text-xl font-headline font-bold">
             <Gem className="w-7 h-7 text-accent" />
             ArtNFT
-          </Link>
-          <div className="flex items-center gap-2 sm:gap-3">
-             {/* Placeholder for buttons to prevent layout shift */}
-            <div className="w-8 h-8 sm:w-24"></div>
-            <div className="w-8 h-8 sm:w-24"></div>
-            <div className="w-8 h-8 sm:w-24"></div>
-            <div className="w-8 h-8 sm:w-24"></div>
-            <div className="w-8 h-8 sm:w-24"></div>
-            <div className="w-10 h-10"></div>
-            <div className="w-10 h-10"></div>
-            <div className="w-10 h-10 sm:w-32"></div>
+          </div>
+          <div className="flex items-center gap-1 sm:gap-2">
+            {/* Placeholders for button group to match height and count */}
+            <div className="h-9 w-9 sm:h-9 sm:w-[70px] bg-muted/50 rounded-md"></div>
+            <div className="h-9 w-9 sm:h-9 sm:w-[85px] bg-muted/50 rounded-md"></div>
+            <div className="h-9 w-9 sm:h-9 sm:w-[90px] bg-muted/50 rounded-md"></div>
+            <div className="h-9 w-9 sm:h-9 sm:w-[85px] bg-muted/50 rounded-md"></div>
+            <div className="h-9 w-9 sm:h-9 sm:w-[85px] bg-muted/50 rounded-md"></div>
+            <div className="h-10 w-10 bg-muted/50 rounded-md"></div>
+            <div className="h-10 w-10 bg-muted/50 rounded-md"></div>
+            <div className="h-9 w-9 sm:h-9 sm:w-[130px] bg-muted/50 rounded-md"></div>
           </div>
         </div>
       </header>
@@ -47,13 +49,13 @@ export default function Header() {
   return (
     <>
       <header className="bg-card border-b border-border shadow-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div className="container mx-auto px-4 py-3 sm:py-4 flex justify-between items-center">
           <Link href="/" className="flex items-center gap-2 text-xl font-headline font-bold text-primary-foreground hover:text-accent-foreground transition-colors">
             <Gem className="w-7 h-7 text-accent" />
             ArtNFT
           </Link>
-          <nav className="flex items-center gap-1 sm:gap-2">
-            <Link href="/">
+          <nav className="hidden md:flex items-center gap-1">
+            <Link href="/home">
               <Button variant="ghost" size="sm" className="text-foreground hover:bg-primary hover:text-primary-foreground transition-colors">
                 <Home className="w-4 h-4 mr-0 sm:mr-2" /> <span className="hidden sm:inline">Home</span>
               </Button>
@@ -78,11 +80,13 @@ export default function Header() {
                 <User className="w-4 h-4 mr-0 sm:mr-2" /> <span className="hidden sm:inline">Profile</span>
               </Button>
             </Link>
-            <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label="Toggle theme">
+          </nav>
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label="Toggle theme" className="h-9 w-9 sm:h-10 sm:w-10">
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </Button>
-            <Link href="/search" className="ml-1">
-              <Button variant="outline" size="icon" className="border-accent text-accent hover:bg-accent hover:text-accent-foreground">
+            <Link href="/search" className="hidden md:block ml-1">
+              <Button variant="outline" size="icon" className="border-accent text-accent hover:bg-accent hover:text-accent-foreground h-9 w-9 sm:h-10 sm:w-10">
                 <Search className="w-4 h-4" />
                 <span className="sr-only">Search</span>
               </Button>
@@ -90,7 +94,7 @@ export default function Header() {
             <Button 
               variant="outline" 
               size="sm" 
-              className="border-primary text-primary-foreground bg-primary hover:bg-primary/90 ml-1 sm:ml-2 hidden sm:flex"
+              className="border-primary text-primary-foreground bg-primary hover:bg-primary/90 ml-1 hidden sm:flex h-9"
               onClick={() => setIsWalletModalOpen(true)}
             >
               <Wallet className="w-4 h-4 mr-2" /> Connect Wallet
@@ -98,13 +102,13 @@ export default function Header() {
              <Button 
               variant="outline" 
               size="icon" 
-              className="border-primary text-primary-foreground bg-primary hover:bg-primary/90 ml-1 sm:hidden"
+              className="border-primary text-primary-foreground bg-primary hover:bg-primary/90 ml-1 sm:hidden h-9 w-9"
               onClick={() => setIsWalletModalOpen(true)}
               aria-label="Connect Wallet"
             >
               <Wallet className="w-5 h-5" />
             </Button>
-          </nav>
+          </div>
         </div>
       </header>
       <WalletConnectModal isOpen={isWalletModalOpen} setIsOpen={setIsWalletModalOpen} />
