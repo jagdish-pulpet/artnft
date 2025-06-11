@@ -21,18 +21,16 @@ export default function LogInPage() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  
+
   useEffect(() => {
     setIsMounted(true);
-    // Check if user is already logged in
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        // Clear admin flag if a regular user session exists
         if (typeof window !== 'undefined') {
             localStorage.removeItem('isAdminAuthenticated');
         }
-        router.replace('/home'); 
+        router.replace('/home');
       }
     };
     checkSession();
@@ -50,31 +48,27 @@ export default function LogInPage() {
     setIsLoading(false);
 
     if (error) {
-      // Check for specific "Email not confirmed" error message
       if (error.message && error.message.toLowerCase().includes('email not confirmed')) {
-        toast({ 
-            variant: 'destructive', 
-            title: 'Email Not Confirmed', 
+        toast({
+            variant: 'destructive',
+            title: 'Email Not Confirmed',
             description: 'Please check your email inbox (and spam folder) for a confirmation link. Click the link to activate your account before logging in.',
-            duration: 10000, // Longer duration for this important message
+            duration: 10000, 
         });
       } else {
-        // Generic login failed message
         toast({ variant: 'destructive', title: 'Login Failed', description: error.message || 'Invalid email or password.' });
       }
     } else if (data.session && data.user) {
-      // Supabase client handles session storage automatically.
       if (typeof window !== 'undefined') {
-        localStorage.removeItem('isAdminAuthenticated'); // Ensure admin flag is cleared
+        localStorage.removeItem('isAdminAuthenticated');
       }
       toast({ title: 'Login Successful', description: 'Welcome back!' });
       router.push('/home');
     } else {
-      // This case might occur if there's no session but also no specific error (unlikely with signInWithPassword)
       toast({ variant: 'destructive', title: 'Login Failed', description: 'Invalid email or password, or an unexpected issue occurred.' });
     }
   };
-  
+
   if (!isMounted) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -88,15 +82,15 @@ export default function LogInPage() {
       <div className="bg-card shadow-xl rounded-lg p-8 w-full max-w-md space-y-6">
         <ArtNFTLogo className="mx-auto mb-4" />
         <h1 className="text-2xl font-bold text-center font-headline">Welcome Back</h1>
-        
+
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <Label htmlFor="email">Email Address</Label>
-            <Input 
-              id="email" 
-              type="email" 
-              placeholder="you@example.com" 
-              required 
+            <Input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
@@ -104,31 +98,31 @@ export default function LogInPage() {
           </div>
           <div>
             <Label htmlFor="password">Password</Label>
-            <Input 
-              id="password" 
-              type="password" 
-              placeholder="••••••••" 
-              required 
+            <Input
+              id="password"
+              type="password"
+              placeholder="••••••••"
+              required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
             />
           </div>
-          
+
           <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? <Loader2 className="animate-spin" /> : <Mail className="mr-2 h-4 w-4" />}
             {isLoading ? 'Logging In...' : 'Log In with Email'}
           </Button>
         </form>
-        
+
         <div className="text-center">
           <Link href="/forgot-password" className="text-sm text-muted-foreground hover:text-primary hover:underline">
             Forgot Password?
           </Link>
         </div>
-        
+
         <Separator />
-        
+
         <div className="text-center space-y-3">
           <Link href="/signup" className="text-sm text-primary hover:underline block">
             Don't have an account? Sign Up

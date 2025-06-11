@@ -37,7 +37,7 @@ export default function SignUpPage() {
       email,
       password,
       options: {
-        // emailRedirectTo: `${window.location.origin}/auth/callback`, // Optional: if you have a specific callback page
+        // emailRedirectTo: `${window.location.origin}/auth/callback`, // Optional: for a specific callback page
       }
     });
 
@@ -46,35 +46,32 @@ export default function SignUpPage() {
     if (error) {
       toast({ variant: 'destructive', title: 'Sign Up Failed', description: error.message });
     } else {
-      if (data.session) { 
+      if (data.session && data.user) {
         // User is signed up and logged in (e.g., email confirmation is off or auto-confirmed)
         toast({ title: 'Sign Up Successful!', description: 'Welcome! You are now logged in.' });
-        // Attempt to create a profile entry if it doesn't exist
         if (data.user) {
             const { error: profileError } = await supabase
             .from('profiles')
-            .upsert({ 
-                id: data.user.id, 
+            .upsert({
+                id: data.user.id,
                 username: data.user.email?.split('@')[0] || `user-${data.user.id.substring(0,6)}`,
                 updated_at: new Date().toISOString(),
-                // created_at will be set by DB default if new, or won't be touched if updating (unless specified)
-            }, { onConflict: 'id' }); // Ensure this matches your table's unique constraint for upsert
+            }, { onConflict: 'id' });
             if (profileError) {
                 console.warn("Could not create initial profile during signup:", profileError.message);
-                // Non-critical error, user is still signed up
             }
         }
         router.push('/home');
-      } else if (data.user && !data.session) { 
-        // Email confirmation likely required
-        toast({ 
-            title: 'Sign Up Successful! Please Confirm Your Email', 
-            description: 'A confirmation link has been sent to your email address. Please check your inbox (and spam folder) to activate your account.',
-            duration: 10000, 
+      } else if (data.user && !data.session) {
+        // Email confirmation is likely required by Supabase project settings
+        toast({
+            title: 'Sign Up Successful! Please Confirm Your Email',
+            description: 'A confirmation link has been sent to your email address. Please check your inbox (and spam folder) to activate your account before you can log in.',
+            duration: 10000,
         });
-        router.push('/login'); // Redirect to login, user will confirm email then log in
+        router.push('/login');
       } else {
-        // Fallback, should not happen if no error and no user/session
+        // Fallback, should ideally not happen if no error and no user/session
         toast({ variant: 'destructive', title: 'Sign Up Issue', description: 'An unexpected issue occurred. Please try again.' });
       }
     }
@@ -85,7 +82,7 @@ export default function SignUpPage() {
       <div className="bg-card shadow-xl rounded-lg p-8 w-full max-w-md space-y-6">
         <ArtNFTLogo className="mx-auto mb-6" />
         <h1 className="text-2xl font-bold text-center font-headline">Create Your Account</h1>
-        
+
         <Button asChild variant="outline" className="w-full" disabled={isLoading}>
           <Link href="/connect-wallet">
             <Wallet className="mr-2 h-4 w-4" /> Sign Up with Wallet (Simulated)
@@ -97,15 +94,15 @@ export default function SignUpPage() {
           <span className="text-xs text-muted-foreground">OR</span>
           <Separator className="flex-1" />
         </div>
-        
+
         <form onSubmit={handleEmailSignUp} className="space-y-4">
           <div>
             <Label htmlFor="email">Email Address</Label>
-            <Input 
-              id="email" 
-              type="email" 
-              placeholder="you@example.com" 
-              required 
+            <Input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
@@ -113,11 +110,11 @@ export default function SignUpPage() {
           </div>
           <div>
             <Label htmlFor="password">Password</Label>
-            <Input 
-              id="password" 
-              type="password" 
-              placeholder="•••••••• (min. 6 characters)" 
-              required 
+            <Input
+              id="password"
+              type="password"
+              placeholder="•••••••• (min. 6 characters)"
+              required
               minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -126,22 +123,22 @@ export default function SignUpPage() {
           </div>
           <div>
             <Label htmlFor="confirm-password">Confirm Password</Label>
-            <Input 
-              id="confirm-password" 
-              type="password" 
-              placeholder="••••••••" 
-              required 
+            <Input
+              id="confirm-password"
+              type="password"
+              placeholder="••••••••"
+              required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               disabled={isLoading}
             />
           </div>
-          
+
           <Button type="submit" className="w-full bg-accent hover:bg-accent/90 text-accent-foreground" disabled={isLoading}>
             {isLoading ? <Loader2 className="animate-spin" /> : (<><Mail className="mr-2 h-4 w-4" /> Sign Up with Email</>)}
           </Button>
         </form>
-        
+
         <p className="text-xs text-muted-foreground text-center">
           By signing up, you agree to our{' '}
           <Link href="/terms" className="underline hover:text-primary">
@@ -152,7 +149,7 @@ export default function SignUpPage() {
             Privacy Policy
           </Link>.
         </p>
-        
+
         <div className="text-center">
           <Link href="/login" className="text-sm text-primary hover:underline">
             Already have an account? Log In
