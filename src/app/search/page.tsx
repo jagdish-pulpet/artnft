@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -41,7 +42,7 @@ export default function SearchPage() {
   return (
     <div className="space-y-8">
       <section className="bg-card p-6 rounded-lg shadow-md">
-        <h1 className="text-3xl font-headline font-semibold mb-6 text-center">Explore NFTs</h1>
+        <h1 className="text-2xl sm:text-3xl font-headline font-semibold mb-6 text-center">Explore NFTs</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 items-end">
           <div className="lg:col-span-2">
             <label htmlFor="search" className="block text-sm font-medium text-muted-foreground mb-1">Search by Keyword</label>

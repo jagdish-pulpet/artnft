@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -74,7 +75,7 @@ export default function RecommendationsPage() {
       <Card className="bg-primary shadow-lg">
         <CardHeader className="text-center">
           <Sparkles className="w-12 h-12 text-primary-foreground mx-auto mb-3" />
-          <CardTitle className="text-3xl font-headline font-bold text-primary-foreground">Your Personalized NFT Picks</CardTitle>
+          <CardTitle className="text-2xl sm:text-3xl font-headline font-bold text-primary-foreground">Your Personalized NFT Picks</CardTitle>
           <CardDescription className="text-primary-foreground/80">
             Discover artworks specially selected for you by our AI.
           </CardDescription>

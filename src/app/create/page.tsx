@@ -1,3 +1,4 @@
+
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -75,7 +76,7 @@ export default function CreateNftPage() {
     <div className="max-w-2xl mx-auto">
       <Card className="shadow-xl">
         <CardHeader>
-          <CardTitle className="font-headline text-3xl text-center">Create & List Your NFT</CardTitle>
+          <CardTitle className="font-headline text-2xl sm:text-3xl text-center">Create & List Your NFT</CardTitle>
           <CardDescription className="text-center">
             Fill in the details below to mint your unique digital artwork.
           </CardDescription>

@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import { getMockNftById, getMockNftsByCollectionId, mockNfts } from '@/lib/mock-data';
 import type { NFT, NFTOwner } from '@/types';
@@ -40,11 +41,11 @@ export default async function NftDetailsPage({ params }: NftDetailsPageProps) {
               layout="fill"
               objectFit="contain"
               className="bg-muted p-4"
-              data-ai-hint={`${nft.artStyle} artwork`}
+              data-ai-hint={`${nft.artStyle.split(' ')[0]} art`}
             />
           </div>
           <div className="p-6 md:p-8 flex flex-col">
-            <h1 className="text-3xl lg:text-4xl font-headline font-bold mb-2 text-primary-foreground">{nft.title}</h1>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-headline font-bold mb-2 text-primary-foreground">{nft.title}</h1>
             <p className="text-lg text-muted-foreground mb-4">
               By <Link href={`/artist/${nft.artist}`} className="text-accent hover:underline">{nft.artist}</Link>
             </p>
@@ -109,7 +110,7 @@ export default async function NftDetailsPage({ params }: NftDetailsPageProps) {
 
       {relatedNfts.length > 0 && (
         <section>
-          <h2 className="text-2xl font-headline font-semibold mb-4">Related Collection</h2>
+          <h2 className="text-xl sm:text-2xl font-headline font-semibold mb-4">Related Collection</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {relatedNfts.map((relatedNft) => (
               relatedNft ? <NftCard key={relatedNft.id} nft={relatedNft} /> : null

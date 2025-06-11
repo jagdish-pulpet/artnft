@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -25,7 +26,7 @@ export default function ProfilePage() {
               />
             </div>
             <div>
-              <CardTitle className="text-3xl font-headline mb-1">CreativeCollector23</CardTitle>
+              <CardTitle className="text-2xl sm:text-3xl font-headline mb-1">CreativeCollector23</CardTitle>
               <CardDescription className="text-muted-foreground">Joined March 2023 • Collector & Art Enthusiast</CardDescription>
               <div className="mt-3">
                 <Button variant="outline" className="border-accent text-accent hover:bg-accent hover:text-accent-foreground">
@@ -43,7 +44,7 @@ export default function ProfilePage() {
       </Card>
 
       <section>
-        <h2 className="text-2xl font-headline font-semibold mb-4">My Collection</h2>
+        <h2 className="text-xl sm:text-2xl font-headline font-semibold mb-4">My Collection</h2>
         {userOwnedNfts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {userOwnedNfts.map((nft) => (

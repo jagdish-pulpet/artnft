@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import Link from 'next/link';
 import type { NFT } from '@/types';
@@ -21,7 +22,7 @@ export default function NftCard({ nft }: NftCardProps) {
               layout="fill"
               objectFit="cover"
               className="transition-transform duration-300 group-hover:scale-105"
-              data-ai-hint={`${nft.artStyle} ${nft.title.split(' ')[0]}`}
+              data-ai-hint={`${nft.artStyle.split(' ')[0]} art`}
             />
           </div>
         </CardHeader>

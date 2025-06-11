@@ -1,3 +1,4 @@
+
 import NftCard from '@/components/nft-card';
 import { mockNfts } from '@/lib/mock-data';
 import Link from 'next/link';
@@ -10,7 +11,7 @@ export default function HomePage() {
   return (
     <div className="space-y-12">
       <section className="text-center py-12 bg-primary rounded-lg shadow-md">
-        <h1 className="text-4xl md:text-5xl font-headline font-bold text-primary-foreground mb-4">Discover Unique Digital Art</h1>
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-headline font-bold text-primary-foreground mb-4">Discover Unique Digital Art</h1>
         <p className="text-lg text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
           Explore, collect, and create extraordinary NFTs. ArtNFT is your gateway to the future of digital ownership.
         </p>
@@ -22,7 +23,7 @@ export default function HomePage() {
       </section>
 
       <section>
-        <h2 className="text-3xl font-headline font-semibold mb-6 text-center">Featured NFTs</h2>
+        <h2 className="text-2xl sm:text-3xl font-headline font-semibold mb-6 text-center">Featured NFTs</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {featuredNfts.map((nft) => (
             <NftCard key={nft.id} nft={nft} />
@@ -32,7 +33,7 @@ export default function HomePage() {
 
       <section className="bg-card p-8 rounded-lg shadow-md text-center">
         <Sparkles className="w-12 h-12 text-accent mx-auto mb-4" />
-        <h2 className="text-3xl font-headline font-semibold mb-4">Personalized Recommendations</h2>
+        <h2 className="text-2xl sm:text-3xl font-headline font-semibold mb-4">Personalized Recommendations</h2>
         <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
           Let our AI guide you to NFTs you&apos;ll love. Discover artworks tailored to your unique taste.
         </p>
