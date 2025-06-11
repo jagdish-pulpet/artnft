@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabase/client';
 import type { User } from '@supabase/supabase-js';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useRouter } from 'next/navigation'; // Added import
 
 
 const LoadingNFTSkeleton = ({ count = 3 }: { count?: number}) => (
@@ -261,7 +262,7 @@ export default function HomePage() {
             <ArtNFTLogo />
           </div>
           <div className="flex items-center w-full md:w-auto md:flex-grow md:justify-center px-0 md:px-4">
-             <form onSubmit={(e) => { e.preventDefault(); router.push(`/search?q=${e.currentTarget.search.value}`); }} className="flex items-center flex-grow max-w-xs sm:max-w-sm md:max-w-md">
+             <form onSubmit={(e) => { e.preventDefault(); router.push(`/search?q=${(e.target as HTMLFormElement).search.value}`); }} className="flex items-center flex-grow max-w-xs sm:max-w-sm md:max-w-md">
               <Input
                 type="search"
                 name="search"
