@@ -65,10 +65,15 @@ export default function LogInPage() {
       }
     } catch (error) {
       console.error('Login error:', error);
+      let errorMessage = 'An unexpected error occurred. Please try again later.';
+      // Check if it's a network error (Failed to fetch)
+      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+        errorMessage = `Could not connect to the backend server at ${BACKEND_URL}. Please ensure it is running and accessible.`;
+      }
       toast({
         variant: 'destructive',
         title: 'Login Error',
-        description: 'An unexpected error occurred. Please try again later.',
+        description: errorMessage,
       });
     } finally {
       setIsLoading(false);
