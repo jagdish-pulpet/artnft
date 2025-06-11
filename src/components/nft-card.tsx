@@ -38,7 +38,7 @@ export default function NftCard({ nft }: NftCardProps) {
         <div className="text-lg font-semibold text-primary-foreground">
           {nft.price} ETH
         </div>
-        <Link href={`/nfts/${nft.id}`} passHref legacyBehavior>
+        <Link href={`/nfts/${nft.id}`}>
           <Button variant="outline" className="border-accent text-accent hover:bg-accent hover:text-accent-foreground">
             View Details
           </Button>
@@ -47,3 +47,4 @@ export default function NftCard({ nft }: NftCardProps) {
     </Card>
   );
 }
+
