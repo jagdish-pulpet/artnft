@@ -50,7 +50,8 @@ export default function LogInPage() {
     setIsLoading(false);
 
     if (error) {
-      if (error.message.toLowerCase().includes('email not confirmed')) {
+      // Check for specific "Email not confirmed" error message
+      if (error.message && error.message.toLowerCase().includes('email not confirmed')) {
         toast({ 
             variant: 'destructive', 
             title: 'Email Not Confirmed', 
@@ -58,7 +59,8 @@ export default function LogInPage() {
             duration: 10000, // Longer duration for this important message
         });
       } else {
-        toast({ variant: 'destructive', title: 'Login Failed', description: error.message });
+        // Generic login failed message
+        toast({ variant: 'destructive', title: 'Login Failed', description: error.message || 'Invalid email or password.' });
       }
     } else if (data.session && data.user) {
       // Supabase client handles session storage automatically.
@@ -69,7 +71,6 @@ export default function LogInPage() {
       router.push('/home');
     } else {
       // This case might occur if there's no session but also no specific error (unlikely with signInWithPassword)
-      // or if the user object isn't returned for some reason.
       toast({ variant: 'destructive', title: 'Login Failed', description: 'Invalid email or password, or an unexpected issue occurred.' });
     }
   };

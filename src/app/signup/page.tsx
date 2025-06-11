@@ -37,8 +37,7 @@ export default function SignUpPage() {
       email,
       password,
       options: {
-        // You can add user_metadata here if needed during signup
-        // data: { username: email.split('@')[0] } // Example
+        // emailRedirectTo: `${window.location.origin}/auth/callback`, // Optional: if you have a specific callback page
       }
     });
 
@@ -47,10 +46,10 @@ export default function SignUpPage() {
     if (error) {
       toast({ variant: 'destructive', title: 'Sign Up Failed', description: error.message });
     } else {
-      // data.user contains the user object, data.session is null if email confirmation is required
-      if (data.session) { // User is signed up and logged in (email confirmation might be off or auto-confirmed)
+      if (data.session) { 
+        // User is signed up and logged in (e.g., email confirmation is off or auto-confirmed)
         toast({ title: 'Sign Up Successful!', description: 'Welcome! You are now logged in.' });
-        // Create a profile entry if it doesn't exist
+        // Attempt to create a profile entry if it doesn't exist
         if (data.user) {
             const { error: profileError } = await supabase
             .from('profiles')
@@ -58,20 +57,21 @@ export default function SignUpPage() {
                 id: data.user.id, 
                 username: data.user.email?.split('@')[0] || `user-${data.user.id.substring(0,6)}`,
                 updated_at: new Date().toISOString(),
-            }, { onConflict: 'id' });
-            if (profileError) console.warn("Could not create initial profile during signup:", profileError.message);
+                // created_at will be set by DB default if new, or won't be touched if updating (unless specified)
+            }, { onConflict: 'id' }); // Ensure this matches your table's unique constraint for upsert
+            if (profileError) {
+                console.warn("Could not create initial profile during signup:", profileError.message);
+                // Non-critical error, user is still signed up
+            }
         }
         router.push('/home');
-      } else if (data.user) { // Email confirmation likely required
+      } else if (data.user && !data.session) { 
+        // Email confirmation likely required
         toast({ 
             title: 'Sign Up Successful! Please Confirm Your Email', 
-            description: 'A confirmation link has been sent to your email address. Please verify your email to log in.',
-            duration: 7000, // Longer duration for this important message
+            description: 'A confirmation link has been sent to your email address. Please check your inbox (and spam folder) to activate your account.',
+            duration: 10000, 
         });
-        // Profile will be created upon first successful login after confirmation, or you can create a basic one here.
-        // For consistency, it's often better to handle profile creation upon first real login or via a separate profile setup step.
-        // However, if basic profile info is needed immediately (even before confirmation for some backend logic), you could add:
-        // await supabase.from('profiles').upsert({ id: data.user.id, username: data.user.email?.split('@')[0] });
         router.push('/login'); // Redirect to login, user will confirm email then log in
       } else {
         // Fallback, should not happen if no error and no user/session
