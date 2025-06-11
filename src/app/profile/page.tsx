@@ -1,12 +1,19 @@
 
+'use client';
+
 import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import NftCard from '@/components/nft-card';
 import { mockNfts } from '@/lib/mock-data';
-import { User, Settings, Palette, Edit3, Users, Eye, CalendarDays } from 'lucide-react';
+import { User, Settings, Palette as PaletteIconLucide, Edit3, Users, Eye, CalendarDays, Wallet, Bell, Shield, LogOut } from 'lucide-react'; // Renamed Palette to PaletteIconLucide to avoid conflict
 import Link from 'next/link';
 import type { NFT } from '@/types';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { useState, useEffect } from 'react';
+
 
 interface MockUser {
   username: string;
@@ -20,7 +27,7 @@ interface MockUser {
   favoriteArtists: string[];
 }
 
-const mockUser: MockUser = {
+const defaultMockUser: MockUser = {
   username: 'ArtExplorer92',
   bio: 'Digital art aficionado. Curator of dreams. Always seeking the next masterpiece. 🎨✨ Exploring the vibrant world of NFTs and connecting with fellow creators and collectors.',
   joinDate: '2023-07-15',
@@ -28,7 +35,7 @@ const mockUser: MockUser = {
   coverPhotoUrl: 'https://placehold.co/1200x400.png',
   followersCount: 2458,
   followingCount: 587,
-  ownedNfts: mockNfts.slice(0, 3), 
+  ownedNfts: [], // Initialize as empty, will be populated by mockNfts
   favoriteArtists: ['Stellar Scribe', 'TechFlora', 'BitMapper', 'AquaDreamer', 'LumiPainter'],
 };
 
@@ -40,6 +47,18 @@ const formatCount = (count: number): string => {
 };
 
 export default function ProfilePage() {
+  const [mockUser, setMockUser] = useState<MockUser | null>(null);
+
+  useEffect(() => {
+    // Simulate fetching user data and their NFTs
+    const userNfts = mockNfts.slice(0, 3); // Example: user owns first 3 mock NFTs
+    setMockUser({ ...defaultMockUser, ownedNfts: userNfts });
+  }, []);
+
+  if (!mockUser) {
+    return <div className="flex items-center justify-center h-screen"><User className="w-12 h-12 animate-pulse text-muted-foreground" /> <p className="ml-4 text-lg">Loading profile...</p></div>;
+  }
+
   const userOwnedNfts = mockUser.ownedNfts;
   const joinedDateFormatted = new Date(mockUser.joinDate).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -119,7 +138,7 @@ export default function ProfilePage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 font-headline">
-              <Palette className="w-5 h-5 sm:w-6 sm:h-6 text-accent" /> Favorite Artists
+              <PaletteIconLucide className="w-5 h-5 sm:w-6 sm:h-6 text-accent" /> Favorite Artists
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -143,13 +162,78 @@ export default function ProfilePage() {
               <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-accent" /> Account Settings
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <ul className="space-y-2 text-sm sm:text-base">
-              <li><Link href="#" className="text-foreground/90 hover:text-accent transition-colors">Manage Wallet</Link></li>
-              <li><Link href="#" className="text-foreground/90 hover:text-accent transition-colors">Notification Preferences</Link></li>
-              <li><Link href="#" className="text-foreground/90 hover:text-accent transition-colors">Security Settings</Link></li>
-            </ul>
-            <Button variant="destructive" className="mt-4 w-full text-sm">Log Out</Button>
+          <CardContent className="space-y-4">
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="wallet">
+                <AccordionTrigger className="text-sm sm:text-base">
+                  <div className="flex items-center">
+                    <Wallet className="w-4 h-4 mr-2 text-accent" /> Manage Wallet
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="pt-2 space-y-2">
+                  <p className="text-xs text-muted-foreground">Connected wallet: 0x123...abc (Mock)</p>
+                  <Button variant="outline" size="sm">View on Etherscan</Button>
+                  <Button variant="link" size="sm" className="text-destructive p-0 h-auto ml-2">Disconnect Wallet</Button>
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="notifications">
+                <AccordionTrigger className="text-sm sm:text-base">
+                  <div className="flex items-center">
+                     <Bell className="w-4 h-4 mr-2 text-accent" /> Notification Preferences
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="pt-2 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="new-listings-switch" className="text-xs sm:text-sm">New Listings from Followed Artists</Label>
+                    <Switch id="new-listings-switch" defaultChecked />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="price-drops-switch" className="text-xs sm:text-sm">Price Drops on Saved NFTs</Label>
+                    <Switch id="price-drops-switch" />
+                  </div>
+                   <div className="flex items-center justify-between">
+                    <Label htmlFor="community-updates-switch" className="text-xs sm:text-sm">Community Updates & News</Label>
+                    <Switch id="community-updates-switch" defaultChecked />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="email-notifications-switch" className="text-xs sm:text-sm">Email Notifications</Label>
+                    <Switch id="email-notifications-switch" defaultChecked/>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="privacy">
+                <AccordionTrigger className="text-sm sm:text-base">
+                  <div className="flex items-center">
+                    <Shield className="w-4 h-4 mr-2 text-accent" /> Privacy & Security
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="pt-2 space-y-3">
+                  <Button variant="link" className="p-0 h-auto text-foreground/90 hover:text-accent transition-colors text-xs sm:text-sm block">Change Password</Button>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="2fa-switch" className="text-xs sm:text-sm">Two-Factor Authentication (2FA)</Label>
+                    <Switch id="2fa-switch" />
+                  </div>
+                  <Button variant="link" className="p-0 h-auto text-foreground/90 hover:text-accent transition-colors text-xs sm:text-sm block">Manage Blocked Users</Button>
+                </AccordionContent>
+              </AccordionItem>
+              
+              <AccordionItem value="appearance">
+                <AccordionTrigger className="text-sm sm:text-base">
+                  <div className="flex items-center">
+                    <PaletteIconLucide className="w-4 h-4 mr-2 text-accent" /> Appearance
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="pt-2">
+                    <p className="text-xs sm:text-sm text-muted-foreground">Dark/Light theme can be changed using the toggle in the website header.</p>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+            
+            <Button variant="destructive" className="w-full text-sm mt-6">
+              <LogOut className="w-4 h-4 mr-2"/> Log Out
+            </Button>
           </CardContent>
         </Card>
       </div>
