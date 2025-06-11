@@ -8,33 +8,47 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import {
   Search as SearchIcon, Palette, Camera, Music2, ToyBrick, Globe, Bitcoin,
-  Package, PlusSquare, Newspaper, ArrowRight, Users, Award, Flame, UserPlus, UserCheck, Activity, Bell
+  Package, PlusSquare, Newspaper, ArrowRight, Users, Award, Flame, UserPlus, UserCheck, Activity, Bell, AlertTriangle, Loader2
 } from 'lucide-react';
 import Link from 'next/link';
 import type { LucideIcon } from 'lucide-react';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/lib/supabase/client';
+import type { User } from '@supabase/supabase-js';
+import { Skeleton } from '@/components/ui/skeleton';
 
-const latestActivityNFTs: NFTCardProps[] = [
-  { id: '1', imageUrl: 'https://placehold.co/400x400.png', title: 'Abstract Flow', price: '1.5 ETH', artistName: 'VisionaryArtist', dataAiHint: 'abstract colorful' },
-  { id: '2', imageUrl: 'https://placehold.co/400x400.png', title: 'Cyber Dreams', price: '2.2 ETH', artistName: 'DigitalSculptor', dataAiHint: 'cyberpunk neon' },
-  { id: '3', imageUrl: 'https://placehold.co/400x400.png', title: 'Pixelated Serenity', price: '0.8 ETH', artistName: '8BitWonder', dataAiHint: 'pixel art' },
-  { id: '4', imageUrl: 'https://placehold.co/400x400.png', title: 'Cosmic Explorer', price: '3.0 ETH', artistName: 'GalaxyPainter', dataAiHint: 'space galaxy' },
-  { id: '5', imageUrl: 'https://placehold.co/400x400.png', title: 'Nature\'s Code', price: '1.2 ETH', artistName: 'EcoDigital', dataAiHint: 'nature technology' },
-  { id: '6', imageUrl: 'https://placehold.co/400x400.png', title: 'Future Relic', price: '2.5 ETH', artistName: 'AncientAI', dataAiHint: 'futuristic artifact' },
-];
 
-const popularCollections: NFTCardProps[] = [
-  latestActivityNFTs[1], latestActivityNFTs[3], latestActivityNFTs[0]
-];
+const LoadingNFTSkeleton = ({ count = 3 }: { count?: number}) => (
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    {Array(count).fill(0).map((_,i) => (
+      <Card key={`skel-nft-${i}`} className="shadow-lg">
+        <Skeleton className="aspect-square w-full bg-muted" />
+        <CardContent className="p-4">
+          <Skeleton className="h-5 w-3/4 mb-2 bg-muted" />
+          <Skeleton className="h-4 w-1/2 mb-3 bg-muted" />
+          <Skeleton className="h-6 w-1/3 bg-muted" />
+        </CardContent>
+        <CardFooter className="p-4 border-t">
+          <Skeleton className="h-9 w-full bg-muted" />
+        </CardFooter>
+      </Card>
+    ))}
+  </div>
+);
 
-const nftsFromFollowedArtists: NFTCardProps[] = [
-    { id: 'follow1', imageUrl: 'https://placehold.co/400x400.png', title: 'AI Dreams #1', price: '1.0 ETH', artistName: 'AI Alchemist', dataAiHint: 'robot art' },
-    { id: 'follow2', imageUrl: 'https://placehold.co/400x400.png', title: 'Pixel Adventure', price: '0.6 ETH', artistName: 'PixelPioneer', dataAiHint: 'pixel game character' },
-    { id: 'follow3', imageUrl: 'https://placehold.co/400x400.png', title: 'Retro Future Car', price: '1.8 ETH', artistName: 'SynthwaveSurfer', dataAiHint: 'retro car' },
-];
+const ErrorState = ({ message, onRetry }: { message: string, onRetry?: () => void }) => (
+  <Card className="text-center py-12 border-destructive bg-destructive/10">
+    <CardContent className="flex flex-col items-center">
+      <AlertTriangle className="mx-auto h-12 w-12 text-destructive mb-4" />
+      <h3 className="text-xl font-semibold text-destructive">Could not load NFTs</h3>
+      <p className="text-muted-foreground mt-1 max-w-md">{message}</p>
+      {onRetry && <Button variant="destructive" className="mt-6" onClick={onRetry}>Try Again</Button>}
+    </CardContent>
+  </Card>
+);
 
 
 interface Category {
@@ -53,7 +67,6 @@ const categories: Category[] = [
   { name: 'Utility Tokens', icon: Bitcoin, href: '/category/utility-tokens', dataAiHint: 'crypto coin' },
 ];
 
-const userName = "CreativeUser123";
 
 interface CommunityHighlightItem {
   id: string;
@@ -72,15 +85,15 @@ const communityHighlights: CommunityHighlightItem[] = [
 ];
 
 interface ArtistSpotlightData {
-  id: string;
-  name: string;
+  id: string; // This would be the profile ID (user UUID)
+  name: string; // username from profiles table
   bio: string;
-  imageUrl: string;
-  profileUrl: string;
+  imageUrl: string; // avatar_url from profiles table
+  profileUrl: string; // e.g., /profile/[id] or /artist/[username]
   dataAiHint?: string;
 }
 
-const initialArtistsSpotlight: ArtistSpotlightData[] = [
+const initialArtistsSpotlight: ArtistSpotlightData[] = [ // This should also be fetched
   { id: 'artist1', name: 'PixelPioneer', bio: 'Crafting digital worlds, one pixel at a time. Exploring the vast expanse of creativity in the digital realm.', imageUrl: 'https://placehold.co/100x100.png', profileUrl: '/artist/pixelpioneer', dataAiHint: 'artist avatar' },
   { id: 'artist2', name: 'AI Alchemist', bio: 'Fusing art and artificial intelligence to create new forms of expression.', imageUrl: 'https://placehold.co/100x100.png', profileUrl: '/artist/aialchemist', dataAiHint: 'robot artist' },
   { id: 'artist3', name: 'AbstractDreamer', bio: 'Exploring the subconscious through vibrant colors and surreal forms.', imageUrl: 'https://placehold.co/100x100.png', profileUrl: '/artist/abstractdreamer', dataAiHint: 'abstract portrait' },
@@ -93,40 +106,136 @@ const MIN_SCROLL_DELTA = 5;
 
 export default function HomePage() {
   const { toast } = useToast();
+  const router = useRouter();
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [profileUsername, setProfileUsername] = useState<string | null>(null);
+
+  const [latestActivityNFTs, setLatestActivityNFTs] = useState<NFTCardProps[]>([]);
+  const [isLoadingLatest, setIsLoadingLatest] = useState(true);
+  const [errorLatest, setErrorLatest] = useState<string | null>(null);
+
+  const [popularCollections, setPopularCollections] = useState<NFTCardProps[]>([]); // Placeholder, can fetch similarly
+  const [isLoadingPopular, setIsLoadingPopular] = useState(true);
+  const [errorPopular, setErrorPopular] = useState<string | null>(null);
+  
+  const [nftsFromFollowedArtists, setNftsFromFollowedArtists] = useState<NFTCardProps[]>([]); // Placeholder
+
   const [followedArtists, setFollowedArtists] = useState<Set<string>>(new Set());
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
+  const fetchUserAndProfile = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setCurrentUser(user);
+    if (user) {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('id', user.id)
+        .single();
+      if (error && error.code !== 'PGRST116') console.error("Error fetching profile username:", error);
+      setProfileUsername(profile?.username || user.email?.split('@')[0] || 'User');
+    } else {
+      setProfileUsername('Guest'); // Or handle guest state more explicitly
+    }
+  }, []);
+
+  const fetchLatestNfts = useCallback(async () => {
+    setIsLoadingLatest(true);
+    setErrorLatest(null);
+    try {
+      const { data, error } = await supabase
+        .from('nfts')
+        .select('id, title, image_url, price, artist_name, status') // Ensure artist_name is selected
+        .eq('status', 'listed')
+        .order('created_at', { ascending: false })
+        .limit(6);
+
+      if (error) throw error;
+      const formattedNfts: NFTCardProps[] = data.map(nft => ({
+        id: nft.id,
+        imageUrl: nft.image_url || 'https://placehold.co/400x400.png',
+        title: nft.title,
+        price: nft.price ? `${nft.price} ETH` : 'N/A',
+        artistName: nft.artist_name || 'Unknown Artist',
+        dataAiHint: 'nft image' // Generic hint for now
+      }));
+      setLatestActivityNFTs(formattedNfts);
+    } catch (err: any) {
+      console.error("Error fetching latest NFTs:", err);
+      setErrorLatest(err.message || "Could not fetch latest NFTs.");
+    } finally {
+      setIsLoadingLatest(false);
+    }
+  }, []);
+
+  const fetchPopularNfts = useCallback(async () => { // Placeholder for "Popular"
+    setIsLoadingPopular(true);
+    setErrorPopular(null);
+    try {
+      const { data, error } = await supabase
+        .from('nfts')
+        .select('id, title, image_url, price, artist_name, status')
+        .eq('status', 'listed')
+        .order('created_at', { ascending: true }) // Different order for variety
+        .limit(3);
+
+      if (error) throw error;
+      const formattedNfts: NFTCardProps[] = data.map(nft => ({
+        id: nft.id,
+        imageUrl: nft.image_url || 'https://placehold.co/400x400.png',
+        title: nft.title,
+        price: nft.price ? `${nft.price} ETH` : 'N/A',
+        artistName: nft.artist_name || 'Unknown Artist',
+        dataAiHint: 'nft image'
+      }));
+      setPopularCollections(formattedNfts);
+    } catch (err: any) {
+      console.error("Error fetching popular NFTs:", err);
+      setErrorPopular(err.message || "Could not fetch popular NFTs.");
+    } finally {
+      setIsLoadingPopular(false);
+    }
+  }, []);
+
+
   useEffect(() => {
+    fetchUserAndProfile();
+    fetchLatestNfts();
+    fetchPopularNfts(); // Fetch "popular" (recent for now)
+    
+    // Simulate fetching NFTs from followed artists - replace with actual logic
+    const mockFollowedNfts: NFTCardProps[] = [
+        { id: 'follow1', imageUrl: 'https://placehold.co/400x400.png', title: 'AI Dreams #1', price: '1.0 ETH', artistName: 'AI Alchemist', dataAiHint: 'robot art' },
+        { id: 'follow2', imageUrl: 'https://placehold.co/400x400.png', title: 'Pixel Adventure', price: '0.6 ETH', artistName: 'PixelPioneer', dataAiHint: 'pixel game character' },
+    ];
+    setNftsFromFollowedArtists(mockFollowedNfts);
+
+
     const initialScrollY = window.scrollY;
     setLastScrollY(initialScrollY);
     if (initialScrollY > SCROLL_THRESHOLD) {
       setIsHeaderVisible(false);
     }
-  }, []);
 
-  useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
-      if (currentScrollY <= SCROLL_THRESHOLD) {
-        setIsHeaderVisible(true);
-      } else {
-        if (currentScrollY > lastScrollY && (currentScrollY - lastScrollY) > MIN_SCROLL_DELTA) {
-          setIsHeaderVisible(false); 
-        } else if (currentScrollY < lastScrollY && (lastScrollY - currentScrollY) > MIN_SCROLL_DELTA) {
-          setIsHeaderVisible(true); 
-        }
-      }
+      if (currentScrollY <= SCROLL_THRESHOLD) setIsHeaderVisible(true);
+      else if (currentScrollY > lastScrollY && (currentScrollY - lastScrollY) > MIN_SCROLL_DELTA) setIsHeaderVisible(false); 
+      else if (currentScrollY < lastScrollY && (lastScrollY - currentScrollY) > MIN_SCROLL_DELTA) setIsHeaderVisible(true); 
       setLastScrollY(currentScrollY);
     };
-
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
-
+  }, [fetchUserAndProfile, fetchLatestNfts, fetchPopularNfts, lastScrollY]); // Added lastScrollY
 
   const handleFollowToggle = (artistId: string, artistName: string) => {
+    if (!currentUser) {
+      toast({ variant: "destructive", title: "Login Required", description: "Please log in to follow artists."});
+      router.push('/login');
+      return;
+    }
+    // Simulate follow/unfollow logic. In a real app, this would update backend.
     setFollowedArtists(prev => {
       const newSet = new Set(prev);
       if (newSet.has(artistId)) {
@@ -144,7 +253,7 @@ export default function HomePage() {
     <AppLayout>
       <div className="max-w-full md:max-w-7xl mx-auto">
         <header className={cn(
-          "flex flex-col md:flex-row justify-between items-center mb-6 py-3 sticky top-0 bg-background z-20 px-4 md:px-0 border-b",
+          "flex flex-col md:flex-row justify-between items-center mb-6 py-3 sticky top-0 bg-background/90 backdrop-blur-md z-20 px-4 md:px-0 border-b",
           "transition-transform duration-300 ease-in-out",
           isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
         )}>
@@ -152,24 +261,29 @@ export default function HomePage() {
             <ArtNFTLogo />
           </div>
           <div className="flex items-center w-full md:w-auto md:flex-grow md:justify-center px-0 md:px-4">
-            <div className="flex items-center flex-grow max-w-xs sm:max-w-sm md:max-w-md">
+             <form onSubmit={(e) => { e.preventDefault(); router.push(`/search?q=${e.currentTarget.search.value}`); }} className="flex items-center flex-grow max-w-xs sm:max-w-sm md:max-w-md">
               <Input
                 type="search"
+                name="search"
                 placeholder="Search anything..."
                 className="flex-grow"
               />
-              <Button variant="default" size="icon" className="ml-2 shrink-0">
+              <Button type="submit" variant="default" size="icon" className="ml-2 shrink-0">
                 <SearchIcon className="h-5 w-5" />
               </Button>
-            </div>
+            </form>
           </div>
           <div className="hidden md:flex items-center space-x-3">
-            <Link href="/profile" className="hover:text-primary transition-colors">
-              <div className="text-right">
-                  <p className="text-xs text-muted-foreground">Hello,</p>
-                  <p className="text-sm font-semibold text-foreground -mt-1">{userName}</p>
-              </div>
-            </Link>
+            {currentUser ? (
+              <Link href="/profile" className="hover:text-primary transition-colors">
+                <div className="text-right">
+                    <p className="text-xs text-muted-foreground">Hello,</p>
+                    <p className="text-sm font-semibold text-foreground -mt-1 truncate max-w-[150px]">{profileUsername || 'User'}</p>
+                </div>
+              </Link>
+            ) : (
+              <Button variant="outline" size="sm" asChild><Link href="/login">Log In</Link></Button>
+            )}
             <Button variant="ghost" size="icon" asChild>
                 <Link href="/notifications" aria-label="Notifications">
                     <Bell className="h-5 w-5" />
@@ -179,8 +293,6 @@ export default function HomePage() {
         </header>
 
         <div className="px-4 md:px-0 space-y-12">
-
-            {/* Hero Section */}
             <section className="relative bg-muted/30 rounded-lg overflow-hidden p-8 md:p-12 text-center md:text-left shadow-lg">
                 <div className="absolute inset-0 opacity-10 z-0">
                     <Image 
@@ -215,14 +327,13 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* Latest Activity */}
             <section>
                 <h2 className="text-2xl font-semibold mb-6 text-foreground flex items-center"><Activity className="mr-3 h-7 w-7 text-primary"/>Latest Activity</h2>
-                {latestActivityNFTs.length > 0 ? (
+                {isLoadingLatest ? <LoadingNFTSkeleton count={6} />
+                  : errorLatest ? <ErrorState message={errorLatest} onRetry={fetchLatestNfts} />
+                  : latestActivityNFTs.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                        {latestActivityNFTs.map(nft => (
-                            <NFTCard key={nft.id} {...nft} />
-                        ))}
+                        {latestActivityNFTs.map(nft => <NFTCard key={nft.id} {...nft} />)}
                     </div>
                 ) : (
                     <Card className="text-center py-12 shadow-md border-dashed">
@@ -235,10 +346,10 @@ export default function HomePage() {
                 )}
             </section>
 
-            {/* New From Artists You Follow Section */}
             <section>
                 <h2 className="text-2xl font-semibold mb-4 text-foreground flex items-center"><Users className="mr-3 h-7 w-7 text-primary"/>New From Artists You Follow</h2>
-                {followedArtists.size > 0 ? (
+                {/* This section currently uses mock data - needs integration */}
+                {followedArtists.size > 0 && nftsFromFollowedArtists.length > 0 ? (
                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                         {nftsFromFollowedArtists.map(nft => (
                             <NFTCard key={`followed-${nft.id}`} {...nft} />
@@ -260,7 +371,6 @@ export default function HomePage() {
                 )}
             </section>
 
-            {/* Artist Spotlight Section */}
             <section id="artist-spotlights">
               <h2 className="text-2xl font-semibold mb-4 text-foreground">Artist Spotlights</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -304,7 +414,6 @@ export default function HomePage() {
               </div>
             </section>
 
-            {/* Explore Categories Section */}
             <section id="categories">
                 <h2 className="text-2xl font-semibold mb-4 text-foreground">Explore Categories</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
@@ -321,20 +430,21 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* Popular Collections Section */}
              <section>
                 <h2 className="text-2xl font-semibold mb-4 text-foreground flex items-center">
                     <Package className="mr-3 h-7 w-7 text-primary"/>Popular Collections
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {popularCollections.map(nft => (
-                        <NFTCard key={`trending-${nft.id}`} {...nft} title={`${nft.title}`} />
-                    ))}
-                     {popularCollections.length === 0 && <p className="text-muted-foreground">No popular collections right now.</p>}
-                </div>
+                 {isLoadingPopular ? <LoadingNFTSkeleton count={3} />
+                  : errorPopular ? <ErrorState message={errorPopular} onRetry={fetchPopularNfts} />
+                  : popularCollections.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {popularCollections.map(nft => <NFTCard key={`popular-${nft.id}`} {...nft} />)}
+                    </div>
+                ) : (
+                    <p className="text-muted-foreground">No popular collections right now.</p>
+                )}
             </section>
 
-            {/* Community Highlights Section */}
             <section>
                 <h2 className="text-2xl font-semibold mb-4 text-foreground">Community Highlights</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
