@@ -12,7 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Mail } from 'lucide-react';
 import { Separator } from '@/components/ui/separator'; // Keep separator for structure
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+// const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'; // Removed
 
 export default function LogInPage() {
   const router = useRouter();
@@ -38,37 +38,45 @@ export default function LogInPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/users/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
+      // TODO: Replace with Supabase authentication call
+      // const response = await fetch(`${BACKEND_URL}/api/users/login`, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({ email, password }),
+      // });
+
+      // const data = await response.json();
+
+      // if (response.ok) {
+      //   localStorage.setItem('userToken', data.token); // Store the token
+      //   localStorage.removeItem('isAdminAuthenticated'); // Clear admin auth if any
+      //   toast({
+      //     title: 'Login Successful',
+      //     description: 'Welcome back!',
+      //   });
+      //   router.push('/home');
+      // } else {
+      //   toast({
+      //     variant: 'destructive',
+      //     title: 'Login Failed',
+      //     description: data.error || 'Invalid email or password. Please try again.',
+      //   });
+      // }
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      toast({
+        title: 'Login In Progress',
+        description: 'Login functionality is being updated to use Supabase. Please try again later.',
+        variant: 'default'
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        localStorage.setItem('userToken', data.token); // Store the token
-        localStorage.removeItem('isAdminAuthenticated'); // Clear admin auth if any
-        toast({
-          title: 'Login Successful',
-          description: 'Welcome back!',
-        });
-        router.push('/home');
-      } else {
-        toast({
-          variant: 'destructive',
-          title: 'Login Failed',
-          description: data.error || 'Invalid email or password. Please try again.',
-        });
-      }
+      
     } catch (error) {
       console.error('Login error:', error);
       let errorMessage = 'An unexpected error occurred. Please try again later.';
-      // Check if it's a network error (Failed to fetch)
+      // Check if it's a network error (Failed to fetch) - This specific check might be less relevant now
       if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
-        errorMessage = `Could not connect to the backend server at ${BACKEND_URL}. Please ensure it is running and accessible.`;
+        errorMessage = `Could not connect to the authentication service. Please check your network or try again later.`;
       }
       toast({
         variant: 'destructive',

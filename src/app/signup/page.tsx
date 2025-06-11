@@ -12,7 +12,7 @@ import { useState, type FormEvent } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+// const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000'; // Removed
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -35,30 +35,37 @@ export default function SignUpPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${BACKEND_URL}/api/users/signup`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }), // Backend will handle confirm password logic if needed, or just expect password
+      // TODO: Replace with Supabase authentication call
+      // const response = await fetch(`${BACKEND_URL}/api/users/signup`, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({ email, password }), // Backend will handle confirm password logic if needed, or just expect password
+      // });
+
+      // const data = await response.json();
+
+      // if (response.ok) {
+      //   localStorage.removeItem('isAdminAuthenticated'); // Clear any admin auth
+      //   toast({
+      //     title: 'Sign Up Successful',
+      //     description: data.message || 'Welcome to ArtNFT! Please log in.',
+      //   });
+      //   router.push('/login'); 
+      // } else {
+      //   toast({
+      //     variant: 'destructive',
+      //     title: 'Sign Up Failed',
+      //     description: data.error || 'Could not create your account. Please try again.',
+      //   });
+      // }
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+      toast({
+        title: 'Sign Up In Progress',
+        description: 'Sign Up functionality is being updated to use Supabase. Please try again later.',
+        variant: 'default'
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        localStorage.removeItem('isAdminAuthenticated'); // Clear any admin auth
-        toast({
-          title: 'Sign Up Successful',
-          description: data.message || 'Welcome to ArtNFT! Please log in.',
-        });
-        router.push('/login'); 
-      } else {
-        toast({
-          variant: 'destructive',
-          title: 'Sign Up Failed',
-          description: data.error || 'Could not create your account. Please try again.',
-        });
-      }
     } catch (error) {
       console.error('Signup error:', error);
       toast({
