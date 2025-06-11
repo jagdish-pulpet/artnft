@@ -19,7 +19,7 @@ import { cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabase/client';
 import type { User } from '@supabase/supabase-js';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useRouter } from 'next/navigation'; // Added import
+import { useRouter } from 'next/navigation';
 
 
 const LoadingNFTSkeleton = ({ count = 3 }: { count?: number}) => (
@@ -147,7 +147,7 @@ export default function HomePage() {
     try {
       const { data, error } = await supabase
         .from('nfts')
-        .select('id, title, image_url, price, artist_name, status') // Ensure artist_name is selected
+        .select('id, title, image_url, price, artist_name, status')
         .eq('status', 'listed')
         .order('created_at', { ascending: false })
         .limit(6);
@@ -159,18 +159,30 @@ export default function HomePage() {
         title: nft.title,
         price: nft.price ? `${nft.price} ETH` : 'N/A',
         artistName: nft.artist_name || 'Unknown Artist',
-        dataAiHint: 'nft image' // Generic hint for now
+        dataAiHint: 'nft image'
       }));
       setLatestActivityNFTs(formattedNfts);
     } catch (err: any) {
-      console.error("Error fetching latest NFTs:", err);
-      setErrorLatest(err.message || "Could not fetch latest NFTs.");
+      let detailedErrorMessage = "Error fetching latest NFTs: Unknown error.";
+      if (err && err.message) {
+        detailedErrorMessage = `Error fetching latest NFTs: ${err.message}`;
+        if (err.details) detailedErrorMessage += ` Details: ${err.details}`;
+        if (err.code) detailedErrorMessage += ` Code: ${err.code}`;
+      } else if (err) {
+        try {
+          detailedErrorMessage = `Error fetching latest NFTs: ${JSON.stringify(err)}`;
+        } catch (stringifyError) {
+          detailedErrorMessage = "Error fetching latest NFTs: Non-serializable error object caught.";
+        }
+      }
+      console.error(detailedErrorMessage, err); // Log the constructed message and the original error object
+      setErrorLatest( (err && err.message) ? err.message : "Could not fetch latest NFTs.");
     } finally {
       setIsLoadingLatest(false);
     }
   }, []);
 
-  const fetchPopularNfts = useCallback(async () => { // Placeholder for "Popular"
+  const fetchPopularNfts = useCallback(async () => {
     setIsLoadingPopular(true);
     setErrorPopular(null);
     try {
@@ -178,7 +190,7 @@ export default function HomePage() {
         .from('nfts')
         .select('id, title, image_url, price, artist_name, status')
         .eq('status', 'listed')
-        .order('created_at', { ascending: true }) // Different order for variety
+        .order('created_at', { ascending: true }) 
         .limit(3);
 
       if (error) throw error;
@@ -192,8 +204,20 @@ export default function HomePage() {
       }));
       setPopularCollections(formattedNfts);
     } catch (err: any) {
-      console.error("Error fetching popular NFTs:", err);
-      setErrorPopular(err.message || "Could not fetch popular NFTs.");
+      let detailedErrorMessage = "Error fetching popular NFTs: Unknown error.";
+      if (err && err.message) {
+        detailedErrorMessage = `Error fetching popular NFTs: ${err.message}`;
+        if (err.details) detailedErrorMessage += ` Details: ${err.details}`;
+        if (err.code) detailedErrorMessage += ` Code: ${err.code}`;
+      } else if (err) {
+        try {
+          detailedErrorMessage = `Error fetching popular NFTs: ${JSON.stringify(err)}`;
+        } catch (stringifyError) {
+          detailedErrorMessage = "Error fetching popular NFTs: Non-serializable error object caught.";
+        }
+      }
+      console.error(detailedErrorMessage, err); // Log the constructed message and the original error object
+      setErrorPopular( (err && err.message) ? err.message : "Could not fetch popular NFTs.");
     } finally {
       setIsLoadingPopular(false);
     }
@@ -203,9 +227,8 @@ export default function HomePage() {
   useEffect(() => {
     fetchUserAndProfile();
     fetchLatestNfts();
-    fetchPopularNfts(); // Fetch "popular" (recent for now)
+    fetchPopularNfts();
     
-    // Simulate fetching NFTs from followed artists - replace with actual logic
     const mockFollowedNfts: NFTCardProps[] = [
         { id: 'follow1', imageUrl: 'https://placehold.co/400x400.png', title: 'AI Dreams #1', price: '1.0 ETH', artistName: 'AI Alchemist', dataAiHint: 'robot art' },
         { id: 'follow2', imageUrl: 'https://placehold.co/400x400.png', title: 'Pixel Adventure', price: '0.6 ETH', artistName: 'PixelPioneer', dataAiHint: 'pixel game character' },
@@ -228,7 +251,7 @@ export default function HomePage() {
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [fetchUserAndProfile, fetchLatestNfts, fetchPopularNfts, lastScrollY]); // Added lastScrollY
+  }, [fetchUserAndProfile, fetchLatestNfts, fetchPopularNfts, lastScrollY]);
 
   const handleFollowToggle = (artistId: string, artistName: string) => {
     if (!currentUser) {
@@ -236,7 +259,6 @@ export default function HomePage() {
       router.push('/login');
       return;
     }
-    // Simulate follow/unfollow logic. In a real app, this would update backend.
     setFollowedArtists(prev => {
       const newSet = new Set(prev);
       if (newSet.has(artistId)) {
@@ -349,7 +371,6 @@ export default function HomePage() {
 
             <section>
                 <h2 className="text-2xl font-semibold mb-4 text-foreground flex items-center"><Users className="mr-3 h-7 w-7 text-primary"/>New From Artists You Follow</h2>
-                {/* This section currently uses mock data - needs integration */}
                 {followedArtists.size > 0 && nftsFromFollowedArtists.length > 0 ? (
                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                         {nftsFromFollowedArtists.map(nft => (
