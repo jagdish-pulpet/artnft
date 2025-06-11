@@ -142,7 +142,7 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">
 
-function toast({ ...props }: Toast) {
+function toast({ description, ...props }: Toast) {
   const id = genId()
 
   const update = (props: ToasterToast) =>
@@ -152,10 +152,18 @@ function toast({ ...props }: Toast) {
     })
   const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id })
 
+  // Convert error objects to strings for description
+  const processedDescription = typeof description === 'object' && description !== null
+    ? description instanceof Error
+      ? description.message
+      : JSON.stringify(description)
+    : description
+
   dispatch({
     type: "ADD_TOAST",
     toast: {
       ...props,
+      description: processedDescription,
       id,
       open: true,
       onOpenChange: (open) => {

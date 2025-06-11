@@ -1,22 +1,24 @@
-
-import { Gem } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import type React from 'react';
 
 interface ArtNFTLogoProps {
-  size?: 'small' | 'medium' | 'large';
   className?: string;
+  size?: 'small' | 'medium' | 'large';
 }
 
-export default function ArtNFTLogo({ size = 'medium', className }: ArtNFTLogoProps) {
-  const sizeClasses = {
-    small: 'w-8 h-8',
-    medium: 'w-12 h-12',
-    large: 'w-20 h-20 sm:w-28 sm:h-28',
-  };
+const ArtNFTLogo: React.FC<ArtNFTLogoProps> = ({ className, size = 'medium' }) => {
+  let textSizeClass = 'text-4xl';
+  if (size === 'small') {
+    textSizeClass = 'text-2xl';
+  } else if (size === 'large') {
+    textSizeClass = 'text-6xl';
+  }
 
   return (
-    <div className={cn('flex items-center justify-center', className)}>
-      <Gem className={cn(sizeClasses[size], 'text-inherit')} /> {/* Use text-inherit to respect parent color */}
+    <div className={`font-headline font-bold ${textSizeClass} ${className}`}>
+      <span className="text-primary">Art</span>
+      <span className="text-accent">NFT</span>
     </div>
   );
-}
+};
+
+export default ArtNFTLogo;

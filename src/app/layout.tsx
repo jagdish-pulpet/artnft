@@ -1,12 +1,10 @@
-import type {Metadata} from 'next';
+import type { Metadata } from 'next';
 import './globals.css';
-import AppLayout from '@/components/layout/app-layout';
 import { Toaster } from "@/components/ui/toaster";
-import { ThemeProvider } from 'next-themes';
 
 export const metadata: Metadata = {
-  title: 'ArtNFT - Discover Unique Digital Art',
-  description: 'Explore, create, and collect unique NFTs on ArtNFT.',
+  title: 'ArtNFT Marketplace',
+  description: 'Discover, Create, and Trade Digital Art.',
 };
 
 export default function RootLayout({
@@ -15,25 +13,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-body bg-background text-foreground antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <AppLayout>
-            {children}
-          </AppLayout>
-          <Toaster />
-        </ThemeProvider>
+      <body className="font-body antialiased">
+        {children}
+        <Toaster />
       </body>
     </html>
   );

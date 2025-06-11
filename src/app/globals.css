@@ -13,45 +13,6 @@
    background-image: linear-gradient(to bottom right, hsl(var(--primary) / 0.3), hsl(var(--accent) / 0.3));
 }
 
-.bg-rainbow-swirl {
-  background-size: 200% 200%;
-  background-image: linear-gradient(
-    -45deg,
-    hsl(var(--destructive) / 0.6),
-    hsl(var(--accent) / 0.6),
-    hsl(var(--primary) / 0.6),
-    hsl(var(--chart-2) / 0.6),
-    hsl(var(--chart-4) / 0.6),
-    hsl(var(--destructive) / 0.6)
-  );
-  animation: rainbowSwirlAnimation 15s ease infinite;
-}
-
-@keyframes rainbowSwirlAnimation {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* Ripple Animation */
-@keyframes ripple-effect {
-  0% {
-    transform: scale(0.5);
-    opacity: 0.7;
-  }
-  100% {
-    transform: scale(2.5);
-    opacity: 0;
-  }
-}
-
-.ripple {
-  position: absolute;
-  border-radius: 50%;
-  border: 2px solid hsl(var(--primary-foreground) / 0.3); /* White with transparency */
-  animation: ripple-effect 3s infinite ease-out;
-}
-
 
 @layer base {
   :root {
