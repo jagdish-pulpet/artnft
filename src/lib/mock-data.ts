@@ -1,4 +1,5 @@
-import type { NFT } from '@/types';
+
+import type { NFT, NotificationItem } from '@/types';
 
 export const mockNfts: NFT[] = [
   {
@@ -92,5 +93,54 @@ export const mockNfts: NFT[] = [
 
 export const getMockNftById = (id: string): NFT | undefined => mockNfts.find(nft => nft.id === id);
 
-export const getMockNftsByCollectionId = (collectionId: string): NFT[] => 
+export const getMockNftsByCollectionId = (collectionId: string): NFT[] =>
   mockNfts.filter(nft => nft.relatedCollectionIds?.includes(collectionId)).slice(0, 2); // Return 2 for brevity
+
+export const mockNotifications: NotificationItem[] = [
+  {
+    id: 'notif1',
+    type: 'new_bid',
+    title: 'New Bid on Cosmic Dream!',
+    message: 'User @CollectorX placed a bid of 1.3 ETH.',
+    timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(), // 5 minutes ago
+    read: false,
+    link: '/nfts/1',
+    avatarUrl: 'https://placehold.co/40x40.png?text=CX',
+  },
+  {
+    id: 'notif2',
+    type: 'price_drop',
+    title: 'Price Drop: Pixel Portrait #7',
+    message: 'The price for Pixel Portrait #7 has dropped to 0.7 ETH.',
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
+    read: false,
+    link: '/nfts/3',
+  },
+  {
+    id: 'notif3',
+    type: 'new_listing',
+    title: 'New NFT by TechFlora',
+    message: 'TechFlora just listed "Robo Garden", check it out!',
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
+    read: true,
+    link: '/artist/TechFlora', // Placeholder link
+    avatarUrl: 'https://placehold.co/40x40.png?text=TF',
+  },
+  {
+    id: 'notif4',
+    type: 'sale',
+    title: 'Sale! Cybernetic Bloom Sold',
+    message: 'Your NFT "Cybernetic Bloom" was sold for 2.2 ETH.',
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(), // 2 days ago
+    read: true,
+    link: '/nfts/2',
+  },
+  {
+    id: 'notif5',
+    type: 'system',
+    title: 'Platform Maintenance Scheduled',
+    message: 'ArtNFT will undergo scheduled maintenance on July 15th, 2 AM UTC.',
+    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(), // 3 days ago
+    read: true,
+  },
+];
