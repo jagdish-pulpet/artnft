@@ -10,18 +10,18 @@ export default function LandingPage() {
   const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
-    // Simulate a loading animation or delay
+    // Simulate a loading animation or delay for content to appear
     const timer = setTimeout(() => {
       setShowContent(true);
-    }, 500); // Adjust delay as needed for "loading animation" feel
+    }, 500); // Adjust delay as needed
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-background to-primary/20 p-4 text-center overflow-hidden">
       <div className="absolute inset-0 z-0">
-        {/* Placeholder for animated particles or subtle background graphics */}
-        {/* Example: <div className="absolute inset-0 opacity-5 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-accent/30 to-transparent animate-pulse"></div> */}
+        {/* Enhanced: Activated subtle animated particle background */}
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-accent/40 via-accent/20 to-transparent animate-pulse"></div>
       </div>
       
       <div className={`z-10 flex flex-col items-center transition-opacity duration-1000 ease-in-out ${showContent ? 'opacity-100' : 'opacity-0'}`}>
@@ -41,7 +41,6 @@ export default function LandingPage() {
             </Button>
           </Link>
           <Link href="/profile" className="w-full sm:w-auto">
-            {/* Assuming /profile can serve as a temporary placeholder for Sign Up / Login */}
             <Button variant="outline" size="lg" className="w-full border-foreground/30 text-foreground hover:bg-foreground/5 shadow-lg transition-transform hover:scale-105 focus:ring-2 focus:ring-foreground/50 focus:ring-offset-2">
               Sign Up / Login <UserPlus className="ml-2 h-5 w-5" />
             </Button>
