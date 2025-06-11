@@ -15,15 +15,20 @@ import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase/client'; // Import Supabase client
-import type { User } from '@supabase/supabase-js'; // Import User type
-import { useToast } from '@/hooks/use-toast'; // Import useToast
-import { useRouter } from 'next/navigation'; // Import useRouter
+import { supabase } from '@/lib/supabase/client';
+import type { User } from '@supabase/supabase-js';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
 
-const mockOwnedNftsData: NFTCardProps[] = [
-  { id: 'owned1', imageUrl: 'https://placehold.co/300x300.png', title: 'My Abstract #1', price: 'Purchased for 0.5 ETH', artistName: 'UserCreative', dataAiHint:"abstract art" },
-  { id: 'owned2', imageUrl: 'https://placehold.co/300x300.png', title: 'My Cyber Pet', price: 'Purchased for 1.2 ETH', artistName: 'UserCreative', dataAiHint:"cyberpunk animal" },
+// Simulated "owned" NFTs for the test user
+const testUserOwnedNfts: NFTCardProps[] = [
+  { id: 'owned_test1', imageUrl: 'https://placehold.co/300x300.png', title: 'My Cosmic Test NFT', price: '0.75 ETH', artistName: 'testuser@artnft.com', dataAiHint:"abstract space" },
+  { id: 'owned_test2', imageUrl: 'https://placehold.co/300x300.png', title: 'Pixelated Test Token', price: '0.25 ETH', artistName: 'testuser@artnft.com', dataAiHint:"pixel token" },
+];
+// Default mock owned NFTs for other users or if no specific user is matched
+const defaultMockOwnedNftsData: NFTCardProps[] = [
+  { id: 'owned_default1', imageUrl: 'https://placehold.co/300x300.png', title: 'My Abstract #1', price: 'Purchased for 0.5 ETH', artistName: 'UserCreative', dataAiHint:"abstract art" },
 ];
 
 const mockFavoritedNftsData: NFTCardProps[] = [
@@ -43,7 +48,6 @@ interface Transaction {
 const mockTransactionHistoryData: Transaction[] = [
     { id: 't1', type: 'Purchase', item: 'Cosmic Explorer', amount: '3.0 ETH', date: '2023-10-15T10:00:00Z', status: 'Completed', icon: ShoppingCart },
     { id: 't2', type: 'Sale', item: 'My Old Artwork', amount: '0.5 ETH', date: '2023-09-20T14:30:00Z', status: 'Completed', icon: Tag },
-    { id: 't3', type: 'Mint', item: 'Digital Landscape', amount: '0.02 ETH (Gas)', date: '2023-08-01T11:00:00Z', status: 'Completed', icon: PackagePlus },
 ];
 
 interface ActivityItem {
@@ -55,12 +59,11 @@ interface ActivityItem {
 }
 const mockRecentActivityData: ActivityItem[] = [
   { id: 'ra1', icon: PackagePlus, message: "You minted 'Cyber Sunrise'", timestamp: '2023-11-10T10:00:00Z', href: '/nft/owned3' },
-  { id: 'ra2', icon: Tag, message: "You listed 'Neon Dreams' for 1.2 ETH", timestamp: '2023-11-10T05:00:00Z', href: '/nft/1' },
   { id: 'ra3', icon: Heart, message: "You favorited 'Galaxy Bloom'", timestamp: '2023-11-08T00:00:00Z', href: '/nft/r1'},
 ];
 
-const userItemsForSaleCount = 5;
-const userTotalEarnings = "12.5 ETH"; // This will remain mock for now
+const userItemsForSaleCount = 5; 
+const userTotalEarnings = "12.5 ETH"; 
 
 const LoadingNFTSkeleton = () => (
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -141,37 +144,35 @@ export default function DashboardPage() {
   const [isLoadingActivity, setIsLoadingActivity] = useState(true);
   const [errorActivity, setErrorActivity] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchUserAndData = async () => {
-      setIsLoadingUser(true);
-      const { data: { user: currentUser }, error: userError } = await supabase.auth.getUser();
-      
-      if (userError || !currentUser) {
-        toast({ variant: "destructive", title: "Authentication Error", description: "Could not fetch user session. Please log in."});
-        router.push('/login');
-        setIsLoadingUser(false);
-        return;
-      }
-      setUser(currentUser);
+  const fetchUserAndData = async () => {
+    setIsLoadingUser(true);
+    const { data: { user: currentUser }, error: userError } = await supabase.auth.getUser();
+    
+    if (userError || !currentUser) {
+      // toast({ variant: "destructive", title: "Authentication Error", description: "Could not fetch user session. Please log in."});
+      router.push('/login'); // Redirect if not logged in
       setIsLoadingUser(false);
+      return;
+    }
+    setUser(currentUser);
+    setIsLoadingUser(false);
 
-      // Once user is fetched, fetch their specific data (simulated for now)
-      fetchOwnedNfts(currentUser.id);
-      fetchFavoritedNfts(currentUser.id);
-      fetchTransactionHistory(currentUser.id);
-      fetchRecentActivity(currentUser.id);
-    };
-
+    fetchOwnedNfts(currentUser);
+    fetchFavoritedNfts(currentUser.id);
+    fetchTransactionHistory(currentUser.id);
+    fetchRecentActivity(currentUser.id);
+  };
+  
+  useEffect(() => {
     fetchUserAndData();
 
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       const newCurrentUser = session?.user ?? null;
       setUser(newCurrentUser);
-      if (event === 'SIGNED_OUT') {
+      if (event === 'SIGNED_OUT' || !newCurrentUser) {
         router.push('/login');
       } else if (event === 'SIGNED_IN' && newCurrentUser) {
-        // If user just signed in, refetch their data
-        fetchOwnedNfts(newCurrentUser.id);
+        fetchOwnedNfts(newCurrentUser);
         fetchFavoritedNfts(newCurrentUser.id);
         fetchTransactionHistory(newCurrentUser.id);
         fetchRecentActivity(newCurrentUser.id);
@@ -182,15 +183,21 @@ export default function DashboardPage() {
       authListener?.subscription.unsubscribe();
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router, toast]);
+  }, [router]);
 
 
-  const fetchOwnedNfts = async (userId: string) => {
+  const fetchOwnedNfts = async (currentUser: User) => {
     setIsLoadingOwned(true); setErrorOwned(null);
     try {
-      await new Promise(resolve => setTimeout(resolve, 700)); // Simulate API latency
-      // In a real app: const { data, error } = await supabase.from('nfts').select('*').eq('owner_id', userId);
-      setOwnedNfts(mockOwnedNftsData); // Using mock data
+      await new Promise(resolve => setTimeout(resolve, 700));
+      // SIMULATION: Check if the logged-in user is 'testuser@artnft.com'
+      if (currentUser.email === 'testuser@artnft.com') {
+        setOwnedNfts(testUserOwnedNfts);
+      } else {
+        // For any other user, show default mock data or an empty array
+        setOwnedNfts(defaultMockOwnedNftsData); 
+        // Or setOwnedNfts([]); to show empty state for other users
+      }
     } catch (err) { setErrorOwned("Failed to fetch owned NFTs."); } finally { setIsLoadingOwned(false); }
   };
 
@@ -198,7 +205,6 @@ export default function DashboardPage() {
     setIsLoadingFavorites(true); setErrorFavorites(null);
     try {
       await new Promise(resolve => setTimeout(resolve, 900));
-      // In a real app: const { data, error } = await supabase.from('favorites').select('nfts(*)').eq('user_id', userId);
       setFavoritedNfts(mockFavoritedNftsData);
     } catch (err) { setErrorFavorites("Failed to fetch favorited NFTs."); } finally { setIsLoadingFavorites(false); }
   };
@@ -207,7 +213,6 @@ export default function DashboardPage() {
     setIsLoadingHistory(true); setErrorHistory(null);
     try {
         await new Promise(resolve => setTimeout(resolve, 600));
-        // In a real app: const { data, error } = await supabase.from('transactions').select('*').eq('user_id', userId).order('date', { ascending: false });
         setTransactionHistory(mockTransactionHistoryData);
     } catch (err) { setErrorHistory("Failed to fetch transaction history."); } finally { setIsLoadingHistory(false); }
   };
@@ -216,12 +221,14 @@ export default function DashboardPage() {
     setIsLoadingActivity(true); setErrorActivity(null);
     try {
         await new Promise(resolve => setTimeout(resolve, 800));
-        // In a real app: const { data, error } = await supabase.from('activities').select('*').eq('user_id', userId).order('timestamp', { ascending: false });
         setRecentActivity(mockRecentActivityData);
     } catch (err) { setErrorActivity("Failed to fetch recent activity."); } finally { setIsLoadingActivity(false); }
   };
 
-  const profileDisplayName = user?.email ? user.email.split('@')[0] : (isLoadingUser ? 'Loading...' : 'User');
+  const profileDisplayName = user?.email ? (user.user_metadata?.username || user.email.split('@')[0]) : (isLoadingUser ? 'Loading...' : 'User');
+  const profileBio = user?.user_metadata?.bio || "Digital art enthusiast. Exploring web3.";
+  const profileAvatar = user?.user_metadata?.avatar_url || `https://placehold.co/120x120.png?text=${profileDisplayName.charAt(0).toUpperCase()}`;
+
 
   return (
     <AppLayout>
@@ -238,7 +245,7 @@ export default function DashboardPage() {
             <div className="bg-muted/20 p-6 md:p-8">
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
                 <Image 
-                    src={user.user_metadata?.avatar_url || "https://placehold.co/120x120.png"} 
+                    src={profileAvatar}
                     alt="User Profile" 
                     width={120} 
                     height={120} 
@@ -247,9 +254,7 @@ export default function DashboardPage() {
                 />
                 <div className="text-center sm:text-left flex-grow">
                     <CardTitle className="text-3xl font-bold font-headline">{profileDisplayName}</CardTitle>
-                    <CardDescription className="text-md mt-1">
-                    {user.user_metadata?.bio || "Digital art enthusiast. Exploring web3."}
-                    </CardDescription>
+                    <CardDescription className="text-md mt-1">{profileBio}</CardDescription>
                     <div className="mt-4 flex gap-2 justify-center sm:justify-start">
                     <Button variant="default" size="sm">
                         <Edit3 className="h-4 w-4 mr-2" /> Edit Profile
@@ -281,7 +286,7 @@ export default function DashboardPage() {
             </CardFooter>
             </Card>
         ) : (
-            <ErrorState message="User not found. Please log in again." onRetry={() => router.push('/login')} />
+            <ErrorState message="User session not found. Please log in." onRetry={() => router.push('/login')} />
         )}
         
         <Card className="mb-8 shadow-lg border-border">
@@ -321,7 +326,7 @@ export default function DashboardPage() {
             {isLoadingOwned ? (
               <LoadingNFTSkeleton />
             ) : errorOwned ? (
-              <ErrorState message={errorOwned} onRetry={() => user && fetchOwnedNfts(user.id)} />
+              <ErrorState message={errorOwned} onRetry={() => user && fetchOwnedNfts(user)} />
             ) : ownedNfts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {ownedNfts.map(nft => <NFTCard key={nft.id} {...nft} />)}

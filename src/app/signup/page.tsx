@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import { useState, type FormEvent } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
-import { supabase } from '@/lib/supabase/client'; // Import Supabase client
+import { supabase } from '@/lib/supabase/client';
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -36,25 +36,28 @@ export default function SignUpPage() {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      // options: { emailRedirectTo: `${window.location.origin}/auth/callback` } // Optional: If email confirmation is set up
+      options: {
+        // You can add user_metadata here if needed during signup
+        // data: { username: email.split('@')[0] } // Example
+      }
     });
 
     setIsLoading(false);
 
     if (error) {
       toast({ variant: 'destructive', title: 'Sign Up Failed', description: error.message });
-    } else if (data.user) {
-      // Supabase's behavior depends on project settings (e.g., "Confirm email" toggle)
-      // If email confirmation is required, data.session will be null.
-      if (data.session) { // User is signed up and logged in
+    } else {
+      // data.user contains the user object, data.session is null if email confirmation is required
+      if (data.session) { // User is signed up and logged in (email confirmation might be off)
         toast({ title: 'Sign Up Successful!', description: 'Welcome! You are now logged in.' });
         router.push('/home');
-      } else { // Email confirmation likely required
+      } else if (data.user) { // Email confirmation likely required
         toast({ title: 'Sign Up Successful!', description: 'Please check your email to confirm your account before logging in.' });
-        router.push('/login'); // Or a specific "check email" page
+        router.push('/login');
+      } else {
+        // Fallback, should not happen if no error and no user/session
+        toast({ variant: 'destructive', title: 'Sign Up Issue', description: 'An unexpected issue occurred. Please try again.' });
       }
-    } else {
-       toast({ variant: 'destructive', title: 'Sign Up Failed', description: 'An unexpected error occurred. Please try again.' });
     }
   };
 
@@ -96,7 +99,7 @@ export default function SignUpPage() {
               type="password" 
               placeholder="•••••••• (min. 6 characters)" 
               required 
-              minLength={6} // Supabase default min password length
+              minLength={6}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}

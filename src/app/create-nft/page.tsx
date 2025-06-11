@@ -10,27 +10,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { UploadCloud, Eye, Loader2, Wand2, TagsIcon, Palette, PlusCircle, Trash2, Percent, Lock, Unlock, Info, X, Check, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-
-// Corrected import for generateNftDescription
 import { generateNftDescription } from '@/ai/flows/generate-nft-description';
 import type { GenerateNftDescriptionInput, GenerateNftDescriptionOutput } from '@/ai/flows/generate-nft-description';
-
-// Commented out imports for missing AI flows
-// import { suggestNftTitles } from '@/ai/flows/suggest-nft-titles-flow';
-// import type { SuggestNftTitlesInput, SuggestNftTitlesOutput } from '@/ai/flows/suggest-nft-titles-flow';
-// import { suggestNftTags } from '@/ai/flows/suggest-nft-tags-flow';
-// import type { SuggestNftTagsInput, SuggestNftTagsOutput } from '@/ai/flows/suggest-nft-tags-flow';
-
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { supabase } from '@/lib/supabase/client';
+import type { User } from '@supabase/supabase-js';
+import { useRouter } from 'next/navigation';
 
 
 interface Trait {
@@ -45,12 +37,6 @@ const initialCollections = [
   { id: 'col3', name: 'Pixel Dreams Collection' },
 ];
 
-const previewBackgrounds = [
-  { name: 'Light', value: 'bg-white' },
-  { name: 'Dark', value: 'bg-gray-800' },
-  { name: 'Muted', value: 'bg-muted' },
-];
-
 const STEPS = [
     { id: 1, name: 'Upload Artwork' },
     { id: 2, name: 'NFT Details' },
@@ -61,9 +47,12 @@ const STEPS = [
 
 export default function CreateNFTPage() {
   const { toast } = useToast();
+  const router = useRouter();
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
+
   const [currentStep, setCurrentStep] = useState(1);
 
-  // Core NFT Info
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [artStyle, setArtStyle] = useState('');
@@ -73,33 +62,34 @@ export default function CreateNFTPage() {
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   const [tags, setTags] = useState('');
 
-  // AI States
   const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
-  // const [isSuggestingTitles, setIsSuggestingTitles] = useState(false);
-  // const [suggestedTitles, setSuggestedTitles] = useState<string[]>([]);
-  // const [isSuggestingTags, setIsSuggestingTags] = useState(false);
 
-  // Enhanced Preview
-  const [previewBg, setPreviewBg] = useState(previewBackgrounds[0].value);
-
-  // Collection Management
   const [collections, setCollections] = useState(initialCollections);
   const [selectedCollection, setSelectedCollection] = useState('');
   const [newCollectionName, setNewCollectionName] = useState('');
   const [isCreateCollectionDialogOpen, setIsCreateCollectionDialogOpen] = useState(false);
 
-  // Traits/Properties
   const [traits, setTraits] = useState<Trait[]>([]);
-
-  // Royalty
   const [royaltyPercentage, setRoyaltyPercentage] = useState<string>('10');
-
-  // Unlockable Content
   const [unlockableContentEnabled, setUnlockableContentEnabled] = useState(false);
   const [unlockableContent, setUnlockableContent] = useState('');
-
-  // Minting State
   const [isMinting, setIsMinting] = useState(false);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      setIsLoadingUser(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setCurrentUser(user);
+      } else {
+        toast({ variant: "destructive", title: "Not Authenticated", description: "Please log in to create an NFT." });
+        router.push('/login');
+      }
+      setIsLoadingUser(false);
+    };
+    fetchUser();
+  }, [router, toast]);
+
 
   const allDataForReview = useMemo(() => ({
     title,
@@ -109,6 +99,7 @@ export default function CreateNFTPage() {
     royaltyPercentage,
     imagePreviewUrl,
     imageName: imageFile?.name,
+    imageSize: imageFile?.size,
     tags,
     category,
     collection: collections.find(c => c.id === selectedCollection)?.name,
@@ -121,7 +112,7 @@ export default function CreateNFTPage() {
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 10 * 1024 * 1024) {
+      if (file.size > 10 * 1024 * 1024) { // 10MB limit
         toast({ variant: 'destructive', title: 'File too large', description: 'Please upload an image under 10MB.' });
         return;
       }
@@ -150,7 +141,7 @@ export default function CreateNFTPage() {
     try {
       const input: GenerateNftDescriptionInput = {
         nftTitle: title,
-        artistName: "The Creator", // Placeholder, can be dynamic
+        artistName: currentUser?.email?.split('@')[0] || "The Creator",
         artStyle: artStyle || "Unknown",
         creationDate: new Date().toISOString().split('T')[0],
         materialsUsed: "Digital",
@@ -170,12 +161,6 @@ export default function CreateNFTPage() {
   const handleSuggestTitles = async () => {
     toast({ title: 'Title Suggestion (Coming Soon)', description: 'This feature will be available once the AI flow is ready.'});
   };
-
-  const applySuggestedTitle = (suggestedTitle: string) => {
-    // setTitle(suggestedTitle);
-    // setSuggestedTitles([]);
-  };
-
 
   const handleSuggestTags = async () => {
     toast({ title: 'Tag Suggestion (Coming Soon)', description: 'This feature will be available once the AI flow is ready.'});
@@ -215,116 +200,133 @@ export default function CreateNFTPage() {
         }
         return true;
       case 2:
-        if (!title.trim()) {
-          toast({ variant: "destructive", title: "Title Required", description: "Please enter a title for your NFT." });
-          return false;
-        }
-        if (!description.trim()) {
-          toast({ variant: "destructive", title: "Description Required", description: "Please provide a description for your NFT." });
-          return false;
-        }
-         if (!artStyle.trim()) {
-          toast({ variant: "destructive", title: "Art Style Required", description: "Please specify the art style." });
-          return false;
-        }
+        if (!title.trim()) { toast({ variant: "destructive", title: "Title Required", description: "Please enter a title for your NFT." }); return false; }
+        if (!description.trim()) { toast({ variant: "destructive", title: "Description Required", description: "Please provide a description." }); return false; }
+        if (!artStyle.trim()) { toast({ variant: "destructive", title: "Art Style Required", description: "Please specify the art style." }); return false; }
+        if (!category.trim()) { toast({ variant: "destructive", title: "Category Required", description: "Please select a category." }); return false; }
         return true;
       case 3:
-        if (!price.trim() || parseFloat(price) <= 0) {
-          toast({ variant: "destructive", title: "Valid Price Required", description: "Please enter a valid price (ETH > 0)." });
-          return false;
-        }
+        if (!price.trim() || parseFloat(price) <= 0) { toast({ variant: "destructive", title: "Valid Price Required", description: "Please enter a valid price (ETH > 0)." }); return false; }
         const royalty = parseFloat(royaltyPercentage);
-        if (isNaN(royalty) || royalty < 0 || royalty > 50) {
-            toast({ variant: "destructive", title: "Invalid Royalty", description: "Royalty must be between 0% and 50%." });
-            return false;
-        }
+        if (isNaN(royalty) || royalty < 0 || royalty > 50) { toast({ variant: "destructive", title: "Invalid Royalty", description: "Royalty must be between 0% and 50%." }); return false; }
         return true;
-      default:
-        return true;
+      default: return true;
     }
   };
 
   const handleNextStep = () => {
     if (validateStep(currentStep)) {
-        if (currentStep < STEPS.length) {
-            setCurrentStep(currentStep + 1);
-        }
+        if (currentStep < STEPS.length) setCurrentStep(currentStep + 1);
     }
   };
 
   const handlePrevStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
+    if (currentStep > 1) setCurrentStep(currentStep - 1);
   };
 
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!currentUser) {
+      toast({ variant: "destructive", title: "Not Authenticated", description: "Please log in to mint an NFT." });
+      router.push('/login');
+      return;
+    }
     if (!validateStep(1) || !validateStep(2) || !validateStep(3)) {
-        toast({ variant: "destructive", title: "Incomplete Information", description: "Please ensure all previous steps are correctly filled." });
+        toast({ variant: "destructive", title: "Incomplete Information", description: "Please ensure all required fields in previous steps are correctly filled." });
         return;
     }
-
+    
     setIsMinting(true);
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    console.log('--- SIMULATING NFT MINT ---');
+    console.log('Current User ID:', currentUser.id);
+    console.log('Image File to Upload:', imageFile);
+    console.log('NFT Data to Insert:', {
+      owner_id: currentUser.id,
+      creator_id: currentUser.id, 
+      title: allDataForReview.title,
+      description: allDataForReview.description,
+      // image_url: "supabase_storage_url_after_upload", // This would be set after actual upload
+      price: parseFloat(allDataForReview.price || '0'),
+      category_id: allDataForReview.category, // This would need to be mapped to category UUID if categories table is used
+      collection_id: allDataForReview.collection ? selectedCollection : null, // This would be collection UUID
+      status: 'listed', // Default status
+      // traits: allDataForReview.traits, // This would be stored, perhaps as JSONB
+      // royalty_percentage: parseFloat(allDataForReview.royaltyPercentage),
+      // unlockable_content: allDataForReview.unlockableContentText,
+    });
 
-    console.log('Simulated Minting Data:', allDataForReview);
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
     toast({
       title: 'NFT Minted (Simulated)!',
-      description: `${title} has been successfully minted.`,
+      description: `${allDataForReview.title} has been successfully minted (simulated). Check console for data.`,
     });
     setIsMinting(false);
-     // Optionally reset form or redirect:
-    // router.push('/profile'); // Example redirect
-    // resetFormFields(); // You'd need to implement this
+    // Optionally reset form or redirect
+    // router.push(`/profile`); // Or to the newly created NFT page if it had an ID
+    // For now, let's go back to step 1 and clear some fields for another creation
+    setCurrentStep(1);
+    setTitle('');
+    setDescription('');
+    setPrice('');
+    setImageFile(null);
+    setImagePreviewUrl(null);
   };
 
-  const estimatedGasFee = "0.015 ETH";
+  const estimatedGasFee = "0.015 ETH"; // Keep this as a static mock value
 
-  const renderStepIndicator = () => {
-    return (
-        <div className="mb-8 px-2 sm:px-0">
-            <div className="flex items-center justify-between">
-                {STEPS.map((step, index) => {
-                    const isActive = currentStep === step.id;
-                    const isCompleted = currentStep > step.id;
-                    return (
-                        <React.Fragment key={step.id}>
-                            <div className="flex flex-col items-center text-center">
-                                <div
-                                    className={cn(
-                                        "w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300",
-                                        isActive ? "bg-primary border-primary text-primary-foreground scale-110 ring-2 ring-primary/30 ring-offset-background" :
-                                        isCompleted ? "bg-primary/80 border-primary/80 text-primary-foreground" :
-                                        "bg-card border-border text-muted-foreground"
-                                    )}
-                                >
-                                    {isCompleted ? <Check className="w-4 h-4 sm:w-5 sm:h-5" /> : <span className="text-sm sm:text-base">{step.id}</span>}
-                                </div>
-                                <p className={cn(
-                                    "text-xs sm:text-sm mt-1.5 sm:mt-2 max-w-[60px] sm:max-w-[80px] truncate leading-tight",
-                                    isActive ? "font-semibold text-primary" :
-                                    isCompleted ? "text-foreground" :
-                                    "text-muted-foreground"
-                                )}>
-                                    {step.name}
-                                </p>
+  const renderStepIndicator = () => (
+    <div className="mb-8 px-2 sm:px-0">
+        <div className="flex items-center justify-between">
+            {STEPS.map((step, index) => {
+                const isActive = currentStep === step.id;
+                const isCompleted = currentStep > step.id;
+                return (
+                    <React.Fragment key={step.id}>
+                        <div className="flex flex-col items-center text-center">
+                            <div
+                                className={cn(
+                                    "w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-2 transition-all duration-300",
+                                    isActive ? "bg-primary border-primary text-primary-foreground scale-110 ring-2 ring-primary/30 ring-offset-background" :
+                                    isCompleted ? "bg-primary/80 border-primary/80 text-primary-foreground" :
+                                    "bg-card border-border text-muted-foreground"
+                                )}
+                            >
+                                {isCompleted ? <Check className="w-4 h-4 sm:w-5 sm:h-5" /> : <span className="text-sm sm:text-base">{step.id}</span>}
                             </div>
-                            {index < STEPS.length - 1 && (
-                                <div className={cn(
-                                    "flex-1 h-1 mx-1 sm:mx-2 transition-colors duration-300",
-                                    currentStep > step.id ? "bg-primary/80" : "bg-border"
-                                )} style={{ transform: 'translateY(calc(-50% - 10px))' }}></div>
-                            )}
-                        </React.Fragment>
-                    );
-                })}
-            </div>
+                            <p className={cn(
+                                "text-xs sm:text-sm mt-1.5 sm:mt-2 max-w-[60px] sm:max-w-[80px] truncate leading-tight",
+                                isActive ? "font-semibold text-primary" :
+                                isCompleted ? "text-foreground" :
+                                "text-muted-foreground"
+                            )}>
+                                {step.name}
+                            </p>
+                        </div>
+                        {index < STEPS.length - 1 && (
+                            <div className={cn(
+                                "flex-1 h-1 mx-1 sm:mx-2 transition-colors duration-300",
+                                currentStep > step.id ? "bg-primary/80" : "bg-border"
+                            )} style={{ transform: 'translateY(calc(-50% - 10px))' }}></div>
+                        )}
+                    </React.Fragment>
+                );
+            })}
         </div>
+    </div>
+  );
+
+  if (isLoadingUser) {
+    return (
+      <AppLayout>
+        <div className="p-4 md:p-6 lg:p-8 max-w-3xl mx-auto flex justify-center items-center min-h-[calc(100vh-10rem)]">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        </div>
+      </AppLayout>
     );
-};
+  }
 
 
   return (
@@ -518,7 +520,7 @@ export default function CreateNFTPage() {
 
                         <div className="space-y-3">
                             {Object.entries(allDataForReview).map(([key, value]) => {
-                                if (key === 'imagePreviewUrl' || key === 'imageName' || key === 'unlockableContentEnabled') return null;
+                                if (key === 'imagePreviewUrl' || key === 'imageName' || key === 'imageSize' || key === 'unlockableContentEnabled') return null;
                                 if (key === 'unlockableContentText' && !allDataForReview.unlockableContentEnabled) return null;
                                 if (key === 'traits' && (!value || (Array.isArray(value) && value.length === 0))) return null;
                                 if (value === undefined || value === null || (typeof value === 'string' && value.trim() === '')) return null;
@@ -541,13 +543,7 @@ export default function CreateNFTPage() {
                                             </Label>
                                             <p className="text-sm text-foreground mt-0.5 break-words">{displayValue}</p>
                                         </div>
-                                        {key !== Object.keys(allDataForReview).filter(k => {
-                                            const v = allDataForReview[k as keyof typeof allDataForReview];
-                                            if (k === 'imagePreviewUrl' || k === 'imageName' || k === 'unlockableContentEnabled') return false;
-                                            if (k === 'unlockableContentText' && !allDataForReview.unlockableContentEnabled) return false;
-                                            if (k === 'traits' && (!v || (Array.isArray(v) && v.length === 0))) return false;
-                                            return !(v === undefined || v === null || (typeof v === 'string' && v.trim() === ''));
-                                        }).pop() && <Separator className="my-1"/>}
+                                        <Separator className="my-1"/>
                                     </React.Fragment>
                                 );
                             })}
@@ -565,7 +561,7 @@ export default function CreateNFTPage() {
                             </Label>
                         </div>
 
-                         <Button type="submit" size="lg" className="w-full bg-accent hover:bg-accent/90 text-accent-foreground mt-6" disabled={isMinting}>
+                         <Button type="submit" size="lg" className="w-full bg-accent hover:bg-accent/90 text-accent-foreground mt-6" disabled={isMinting || !currentUser}>
                             {isMinting ? <Loader2 className="animate-spin h-5 w-5 mr-2" /> : null}
                             {isMinting ? 'Minting NFT...' : 'Create and List NFT'}
                         </Button>

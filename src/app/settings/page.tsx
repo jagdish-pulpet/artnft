@@ -13,7 +13,7 @@ import { Separator } from '@/components/ui/separator';
 import { useRouter } from 'next/navigation';
 import AppLayout from '@/components/AppLayout';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/lib/supabase/client'; // Import Supabase client
+import { supabase } from '@/lib/supabase/client';
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -21,6 +21,7 @@ export default function SettingsPage() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
@@ -32,6 +33,15 @@ export default function SettingsPage() {
       document.documentElement.classList.remove('dark');
       setIsDarkMode(false);
     }
+
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setCurrentUserEmail(user.email || null);
+      }
+    };
+    fetchUser();
+
   }, []);
 
   useEffect(() => {
@@ -53,10 +63,8 @@ export default function SettingsPage() {
     setIsLoggingOut(true);
     const { error } = await supabase.auth.signOut();
     
-    // Clear any local flags, like admin status
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('isAdminAuthenticated');
-      // Supabase client handles clearing its own session from localStorage
+      localStorage.removeItem('isAdminAuthenticated'); 
     }
 
     setIsLoggingOut(false);
@@ -65,18 +73,28 @@ export default function SettingsPage() {
       toast({ variant: 'destructive', title: 'Logout Failed', description: error.message });
     } else {
       toast({ title: 'Logged Out', description: 'You have been successfully logged out.' });
-      router.push('/welcome');
+      router.push('/welcome'); // Redirect to welcome page after logout
     }
   };
 
-  // Placeholder for functions - to be implemented with Supabase
-  const handleChangeEmail = () => toast({ title: 'Feature Coming Soon', description: 'Changing email will be implemented with Supabase.'});
-  const handleChangePassword = () => toast({ title: 'Feature Coming Soon', description: 'Changing password will be implemented with Supabase.'});
+  const handleChangeEmail = () => {
+    // TODO: Implement actual email change flow with Supabase
+    // This might involve supabase.auth.updateUser({ email: newEmail })
+    // and handling confirmation emails.
+    toast({ title: 'Feature Coming Soon', description: 'Changing email will be implemented using Supabase user update methods.'});
+  };
+  const handleChangePassword = () => {
+    // TODO: Implement actual password change flow with Supabase
+    // This typically involves supabase.auth.updateUser({ password: newPassword })
+    // or a password reset flow if the user is changing it because they forgot.
+    // If current user is known, supabase.auth.updateUser is preferred.
+    // If they don't know current password, redirect to forgot-password flow.
+    toast({ title: 'Feature Coming Soon', description: 'Changing password will be implemented using Supabase user update methods.'});
+  };
   const handleConnectWallet = () => router.push('/connect-wallet');
 
 
   if (!isMounted) {
-    // Render a minimal loading state or null to avoid UI flicker / hydration errors for theme switch
     return (
       <AppLayout>
         <div className="p-4 md:p-8 max-w-2xl mx-auto">
@@ -101,7 +119,7 @@ export default function SettingsPage() {
             <div className="flex justify-between items-center">
               <div>
                 <CardTitle className="text-3xl font-bold font-headline">Settings</CardTitle>
-                <CardDescription>Manage your account, preferences, and app settings.</CardDescription>
+                <CardDescription>Manage your account, preferences, and app settings. {currentUserEmail && `Logged in as: ${currentUserEmail}`}</CardDescription>
               </div>
               <Button 
                 variant="outline" 

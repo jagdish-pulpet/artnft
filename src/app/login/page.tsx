@@ -11,7 +11,7 @@ import { useState, type FormEvent, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Mail } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
-import { supabase } from '@/lib/supabase/client'; // Import Supabase client
+import { supabase } from '@/lib/supabase/client';
 
 export default function LogInPage() {
   const router = useRouter();
@@ -21,23 +21,20 @@ export default function LogInPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   
-  const [showAdminAccess, setShowAdminAccess] = useState(true);
-  const FT_LOGIN_ADMIN_ACCESS_KEY = 'artnft_ft_login_admin_access'; 
-
   useEffect(() => {
     setIsMounted(true);
-    const adminAccessEnabled = localStorage.getItem(FT_LOGIN_ADMIN_ACCESS_KEY) !== 'false';
-    setShowAdminAccess(adminAccessEnabled);
-
-    // Check if user is already logged in (e.g. from a previous session)
+    // Check if user is already logged in
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        router.replace('/home'); // Redirect if already logged in
+        // Clear admin flag if a regular user session exists
+        if (typeof window !== 'undefined') {
+            localStorage.removeItem('isAdminAuthenticated');
+        }
+        router.replace('/home'); 
       }
     };
     checkSession();
-
   }, [router]);
 
   const handleLogin = async (e: FormEvent) => {
@@ -55,12 +52,12 @@ export default function LogInPage() {
       toast({ variant: 'destructive', title: 'Login Failed', description: error.message });
     } else if (data.session && data.user) {
       // Supabase client handles session storage automatically.
-      // No need to manually set items like 'supabase_session' or 'artnft_user_email'
-      localStorage.removeItem('isAdminAuthenticated'); // Ensure admin flag is cleared if a regular user logs in
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('isAdminAuthenticated'); // Ensure admin flag is cleared
+      }
       toast({ title: 'Login Successful', description: 'Welcome back!' });
       router.push('/home');
     } else {
-      // This case might occur if there's an issue not caught by `error` but session/user is still null
       toast({ variant: 'destructive', title: 'Login Failed', description: 'Invalid email or password, or another issue occurred.' });
     }
   };
