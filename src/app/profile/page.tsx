@@ -4,19 +4,29 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import NftCard from '@/components/nft-card';
 import { mockNfts } from '@/lib/mock-data';
-import { User, Settings, Palette, Edit3 } from 'lucide-react';
+import { User, Settings, Palette, Edit3, Users, Eye } from 'lucide-react';
 import Link from 'next/link';
 
 export default function ProfilePage() {
-  const userOwnedNfts = mockNfts.slice(0, 3); // Mock: User owns first 3 NFTs
-  const favoriteArtists = ['Stellar Scribe', 'TechFlora', 'BitMapper']; // Mock favorite artists
+  const userOwnedNfts = mockNfts.slice(0, 3); 
+  const favoriteArtists = ['Stellar Scribe', 'TechFlora', 'BitMapper']; 
 
   return (
     <div className="space-y-8">
-      <Card className="shadow-lg">
-        <CardHeader className="bg-secondary rounded-t-lg p-6">
-          <div className="flex flex-col sm:flex-row items-center gap-6">
-            <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-card">
+      <Card className="shadow-lg overflow-hidden">
+        <div className="relative h-40 sm:h-56 md:h-64 w-full bg-muted">
+          <Image
+            src="https://placehold.co/1200x400.png" 
+            alt="User Cover Photo"
+            layout="fill"
+            objectFit="cover"
+            className="opacity-80"
+            data-ai-hint="abstract background"
+          />
+        </div>
+        <div className="relative p-6 -mt-16">
+          <div className="flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6">
+            <div className="relative w-32 h-32 sm:w-36 sm:h-36 rounded-full overflow-hidden border-4 border-card shadow-md shrink-0">
               <Image
                 src="https://placehold.co/200x200.png"
                 alt="User Avatar"
@@ -25,19 +35,29 @@ export default function ProfilePage() {
                 data-ai-hint="avatar person"
               />
             </div>
-            <div>
+            <div className="flex-grow text-center sm:text-left">
               <CardTitle className="text-2xl sm:text-3xl font-headline mb-1">CreativeCollector23</CardTitle>
               <CardDescription className="text-muted-foreground">Joined March 2023 • Collector & Art Enthusiast</CardDescription>
-              <div className="mt-3">
-                <Button variant="outline" className="border-accent text-accent hover:bg-accent hover:text-accent-foreground">
-                  <Edit3 className="w-4 h-4 mr-2" /> Edit Profile
-                </Button>
+              <div className="mt-2 flex gap-4 justify-center sm:justify-start text-sm text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <Users className="w-4 h-4 text-accent"/> 
+                  <span>1.2k <span className="hidden sm:inline">Followers</span></span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Eye className="w-4 h-4 text-accent"/> 
+                  <span>340 <span className="hidden sm:inline">Following</span></span>
+                </div>
               </div>
             </div>
+            <div className="mt-4 sm:mt-0 shrink-0">
+              <Button variant="outline" className="border-accent text-accent hover:bg-accent hover:text-accent-foreground">
+                <Edit3 className="w-4 h-4 mr-2" /> Edit Profile
+              </Button>
+            </div>
           </div>
-        </CardHeader>
-        <CardContent className="p-6">
-          <p className="text-foreground/80 leading-relaxed">
+        </div>
+        <CardContent className="p-6 pt-2">
+          <p className="text-foreground/80 leading-relaxed mt-4 border-t border-border pt-4">
             Passionate about digital art that pushes boundaries. Always on the lookout for unique pieces and emerging talents.
           </p>
         </CardContent>
