@@ -146,6 +146,13 @@ ArtNFT Marketplace is a cutting-edge, full-stack web application designed for ar
 </details>
 
 <details>
+<summary><strong>Artist Profile Pages (`/artist/[slug]`):</strong></summary>
+*   Dynamically generated pages for individual artists.
+*   Displays artist's avatar, cover image (optional), bio, and a gallery of their NFTs.
+*   Data fetched from Supabase `profiles` and `nfts` tables.
+</details>
+
+<details>
 <summary><strong>Notifications System (`/notifications`):</strong></summary> Real-time alerts (driven by Supabase Realtime or database triggers) for:
 *   New listings from followed artists.
 *   Price drops on favorited items.
@@ -224,6 +231,7 @@ This section provides a high-level overview of the main screens available in the
 *   **Create NFT Page (`/create-nft`):** Interface for artists to mint NFTs, with AI assistance and live preview, submitting data to Supabase.
 *   **NFT Detail Page (`/nft/[id]`):** Comprehensive view of individual NFTs, including details, auction system, and purchase options, all data-driven by Supabase.
 *   **User Dashboard/Profile (`/profile`):** Personalized hub for users to view their owned NFTs, favorites, transaction history, and recent activity. Also displays admin announcements. Data from Supabase.
+*   **Artist Profile Page (`/artist/[slug]`):** Public profile page for artists showcasing their bio and created NFTs. Data from Supabase.
 *   **Search Page (`/search`):** Dedicated page for searching NFTs with advanced filtering and sorting, driven by URL query parameters and Supabase queries.
 *   **Category Page (`/category/[slug]`):** Dynamically generated pages listing NFTs for specific categories, data from Supabase.
 *   **Notifications Page (`/notifications`):** Real-time alerts for platform activities, driven by Supabase.
@@ -319,6 +327,7 @@ Follow these instructions to get the Next.js frontend running with Supabase.
 *   [Node.js](https://nodejs.org/) (v18 or later recommended)
 *   [npm](https://www.npmjs.com/) (comes with Node.js) or [yarn](https://yarnpkg.com/)
 *   A [Supabase](https://supabase.com/) account and project.
+*   [Git](https://git-scm.com/) for version control.
 
 ### Installation & Setup
 
@@ -369,46 +378,27 @@ Follow these instructions to get the Next.js frontend running with Supabase.
 1.  **Create a Supabase Project:**
     *   Go to [app.supabase.com](https://app.supabase.com) and sign up or log in.
     *   Create a new project. Choose a region close to your users.
-    *   Note your Project URL, `anon` key, and database connection details.
+    *   Note your Project URL, `anon` key, and database connection details for the `.env.local` file.
 
 2.  **Database Schema Setup (via Supabase Studio or SQL):**
-    *   Navigate to the "Table Editor" in your Supabase project dashboard.
-    *   Define your tables (e.g., `profiles`, `nfts`, `categories`, `collections`, `favorites`, `bids`, `transactions`).
-    *   Define relationships between tables (foreign keys).
-    *   Enable Row Level Security (RLS) on your tables and define initial policies. Example:
-        ```sql
-        -- Example for a 'profiles' table linked to auth.users
-        CREATE TABLE public.profiles (
-          id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-          username TEXT UNIQUE,
-          avatar_url TEXT,
-          bio TEXT,
-          updated_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
-        );
-        ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
-        CREATE POLICY "Public profiles are viewable by everyone." ON profiles FOR SELECT USING (true);
-        CREATE POLICY "Users can insert their own profile." ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
-        CREATE POLICY "Users can update own profile." ON profiles FOR UPDATE USING (auth.uid() = id);
+    *   Navigate to the "Table Editor" or "SQL Editor" in your Supabase project dashboard.
+    *   Define your tables (e.g., `profiles`, `nfts`, `categories`, `collections`, `favorites`, `bids`, `transactions`). It's highly recommended to use SQL migration scripts for a reproducible setup. The `src/lib/supabase/seed-dev-users.ts` file contains comments at the end outlining the expected schema for these tables.
+    *   **Key tables to ensure exist for the seeding script:**
+        *   `profiles`: with columns like `id (FK to auth.users)`, `username`, `avatar_url`, `bio`, `cover_image_url`.
+        *   `categories`: with columns like `id`, `name`, `slug`.
+        *   `collections`: with columns like `id`, `user_id`, `name`, `description`.
+        *   `nfts`: with columns like `id`, `owner_id`, `creator_id`, `title`, `description`, `image_url`, `price`, `artist_name`, `status`, `category_id`, `collection_id`, `created_at`.
+        *   `favorites`: with columns `user_id`, `nft_id` (composite PK).
+    *   Enable Row Level Security (RLS) on your tables and define appropriate policies.
 
-        -- Example for 'nfts' table
-        CREATE TABLE public.nfts (
-            id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-            user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-            title TEXT NOT NULL,
-            description TEXT,
-            image_url TEXT,
-            price NUMERIC,
-            category TEXT,
-            created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
-            -- Add other relevant columns
-        );
-        ALTER TABLE public.nfts ENABLE ROW LEVEL SECURITY;
-        CREATE POLICY "NFTs are viewable by everyone." ON nfts FOR SELECT USING (true);
-        CREATE POLICY "Users can create their own NFTs." ON nfts FOR INSERT WITH CHECK (auth.uid() = user_id);
-        CREATE POLICY "Users can update their own NFTs." ON nfts FOR UPDATE USING (auth.uid() = user_id);
-        CREATE POLICY "Users can delete their own NFTs." ON nfts FOR DELETE USING (auth.uid() = user_id);
+3.  **Development Data Seeding (Optional but Recommended):**
+    *   The project includes a seeding script to populate your Supabase database with dummy data for development. This includes users, profiles, categories, NFTs (including "latest" and "popular" sets), collections, and favorites.
+    *   **Ensure your database schema is set up correctly before running the seeder.** The script expects certain tables and columns to exist.
+    *   Run the seeder from the project root:
+        ```bash
+        npm run db:seed:dev-users
         ```
-    *   Refer to the Supabase documentation for detailed schema design and RLS best practices.
+    *   This script will create multiple users, assign them profiles, create categories, generate a variety of NFTs (some assigned to specific users, others for general display), create collections for users, and assign favorites. This provides a rich dataset for testing all aspects of the application.
 
 ### Running Development Servers
 
@@ -429,7 +419,7 @@ Your Supabase backend is live and managed by Supabase, so no separate backend se
 You should now have:
 *   Frontend running on `http://localhost:9002`
 *   Genkit Dev UI on `http://localhost:4000`
-*   Your Supabase project accessible via its URL.
+*   Your Supabase project accessible via its URL, potentially populated with development data.
 
 ## 📁 Project Structure
 
@@ -451,6 +441,7 @@ The project is organized with a Next.js frontend and Supabase as the backend.
 │   │   │   └── admin/ ...
 │   │   ├── api/              # Next.js API routes (e.g., /api/crypto-stats, /api/db-test)
 │   │   ├── category/[slug]/page.tsx
+│   │   ├── artist/[slug]/page.tsx # Artist profile pages
 │   │   └── ... (other frontend pages and layouts) ...
 │   │   ├── globals.css       # Global styles, Tailwind CSS base, and theme
 │   │   ├── layout.tsx        # Root layout for the entire application
@@ -461,8 +452,9 @@ The project is organized with a Next.js frontend and Supabase as the backend.
 │   │   └── ... (other frontend components) ...
 │   ├── hooks/                # Frontend: Custom React Hooks
 │   ├── lib/                  # Frontend: Utility functions
-│   │   ├── supabase/         # Supabase client setup
-│   │   │   └── client.ts     
+│   │   ├── supabase/         # Supabase client setup and seeding script
+│   │   │   ├── client.ts     
+│   │   │   └── seed-dev-users.ts # Database seeding script
 │   │   └── db.ts             # Direct DB connection utility (for API routes)
 │
 ├── .env.local.example        # Example environment variables for frontend
@@ -528,12 +520,14 @@ Please ensure your code adheres to the project's linting and formatting standard
 *   **Phase 1: Core Frontend & Initial Backend Setup (Supabase Migration Started)**
     *   [x] Next.js Frontend: User Authentication pages (Login, Signup), Admin Login page - UI ready.
     *   [x] Initial Supabase Setup: Client library installed, environment variables configured.
+    *   [x] Database Seeding Script: Implemented to populate development database with users, profiles, categories, NFTs (general, latest, popular), collections, and favorites.
     *   [ ] Supabase Auth: Implement signup, login, logout, session management.
-    *   [ ] Supabase Database: Define initial schema (users/profiles, nfts, categories). Implement basic RLS.
+    *   [x] Supabase Database: Defined initial schema (users/profiles, nfts, categories, collections, favorites). Implement basic RLS.
     *   [x] Basic NFT Creation & Listing UI (Simulated with AI assistance for content; *frontend prepares data for Supabase*)
-    *   [x] NFT Discovery UI (Featured/Latest, Categories, Global Search with Filters & Sort; *frontend preparing for Supabase data*)
+    *   [x] NFT Discovery UI (Featured/Latest, Categories, Global Search with Filters & Sort; *frontend now populates from Supabase with seeded data*)
     *   [x] NFT Detail Page UI (Simulated Auction, Buy Now, Related NFTs; *frontend interactions to use Supabase data*)
-    *   [x] User Dashboard UI (Owned, Favorites, Transaction History, Recent Activity, Admin Announcements - Enhanced UI/UX)
+    *   [x] Artist Profile Page UI (`/artist/[slug]`) - basic structure implemented.
+    *   [x] User Dashboard UI (Owned, Favorites, Transaction History, Recent Activity, Admin Announcements - Enhanced UI/UX, *can now be tested with richer seeded data*)
     *   [x] Basic Responsive Design (Mobile-first, auto-hiding navigation, global header)
     *   [x] Light/Dark Theming (User-configurable)
     *   [x] Notifications Page UI (Simulated alerts)
@@ -552,28 +546,33 @@ Please ensure your code adheres to the project's linting and formatting standard
     *   [ ] Refine RLS policies for all tables.
 *   [ ] **Next.js Frontend Integration:**
     *   [ ] Connect all frontend pages and components to Supabase (Auth, Database, Storage).
-    *   [ ] Replace all mock data with data fetched from Supabase.
+    *   [ ] Replace all mock data (where still used) with data fetched from Supabase.
     *   [ ] Implement real-time updates for features like auctions and notifications (using Supabase Realtime).
 *   [ ] **Screen-by-Screen Supabase Integration Tasks:**
     *   **Authentication Screens (Login, Signup, Forgot Password):**
-        *   [ ] Frontend: Use Supabase client for all auth operations.
-        *   [ ] Frontend: Handle Supabase session management.
+        *   [x] Frontend: Use Supabase client for auth operations (signup, login, logout).
+        *   [x] Frontend: Handle Supabase session management.
     *   **Home Dashboard (`/home`):**
-        *   [ ] Frontend: Fetch "Latest Activity" NFTs, "New From Artists You Follow", "Artist Spotlights", "Popular Collections" from Supabase.
+        *   [x] Frontend: Fetch "Latest Activity" NFTs, "Popular Collections" from Supabase.
+        *   [ ] Frontend: Fetch "New From Artists You Follow", "Artist Spotlights" from Supabase.
         *   [ ] Frontend: Implement "Follow/Unfollow" artist functionality updating Supabase.
     *   **Create NFT Page (`/create-nft`):**
-        *   [ ] Frontend: Upload image to Supabase Storage. Submit new NFT data to Supabase `nfts` table.
+        *   [x] Frontend: Upload image to Supabase Storage. Submit new NFT data to Supabase `nfts` table.
     *   **NFT Detail Page (`/nft/[id]`):**
-        *   [ ] Frontend: Fetch specific NFT details from Supabase.
+        *   [x] Frontend: Fetch specific NFT details from Supabase.
+        *   [x] Frontend: Fetch related NFTs based on category from Supabase.
         *   [ ] Frontend: Fetch bid history from Supabase.
         *   [ ] Frontend: Implement "Place Bid", "Buy Now", "Add to Favorites" using Supabase.
     *   **User Dashboard/Profile (`/profile`):**
-        *   [ ] Frontend: Fetch user profile data, "Owned NFTs", "Favorited NFTs", "Transaction History", "Recent Activity" from Supabase.
+        *   [x] Frontend: Fetch user profile data, "Owned NFTs" from Supabase.
+        *   [ ] Frontend: Fetch "Favorited NFTs", "Transaction History", "Recent Activity" from Supabase.
         *   [ ] Frontend: Implement "Edit Profile" updating Supabase.
     *   **Search Page (`/search`):**
-        *   [ ] Frontend: Send search query and filter parameters to Supabase (PostgreSQL full-text search or Supabase Functions).
+        *   [x] Frontend: Send search query and filter parameters to Supabase (direct queries).
     *   **Category Page (`/category/[slug]`):**
-        *   [ ] Frontend: Fetch NFTs for a specific category from Supabase.
+        *   [ ] Frontend: Fetch NFTs for a specific category from Supabase (currently mock).
+    *   **Artist Profile Page (`/artist/[slug]`):**
+        *   [ ] Frontend: Fetch specific artist details and their NFTs from Supabase (currently mock).
     *   **Notifications Page (`/notifications`):**
         *   [ ] Frontend: Fetch notifications from Supabase.
         *   [ ] Supabase: Implement notification generation logic (e.g., database triggers or Edge Functions).
