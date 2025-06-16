@@ -83,8 +83,9 @@ export default function AdminLoginPage() {
     } catch (error) {
       console.error('Admin login error:', error);
       let errorMessage = 'An unexpected error occurred. Please try again later.';
-      if (error instanceof TypeError && error.message === 'Failed to fetch') {
-        errorMessage = 'Could not connect to the backend server. Please ensure it is running and accessible at the configured URL: ' + BACKEND_URL;
+      // Check if it's a TypeError and specifically "Failed to fetch"
+      if (error instanceof TypeError && error.message.toLowerCase().includes('failed to fetch')) {
+        errorMessage = `Could not connect to the backend server at ${BACKEND_URL}. Please ensure the API server (apps/api) is running and accessible.`;
       }
       toast({
         variant: 'destructive',
