@@ -70,8 +70,8 @@ export default function StatsPage() {
       setIsLoadingMore(true);
     } else {
       setIsLoading(true);
-      setCurrentStart(1); // Reset for initial load or refresh
-      setCryptoData([]); // Clear existing data on full refresh
+      setCurrentStart(1); 
+      setCryptoData([]); 
     }
     setError(null);
 
@@ -82,15 +82,20 @@ export default function StatsPage() {
       const response = await fetch(`/api/crypto-stats?start=${startOffset}&limit=${limitToFetch}`);
       if (!response.ok) {
         const errorResult = await response.json();
-        if (errorResult.error === 'CoinMarketCap API key is not configured.') {
-            throw new Error('API_KEY_MISSING');
+        // The errorResult.error string comes directly from our API route
+        if (errorResult.error && typeof errorResult.error === 'string') {
+            if (errorResult.error.toLowerCase().includes('api key is not configured')) {
+                throw new Error('API_KEY_MISSING'); // Custom error type for missing key
+            } else if (errorResult.error.toLowerCase().includes('api key is invalid')) {
+                throw new Error('API_KEY_INVALID'); // Custom error type for invalid key
+            }
         }
         throw new Error(errorResult.error || `Failed to fetch crypto data: ${response.statusText}`);
       }
       const result: { data: CryptoStat[], hasMore: boolean } = await response.json();
       
       setCryptoData(prevData => isLoadMore ? [...prevData, ...result.data] : result.data);
-      setHasMoreData(result.hasMore && result.data.length === limitToFetch); // If we received less than requested, assume no more.
+      setHasMoreData(result.hasMore && result.data.length === limitToFetch); 
       setCurrentStart(prevStart => prevStart + result.data.length);
       
       if (!isLoadMore) {
@@ -99,7 +104,9 @@ export default function StatsPage() {
     } catch (err) {
       if (err instanceof Error) {
         if (err.message === 'API_KEY_MISSING') {
-          setError('Configuration Error: The CoinMarketCap API key is missing. Please set it in .env.local and restart the server.');
+          setError('Configuration Error: The CoinMarketCap API key is missing. Please set COINMARKETCAP_API_KEY in your .env.local file and restart the server.');
+        } else if (err.message === 'API_KEY_INVALID') {
+          setError('API Key Error: The CoinMarketCap API key is invalid. Please check COINMARKETCAP_API_KEY in your .env.local file and ensure it is correct and active.');
         } else {
           setError(`Failed to load data: ${err.message}. Please try again later.`);
         }
@@ -116,7 +123,7 @@ export default function StatsPage() {
   useEffect(() => {
     fetchData();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Initial fetch
+  }, []); 
 
   useEffect(() => {
     if (cryptoData.length > 0) {
