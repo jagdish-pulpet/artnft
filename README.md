@@ -11,607 +11,349 @@
   <a href="https://github.com/jagdish-pulpet/artnft/issues"><img src="https://img.shields.io/github/issues/jagdish-pulpet/artnft?style=flat-square" alt="GitHub Issues"/></a>
   <a href="https://github.com/jagdish-pulpet/artnft/commits/main"><img src="https://img.shields.io/github/last-commit/jagdish-pulpet/artnft?style=flat-square" alt="GitHub Last Commit"/></a>
   <br/>
-  <a href="package.json"><img src="https://img.shields.io/badge/frontend-v0.1.0-blue?style=flat-square" alt="Frontend Version"/></a>
-  <a href="artnft-backend-node/package.json"><img src="https://img.shields.io/badge/backend-v1.0.0-green?style=flat-square" alt="Backend Version"/></a>
-  <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Frontend-Next.js-black?style=flat-square&logo=next.js&logoColor=white" alt="Built with Next.js"/></a>
-  <a href="https://nodejs.org"><img src="https://img.shields.io/badge/Backend-Node.js%20(TS)-blueviolet?style=flat-square&logo=nodedotjs&logoColor=white" alt="Backend: Node.js (TypeScript)"/></a>
+  <a href="apps/web/package.json"><img src="https://img.shields.io/badge/WebApp-v0.1.0-blue?style=flat-square" alt="Web App Version"/></a>
+  <a href="apps/api/package.json"><img src="https://img.shields.io/badge/API-v1.0.0-green?style=flat-square" alt="API Version"/></a>
+  <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Web-Next.js-black?style=flat-square&logo=next.js&logoColor=white" alt="Built with Next.js"/></a>
+  <a href="https://reactnative.dev"><img src="https://img.shields.io/badge/Mobile-React%20Native-blueviolet?style=flat-square&logo=react&logoColor=white" alt="Mobile: React Native"/></a>
   <br/>
   <a href="https://www.mysql.com"><img src="https://img.shields.io/badge/Database-MySQL%20%2F%20MariaDB-blue?style=flat-square&logo=mysql&logoColor=white" alt="Database: MySQL / MariaDB"/></a>
+  <a href="https://graphql.org"><img src="https://img.shields.io/badge/API-GraphQL%20%26%20REST-f5005F?style=flat-square&logo=graphql&logoColor=white" alt="API: GraphQL & REST"/></a>
   <a href="https://tailwindcss.com"><img src="https://img.shields.io/badge/Styling-TailwindCSS-cyan?style=flat-square&logo=tailwindcss&logoColor=white" alt="Styling: Tailwind CSS"/></a>
   <a href="https://firebase.google.com/docs/genkit"><img src="https://img.shields.io/badge/AI-Genkit-brightgreen?style=flat-square&logo=google&logoColor=white" alt="AI: Genkit"/></a>
   <br/>
   <a href="https://github.com/jagdish-pulpet/artnft"><img src="https://img.shields.io/github/languages/top/jagdish-pulpet/artnft?style=flat-square" alt="GitHub top language"/></a>
   <a href="https://github.com/jagdish-pulpet/artnft"><img src="https://img.shields.io/github/repo-size/jagdish-pulpet/artnft?style=flat-square" alt="GitHub repo size"/></a>
   <a href="https://github.com/jagdish-pulpet/artnft/graphs/contributors"><img src="https://img.shields.io/github/contributors/jagdish-pulpet/artnft?style=flat-square" alt="GitHub contributors"/></a>
-  <br/>
-  <a href="https://github.com/jagdish-pulpet/artnft/pulls"><img src="https://img.shields.io/github/issues-pr/jagdish-pulpet/artnft?style=flat-square" alt="GitHub open pull requests"/></a>
-  <a href="https://github.com/jagdish-pulpet/artnft/pulls?q=is%3Apr+is%3Aclosed"><img src="https://img.shields.io/github/issues-pr-closed/jagdish-pulpet/artnft?style=flat-square" alt="GitHub closed pull requests"/></a>
 </p>
 
-ArtNFT Marketplace is a cutting-edge, full-stack web application designed for artists, collectors, and enthusiasts in the burgeoning world of Non-Fungible Tokens (NFTs). It offers a seamless and engaging experience for discovering unique digital artworks, creating and listing NFTs, and interacting with a vibrant community. The frontend is built with Next.js, and it communicates with a dedicated Node.js (Express, TypeScript) backend and a MySQL/MariaDB database. AI capabilities are integrated using Genkit.
+ArtNFT Marketplace is a cutting-edge, full-stack platform designed for artists, collectors, and enthusiasts in the burgeoning world of Non-Fungible Tokens (NFTs). It offers a seamless and engaging experience across web and mobile for discovering unique digital artworks, creating and listing NFTs, and interacting with a vibrant community. This project is structured as a monorepo to manage multiple applications and shared packages efficiently.
 
 ## Table of Contents
 
 1.  [✨ Key Features](#-key-features)
 2.  [📄 Application Screens Overview](#-application-screens-overview)
-3.  [🖼️ Screenshots](#️-screenshots)
-4.  [🛠️ Tech Stack](#️-tech-stack)
-5.  [🏗️ Project Architecture](#️-project-architecture)
+3.  [🏗️ Project Architecture](#️-project-architecture)
+4.  [📁 Proposed Project Structure](#-proposed-project-structure)
+5.  [🛠️ Tech Stack](#️-tech-stack)
 6.  [🚀 Getting Started](#-getting-started)
     *   [Prerequisites](#prerequisites)
-    *   [Installation & Setup](#installation--setup)
-        *   [Frontend Setup (Next.js)](#frontend-setup-nextjs)
-        *   [Backend Setup (Node.js/Express/MySQL/MariaDB)](#backend-setup-nodejssexpressmysqlmariadb)
+    *   [Monorepo Setup](#monorepo-setup)
+    *   [Application-Specific Setup](#application-specific-setup)
     *   [Running Development Servers](#running-development-servers)
-7.  [📁 Project Structure](#-project-structure)
-8.  [🎨 Styling & Theming](#-styling--theming)
-9.  [🤖 AI Integration (Genkit)](#-ai-integration-genkit)
-10. [🌍 Building for Production](#-building-for-production)
-11. [☁️ Deployment](#️-deployment)
-12. [🤝 Contributing](#-contributing)
-13. [🗺️ Roadmap](#️-roadmap)
-14. [📄 License](#-license)
-15. [📞 Contact](#-contact)
+7.  [🎨 Styling & Theming](#-styling--theming)
+8.  [🤖 AI Integration (Genkit)](#-ai-integration-genkit)
+9.  [📱 Mobile Application (React Native)](#-mobile-application-react-native)
+10. [🔗 API Layer (REST & GraphQL)](#-api-layer-rest--graphql)
+11. [🌍 Building for Production](#-building-for-production)
+12. [☁️ Deployment](#️-deployment)
+13. [🤝 Contributing](#-contributing)
+14. [🗺️ Roadmap](#️-roadmap)
+15. [📄 License](#-license)
+16. [📞 Contact](#-contact)
 
 ## ✨ Key Features
 
-<details>
-<summary><strong>Comprehensive User Authentication (with Node.js Backend):</strong></summary>
+*(Key features remain largely the same but would now apply to web, admin, and conceptually mobile where relevant. The backend supports all these frontends.)*
 
-*   Secure sign-up (Email, Password, Confirm Password, optional Username) and login (Email, Password) for web users, handled by the Node.js backend (`artnft-backend-node`).
-*   Admin login (Email, Password) via the Node.js backend.
-*   Simulated wallet connection UI for providers like MetaMask, WalletConnect, and Coinbase Wallet (`/connect-wallet`).
-*   Splash screen for initial app loading.
-*   Clear T&C and Privacy Policy links during signup.
+<details>
+<summary><strong>User Authentication (Across Platforms):</strong></summary>
+*   Secure sign-up and login for web and mobile users, handled by the central API.
+*   Admin login via the API.
+*   Simulated wallet connection UI (can be adapted for mobile).
 </details>
 
 <details>
-<summary><strong>Dynamic Home Dashboard (`/home`):</strong></summary>
-
-*   **Responsive Layout:** Mobile-first design with an auto-hiding bottom navigation for mobile and a persistent global header (with search) for desktop. Both header (desktop) and bottom navigation (mobile) auto-hide/show on scroll for an improved viewing experience.
-*   **Engaging Hero Section:** Features a prominent banner with brand messaging and direct calls-to-action ("Explore Marketplace", "Create NFT").
-*   **Personalized Content Feeds:**
-    *   **"Latest Activity":** Displays recently listed or trending NFTs using interactive `NFTCard` components.
-    *   **"New From Artists You Follow":** Shows new creations from followed artists. *Data fetched from the Node.js backend.* If no artists are followed, a call-to-action prompts users to discover and follow creators.
-*   **Discovery & Engagement Features:**
-    *   **"Artist Spotlights":** Highlights featured artists with profile images, names, bios, and follow/unfollow functionality (interactions call backend APIs). Includes user avatar in header.
-    *   **"Explore Categories":** A visually rich grid of clickable category cards (e.g., Digital Art, Photography, Music), each leading to a dedicated category page.
-    *   **"Popular Collections":** Showcases trending or curated NFT collections (data from backend).
-*   **Community & Platform Updates:**
-    *   **"Community Highlights":** Features platform news, specific artist achievements, or upcoming events in an engaging card format.
+<summary><strong>Dynamic Dashboards (Web & Mobile Home):</strong></summary>
+*   Responsive layouts for web (`apps/web`) and native experience for mobile (`apps/mobile`).
+*   Personalized content feeds, artist spotlights, category exploration.
 </details>
 
 <details>
-<summary><strong>Advanced NFT Creation & Listing (`/create-nft`):</strong></summary> User-friendly interface for artists to mint their own NFTs, including:
-*   Image upload with preview (supports PNG, JPG, GIF; 10MB limit).
-*   Input fields for Title, Description, Price (ETH), Category, and Tags.
-*   **AI-Powered Content Assistance (Genkit):**
-    *   Generate NFT Description (based on image, title, optional keywords).
-    *   Suggest NFT Titles (based on image, optional concept/description).
-    *   Suggest NFT Tags (based on image, title, description).
-*   Collection management: Select from existing collections or create new ones via a dialog.
-*   Custom properties/traits: Add and manage key-value traits for NFTs.
-*   Royalty percentage setting.
-*   Unlockable content: Option to add content visible only to the NFT owner.
-*   **Live Preview Card (Desktop):** Dynamically updates to show how the NFT will appear with current details.
-*   Minting summary and submission to the Node.js backend for processing.
+<summary><strong>Advanced NFT Creation & Listing (Web, with AI):</strong></summary>
+*   User-friendly interface for minting NFTs with AI-powered content assistance (Genkit within Next.js).
 </details>
 
 <details>
-<summary><strong>Detailed NFT Page (`/nft/[id]`):</strong></summary> Comprehensive view of individual NFTs, including:
-*   Large image display with hover zoom effect.
-*   Detailed description, attributes, and artist information (profile picture, name, link to profile). *Data fetched from Node.js backend.*
-*   Auction system: Displays starting bid, current highest bid, and a real-time countdown timer for auction end (backend driven).
-*   "Buy Now" functionality and pricing. *Interaction calls Node.js backend.*
-*   Interactive "Place Bid" form. *Interaction calls Node.js backend.*
-*   Bid history display.
-*   "Add to Favorites" button (interaction with backend, toast feedback).
-*   Social sharing options (Twitter, Instagram, Copy Link).
-*   "Related NFTs" section for further discovery (data from backend).
+<summary><strong>Comprehensive NFT & User Discovery:</strong></summary>
+*   Detailed NFT pages, robust search with filtering, category pages, user profiles accessible via web and mobile.
 </details>
 
 <details>
-<summary><strong>User-Centric Dashboard (`/profile` -> "Dashboard"):</strong></summary> A personalized hub for users, featuring:
-*   **Profile Summary:** Displays user avatar, username, bio, and provides "Edit Profile" & "Settings" buttons.
-*   **Key Stats:** Overview of NFTs Owned, Favorites, Items for Sale, and Total Earnings (data from backend).
-*   **Tabbed Navigation:**
-    *   **Owned NFTs:** Grid view of NFTs owned by the user.
-    *   **Favorites:** Grid view of NFTs favorited by the user.
-    *   **Transaction History:** Detailed list of past activities (Purchases, Sales, Mints, Bids) with icons, item names, color-coded amounts, dates, and statuses.
-    *   **Recent Activity:** A feed of the user's actions (minting, listing, bids, favorites, follows) with icons, messages, timestamps, and direct links.
-*   **Platform Updates & Announcements:** Section displaying mock announcements that would originate from the Admin Panel.
-*   Informative empty states for all sections.
+<summary><strong>Robust Admin Panel (`apps/admin` or part of `apps/web`):</strong></summary>
+*   Secure admin login, user/NFT management, category control, promotions, analytics, audit logs, content moderation, site settings.
 </details>
 
-<details>
-<summary><strong>Robust NFT Discovery & Search (`/search`, Global Header):</strong></summary>
-*   **Global Header Search:** A persistent search bar in the desktop header (hidden on mobile), allowing users to search from anywhere. Search terms update the URL and navigate to/refresh the search page.
-*   **Dedicated Search Page (`/search`):**
-    *   Displays results based on the query from the global search or direct navigation.
-    *   Recent searches are shown as clickable badges that update the URL.
-    *   **Advanced Filtering:** By Category, Price Range, and Status (Buy Now / On Auction).
-    *   **Sorting Options:** Recently Added, Oldest First, Price (Low to High, High to Low), Title (A-Z, Z-A).
-    *   **View Modes:** Switch between Grid and List views for search results.
-    *   "Load More" functionality for paginating results.
-    *   Clear empty states for no results or when no search is active.
-    *   *Search results fetched from Node.js backend.*
-</details>
-
-<details>
-<summary><strong>Category-Specific Pages (`/category/[slug]`):</strong></summary>
-*   Dynamically generated pages for each NFT category (e.g., Digital Art, Photography).
-*   Lists NFTs belonging to the selected category (data from backend).
-*   Includes category title, description, and a link back to all categories.
-*   Graceful handling for non-existent categories.
-</details>
-
-<details>
-<summary><strong>Notifications System (`/notifications`):</strong></summary> Real-time alerts (driven by backend) for:
-*   New listings from followed artists.
-*   Price drops on favorited items.
-*   Auction updates and outcomes.
-*   Successful transactions.
-*   Features include read/unread status, icons per notification type, and filter options.
-</details>
-
-<details>
-<summary><strong>Comprehensive Settings Page (`/settings`):</strong></summary>
-*   Sections for Account Management (Change Email/Password - interacts with backend, Connect Wallet - simulated).
-*   Notification Preferences (toggles for various alert types).
-*   Appearance (Dark Mode toggle that persists in `localStorage`).
-*   Privacy settings and links to Privacy Policy.
-*   Help & Support links (FAQs, Contact, Terms of Service).
-*   Logout functionality (invalidates session/token on backend).
-</details>
-
-<details>
-<summary><strong>Crypto Market Stats Page (`/stats`):</strong></summary>
-*   Displays cryptocurrency market data fetched from the CoinMarketCap API via a Next.js API route (`/api/crypto-stats`).
-*   Features search, sort, "Load More" functionality, and highlights top gainers/losers.
-*   Handles loading, error (including API key missing), and empty states.
-</details>
-
-<details>
-<summary><strong>Robust Admin Panel (Interacts with Node.js Backend, accessible via `/admin`):</strong></summary>
-*   **Secure Login (`/admin/login`):** Dedicated login for administrators (credentials verified by backend).
-*   **Main Dashboard (`/admin/dashboard`):** Overview of key platform statistics (total users, NFTs, sales volume), recent platform activity, and links to other admin sections.
-*   **User Management (`/admin/users`):** View list of registered users, search/filter, view user details, and perform actions like suspend/activate user.
-*   **NFT Management (`/admin/nfts`):** View all NFTs, search/filter, view NFT details, and perform actions like feature/hide NFT. Includes ability to manually add or edit NFT listings.
-*   **Categories Management (`/admin/categories`):** Create, view, edit, and delete NFT categories.
-*   **Promotions Management (`/admin/promotions`):** Manage featured NFTs and spotlighted artists.
-*   **Platform Analytics (`/admin/analytics`):** View charts and graphs for sales trends, user sign-ups, and NFT distribution (data from backend).
-*   **Audit Log (`/admin/audit-log`):** Track significant administrative actions and system events (data from backend).
-*   **Content Moderation (`/admin/moderation`):** Queue for reviewing reported content (NFTs, user profiles) and taking moderation actions.
-*   **Tasks & Alerts (`/admin/tasks`):** A dashboard for admins to view pending tasks and important system alerts.
-*   **Site Settings (`/admin/settings`):** Manage global platform configurations like site name, tagline, theme colors (simulated), maintenance mode, and API keys (display only).
-*   **Feature Toggles (`/admin/feature-toggles`):** (Development Tool) Manage visibility of certain convenience features on welcome/login screens via local storage.
-*   **Responsive Admin Layout:** Sidebar navigation for desktop, sheet-based navigation for mobile.
-</details>
-
-<details>
-<summary><strong>Responsive Design & UI:</strong></summary>
-*   Mobile-first approach ensuring a seamless experience across devices.
-*   Auto-hiding navigation elements (bottom nav on mobile, global header on desktop) on scroll, with refined scroll delta logic.
-*   Modern, professional look and feel using ShadCN UI components and Tailwind CSS.
-</details>
-
-<details>
-<summary><strong>Theming:</strong></summary>
-*   Supports light and dark modes with a CSS HSL variable-based theme in `src/app/globals.css`.
-*   Theme colors (primary: Electric Blue, accent: Soft Pink) are applied.
-</details>
-
-<details>
-<summary><strong>Static Content Pages:</strong></summary>
-*   Terms of Service (`/terms`).
-*   Privacy Policy (`/privacy`).
-</details>
+*(Other feature details like Notifications, Settings, Crypto Stats page would be adapted or implemented for each relevant application: web, admin, mobile.)*
 
 ## 📄 Application Screens Overview
-
-This section provides a high-level overview of the main screens available in the ArtNFT Marketplace application and its Admin Panel.
-
-<details>
-<summary><strong>User-Facing Application Screens</strong></summary>
-
-*   **Splash Screen (`/`):** Initial loading screen of the application.
-*   **Welcome Page (`/welcome`):** Landing page for new users with options to log in or sign up. Includes development shortcuts (Admin Panel, GitHub, Guest login) managed by Feature Toggles.
-*   **Login Page (`/login`):** For existing users to access their accounts via Email/Password, communicating with the Node.js backend.
-*   **Signup Page (`/signup`):** For new users to create accounts via Email/Password/Confirm Password, communicating with the Node.js backend.
-*   **Forgot Password Page (`/forgot-password`):** For users to reset their passwords (backend logic required).
-*   **Connect Wallet Page (`/connect-wallet`):** (Simulated) UI for connecting crypto wallets.
-*   **Home Dashboard (`/home`):** Main dashboard after login, featuring hero section, activity feeds, artist spotlights, categories, and community highlights.
-*   **Create NFT Page (`/create-nft`):** Interface for artists to mint NFTs, with AI assistance and live preview, submitting data to the Node.js backend.
-*   **NFT Detail Page (`/nft/[id]`):** Comprehensive view of individual NFTs, including details, auction system, and purchase options, all data-driven by the backend.
-*   **User Dashboard/Profile (`/profile`):** Personalized hub for users to view their owned NFTs, favorites, transaction history, and recent activity. Also displays admin announcements. Data from backend.
-*   **Search Page (`/search`):** Dedicated page for searching NFTs with advanced filtering and sorting, driven by URL query parameters and backend queries.
-*   **Category Page (`/category/[slug]`):** Dynamically generated pages listing NFTs for specific categories, data from backend.
-*   **Notifications Page (`/notifications`):** Real-time alerts for platform activities, driven by the backend.
-*   **Settings Page (`/settings`):** Page for users to manage account settings, notification preferences, appearance (dark mode), and privacy. Interacts with backend for account changes.
-*   **Crypto Market Stats Page (`/stats`):** Displays cryptocurrency market data fetched from CoinMarketCap API via a Next.js API Route.
-*   **Terms of Service Page (`/terms`):** Static page for terms and conditions.
-*   **Privacy Policy Page (`/privacy`):** Static page for the privacy policy.
-</details>
-
-<details>
-<summary><strong>Admin Panel Screens</strong></summary>
-
-*   **Admin Login Page (`/admin/login`):** Secure login for administrators, authenticating against the Node.js backend.
-*   **Admin Dashboard (`/admin/dashboard`):** Overview of key platform statistics and recent activity, data from backend.
-*   **User Management (`/admin/users`):** View, search, filter, and manage registered users.
-*   **NFT Management (`/admin/nfts`):** View, search, filter, and manage all NFTs.
-    *   **Add NFT (`/admin/nfts/add`):** Manually add new NFT listings.
-    *   **Edit NFT (`/admin/nfts/[id]/edit`):** Modify details of existing NFT listings.
-*   **Categories Management (`/admin/categories`):** Create, view, edit, and delete NFT categories.
-*   **Promotions Management (`/admin/promotions`):** Manage featured NFTs and spotlighted artists.
-*   **Platform Analytics (`/admin/analytics`):** View charts for sales trends, user sign-ups, etc (data from backend).
-*   **Audit Log (`/admin/audit-log`):** Track significant administrative actions and system events (data from backend).
-*   **Content Moderation (`/admin/moderation`):** Queue for reviewing reported content and taking moderation actions.
-*   **Tasks & Alerts (`/admin/tasks`):** Dashboard for admins to view pending tasks and system alerts.
-*   **Site Settings (`/admin/settings`):** Manage global platform configurations (site name, theme colors, API keys - simulated for some, backend driven for others).
-*   **Feature Toggles (`/admin/feature-toggles`):** (Development Tool) Control visibility of certain helper UI elements on welcome/login pages.
-</details>
-
-## 🖼️ Screenshots
-
-*(Placeholder for screenshots of key application screens: Home Dashboard, NFT Details, Create NFT, Dashboard Page, Search Page, Admin Panel views, etc.)*
-
-## 🛠️ Tech Stack
-
-The ArtNFT Marketplace is a full-stack application composed of a Next.js frontend and a Node.js backend.
-
-**Frontend (User Interface & Client-Side Logic):**
-*   **Framework:** [Next.js](https://nextjs.org/) (v15+ with App Router)
-*   **Language:** [TypeScript](https://www.typescriptlang.org/)
-*   **UI Components:** [ShadCN UI](https://ui.shadcn.com/) (built on Radix UI)
-*   **Styling:** [Tailwind CSS](https://tailwindcss.com/) (utility-first, with HSL-based theming)
-*   **AI Integration (Specific Features):** [Genkit (by Google)](https://firebase.google.com/docs/genkit) utilizing Google AI models (e.g., Gemini) for features like NFT content generation assistance. Genkit flows run within the Next.js server environment.
-*   **Icons:** [Lucide React](https://lucide.dev/)
-*   **State Management (Client-Side):**
-    *   React Hooks (`useState`, `useEffect`, `useContext`, `useReducer` via `useToast`).
-    *   `useRouter`, `usePathname`, `useSearchParams` for route-based state.
-*   **Form Handling:** Standard React form handling, `react-hook-form` for more complex scenarios.
-*   **Routing:** Next.js App Router.
-*   **Font:** 'Inter' (via Google Fonts).
-*   **API Communication (Frontend):**
-    *   `fetch` API for Next.js API Routes (e.g., `/api/crypto-stats`).
-    *   `fetch` API to communicate with the dedicated Node.js backend (`artnft-backend-node/`) for core application data and authentication.
-
-**Backend (Server-Side Logic & Database - In Progress, located in `artnft-backend-node/`):**
-*   **Framework:** [Node.js](https://nodejs.org/) with [Express.js](https://expressjs.com/)
-*   **Language:** [TypeScript](https://www.typescriptlang.org/)
-*   **Database:** [MySQL / MariaDB](https://www.mysql.com/)
-*   **ORM (Object-Relational Mapper):** [Sequelize](https://sequelize.org/) for MySQL/MariaDB database interactions.
-*   **Authentication:** JWT (JSON Web Tokens) for secure sessions, `bcryptjs` for password hashing.
-*   **API Layer:** RESTful APIs to be consumed by the Next.js frontend.
-*   **Environment Management:** `dotenv` for managing environment variables (database credentials, JWT secrets).
-*   **Other Key Libraries:** `cors` for Cross-Origin Resource Sharing, `mysql2` (Sequelize dialect for MySQL/MariaDB).
+*(This section would be updated to specify which screens apply to Web, Admin, and the new Mobile app.)*
 
 ## 🏗️ Project Architecture
 
-ArtNFT Marketplace leverages a modern, decoupled architecture:
+ArtNFT Marketplace is architected as a **monorepo** to manage its multiple applications and shared libraries efficiently. This approach enhances code sharing, simplifies dependency management, and streamlines the development workflow.
 
-*   **Next.js Frontend:**
-    *   **App Router:** Enables a robust file-system based routing, supporting layouts, nested routes, and optimized rendering strategies (Server Components, Client Components).
-    *   **Component-Based UI:** React is used to build a modular and reusable component library, with core UI elements provided by ShadCN UI.
-    *   **State Management:** Primarily React Hooks for local/component state and route-based state.
-    *   **Styling:** Tailwind CSS for utility classes, global theme in `src/app/globals.css` (HSL variables).
-    *   **Genkit for AI (Specific Features):** AI functionalities like NFT content generation are encapsulated in Genkit "flows." These flows are server-side modules (`'use server';`) within the Next.js application.
-    *   **API Calls:** The frontend uses `fetch` to communicate with the RESTful APIs provided by the separate Node.js backend.
+The core components are:
 
-*   **Node.js Backend (`artnft-backend-node/`):**
-    *   **Express.js Framework:** Provides the foundation for building RESTful APIs.
-    *   **Language**: TypeScript for improved code quality and maintainability.
-    *   **API Endpoints:** Exposes endpoints for user authentication (signup, login), NFT management (CRUD), category management, etc.
-    *   **Business Logic:** Services layer handles core application logic.
-    *   **Database Interaction:** Models (using Sequelize ORM) define the structure of data and interact with the MySQL/MariaDB database.
-    *   **Authentication & Authorization:** Manages user sessions using JWTs and password security with bcrypt.
+*   **Applications (`apps/`):**
+    *   **Web App (`apps/web`):** A Next.js application serving the main user-facing marketplace. It handles user authentication, NFT discovery, creation (with Genkit AI), and user profiles.
+    *   **Admin Panel (`apps/admin` or part of `apps/web`):** A Next.js application (or a section within the web app) for platform administration.
+    *   **Mobile App (`apps/mobile`):** A React Native application providing a native experience for iOS and Android users to browse, discover, and interact with NFTs and the community.
+    *   **API Service (`apps/api`):** A Node.js (Express.js) backend providing both **RESTful** and **GraphQL** APIs. It handles business logic, database interactions (MySQL/MariaDB via Sequelize), authentication (JWT), and serves data to all frontend applications.
+
+*   **Shared Packages (`packages/`):**
+    *   **`ui/` & `mobile-ui/`:** Reusable React (for web/admin) and React Native (for mobile) UI components.
+    *   **`utils/`:** Common utility functions shared across the entire codebase.
+    *   **`types/`:** Centralized TypeScript definitions for API contracts, database models, and other shared data structures, ensuring type consistency.
+    *   **`api-client/`:** A dedicated client library (e.g., using `fetch`, Apollo Client for GraphQL) for frontend applications to interact with the `apps/api` service.
+    *   **`core-logic/`:** Shared business logic modules if applicable.
+
+*   **Database (`database/`):**
+    *   A MySQL/MariaDB relational database stores all persistent data.
+    *   Schema is managed via `schema.sql` and versioned using database migrations.
 
 *   **Communication:**
-    *   The Next.js frontend communicates with the Node.js backend via HTTP requests to its RESTful API endpoints.
-    *   The frontend sends data (e.g., login credentials, new NFT details) to the backend and receives data (e.g., user information, NFT listings) in JSON format.
-    *   The Next.js API Route for `/api/crypto-stats` directly fetches from an external API.
+    *   All client applications (`web`, `admin`, `mobile`) communicate with the central `apps/api` service via its REST and/or GraphQL endpoints.
+    *   Genkit AI functionalities are integrated within the `apps/web` (or `apps/admin`) Next.js server environment.
+
+## 📁 Proposed Project Structure
+
+This project proposes a monorepo structure for better organization and scalability:
+
+```
+artnft-marketplace/
+├── apps/
+│   ├── web/                      # Next.js Frontend (User-facing) - Current root project
+│   │   ├── public/
+│   │   ├── src/                  # Your current Next.js app's src
+│   │   └── package.json          # Next.js app dependencies
+│   ├── admin/                    # Next.js Admin Panel (Could be part of 'web' or separate)
+│   │   ├── public/
+│   │   ├── src/                  # Admin-specific Next.js src
+│   │   └── package.json
+│   ├── mobile/                   # React Native App (NEW)
+│   │   ├── src/
+│   │   ├── ios/
+│   │   ├── android/
+│   │   └── package.json          # React Native app dependencies
+│   └── api/                      # Node.js Backend (Evolved from artnft-backend-node)
+│       ├── src/                  # Backend source (Express, GraphQL, Sequelize)
+│       └── package.json          # Backend dependencies
+├── packages/
+│   ├── ui/                       # Shared React UI components (ShadCN based for web/admin)
+│   │   ├── src/
+│   │   └── package.json
+│   ├── mobile-ui/                # Shared React Native UI components (NEW)
+│   │   ├── src/
+│   │   └── package.json
+│   ├── utils/                    # Shared utility functions (TS/JS)
+│   │   ├── src/
+│   │   └── package.json
+│   ├── types/                    # Shared TypeScript types (API contracts, domain models)
+│   │   ├── src/
+│   │   └── package.json
+│   ├── api-client/               # Client for interacting with the API
+│   │   ├── src/
+│   │   └── package.json
+│   └── core-logic/               # Shared business logic modules (if any)
+│       ├── src/
+│       └── package.json
+├── database/
+│   ├── migrations/               # Database migration files
+│   ├── seeds/                    # Database seed files
+│   └── schema.sql                # Main database schema (MySQL/MariaDB)
+├── tools/
+│   └── monorepo-tool-config/     # (e.g., turbo.json, nx.json, lerna.json config)
+├── .gitignore
+├── README.md                     # This file
+└── package.json                  # Root package.json for monorepo tooling (e.g., Turborepo, Lerna)
+```
+*Note: Implementing this structure would involve moving existing code into the `apps/web` and `apps/api` (from `artnft-backend-node`) directories and setting up monorepo tooling.*
+
+## 🛠️ Tech Stack
+
+This project leverages a modern, full-stack technology suite:
+
+**Monorepo Management (Recommended):**
+*   **Tooling:** [Turborepo](https://turbo.build/repo), [Nx](https://nx.dev/), or [Lerna](https://lerna.js.org/) for managing the multi-package repository.
+
+**Web Frontend & Admin Panel (`apps/web`, `apps/admin`):**
+*   **Framework:** [Next.js](https://nextjs.org/) (v15+ with App Router)
+*   **Language:** [TypeScript](https://www.typescriptlang.org/)
+*   **UI Library:** [React](https://react.dev/)
+*   **UI Components:** [ShadCN UI](https://ui.shadcn.com/) (built on Radix UI)
+*   **Styling:** [Tailwind CSS](https://tailwindcss.com/) (with HSL-based theming)
+*   **AI Integration (Specific Features):** [Genkit (by Google)](https://firebase.google.com/docs/genkit) with Google AI Models (e.g., Gemini), run within the Next.js server environment.
+*   **Icons:** [Lucide React](https://lucide.dev/)
+*   **State Management:** React Hooks, Next.js Router Hooks.
+*   **Form Handling:** Standard React, [React Hook Form](https://react-hook-form.com/).
+*   **Shared Code:** Consumes `packages/ui`, `packages/api-client`, `packages/types`, `packages/utils`.
+
+**Mobile Application (`apps/mobile`) (NEW):**
+*   **Framework:** [React Native](https://reactnative.dev/) (or [Expo](https://expo.dev/) for streamlined development)
+*   **Language:** [TypeScript](https://www.typescriptlang.org/)
+*   **Navigation:** [React Navigation](https://reactnavigation.org/)
+*   **State Management:** Options like Zustand, Redux Toolkit, or React Query / TanStack Query.
+*   **Styling:** React Native StyleSheet, Styled Components, or utility-first libraries for React Native.
+*   **Shared Code:** Consumes `packages/mobile-ui`, `packages/api-client`, `packages/types`, `packages/utils`.
+
+**Backend API (`apps/api`):**
+*   **Runtime:** [Node.js](https://nodejs.org/)
+*   **Framework:** [Express.js](https://expressjs.com/)
+*   **Language:** [TypeScript](https://www.typescriptlang.org/)
+*   **API Styles:**
+    *   **GraphQL:** [Apollo Server](https://www.apollographql.com/docs/apollo-server/) or [Yoga GraphQL](https://the-guild.dev/graphql/yoga-server) (integrated with Express).
+    *   **RESTful APIs:** Using Express.js routing.
+*   **Database:** [MySQL / MariaDB](https://www.mysql.com/)
+*   **ORM:** [Sequelize](https://sequelize.org/)
+*   **Authentication:** JWT (JSON Web Tokens), `bcryptjs` for password hashing.
+*   **Environment Management:** `dotenv`.
+*   **Shared Code:** Consumes `packages/core-logic`, `packages/types`.
+
+**Shared Packages (`packages/*`):**
+*   **Language:** [TypeScript](https://www.typescriptlang.org/)
+*   **`packages/ui` Development:** [Storybook](https://storybook.js.org/) for component development and testing.
+
+**Database Layer (`database/`):**
+*   **System:** MySQL / MariaDB
+*   **Schema Definition:** SQL (`schema.sql`)
+*   **Migrations:** Sequelize CLI or [Knex.js](https://knexjs.org/) migrations (recommended for versioning schema changes).
 
 ## 🚀 Getting Started
 
-Follow these instructions to get both the frontend and backend running locally.
-
 ### Prerequisites
 
-*   [Node.js](https://nodejs.org/) (v18 or later recommended for both frontend and backend)
-*   [npm](https://www.npmjs.com/) (comes with Node.js) or [yarn](https://yarnpkg.com/)
-*   [MySQL Server](https://dev.mysql.com/downloads/mysql/) or [MariaDB Server](https://mariadb.org/download/) installed and running, OR access to a cloud-hosted MySQL/MariaDB instance (e.g., via cPanel, or cloud providers like AWS RDS, Google Cloud SQL, Azure Database for MySQL/MariaDB - free tiers may be available).
-*   A MySQL/MariaDB client (e.g., `mysql` command-line, MySQL Workbench, DBeaver, phpMyAdmin) to manage the database.
+*   [Node.js](https://nodejs.org/) (v18 or later)
+*   [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+*   [MySQL Server](https://dev.mysql.com/downloads/mysql/) or [MariaDB Server](https://mariadb.org/download/)
+*   A MySQL/MariaDB client (e.g., `mysql` CLI, MySQL Workbench, DBeaver)
+*   For Mobile:
+    *   React Native development environment (Xcode for iOS, Android Studio for Android). Refer to [React Native Environment Setup](https://reactnative.dev/docs/environment-setup).
+    *   Expo CLI (if using Expo): `npm install -g expo-cli`
+*   Monorepo tool (e.g., Turborepo): `npm install -g turbo`
 
-### Installation & Setup
-
-#### Frontend Setup (Next.js - Root Project)
-
-1.  **Clone the repository (if you haven't already):**
+### Monorepo Setup
+(Assuming a tool like Turborepo is used)
+1.  **Clone the repository:**
     ```bash
     git clone https://github.com/jagdish-pulpet/artnft.git
-    cd artnft 
+    cd artnft
     ```
-
-2.  **Install frontend dependencies:**
+2.  **Install root dependencies and bootstrap packages:**
     ```bash
-    npm install
-    # or
-    # yarn install
+    npm install # Or yarn install
+    # Monorepo tool might have a bootstrap command, e.g., turbo install or lerna bootstrap
     ```
+3.  **Environment Variables:**
+    *   Each application in `apps/` (web, api, mobile) will have its own `.env` or `.env.local` file for specific configurations (API keys, database URLs, etc.).
+    *   `apps/web/.env.local`: `GOOGLE_API_KEY`, `COINMARKETCAP_API_KEY`, `NEXT_PUBLIC_API_BASE_URL` (pointing to `apps/api`).
+    *   `apps/api/.env`: `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_PORT`, `JWT_SECRET`.
 
-3.  **Frontend Environment Variables (`.env.local` in the root project directory):**
-    *   Create a `.env.local` file in the root of the project by copying `.env.local.example` (if it exists) or creating it new.
-    *   Add your Google AI Studio API key (or other Genkit provider keys):
-        ```env
-        GOOGLE_API_KEY=YOUR_GOOGLE_AI_API_KEY_HERE
-        ```
-    *   Add your CoinMarketCap API Key (for the Stats page):
-        ```env
-        COINMARKETCAP_API_KEY=YOUR_COINMARKETCAP_API_KEY_HERE
-        ```
-    *   Add the URL for your local backend server (this will be the Node.js backend):
-        ```env
-        NEXT_PUBLIC_BACKEND_URL=http://localhost:5000 
-        ```
-        (Ensure the port `5000` matches what your Node.js backend will run on, as defined in its `.env` file).
+### Application-Specific Setup
 
-#### Backend Setup (Node.js/Express/MySQL/MariaDB - `artnft-backend-node/` directory)
-
-1.  **Navigate to the backend directory:**
-    ```bash
-    cd artnft-backend-node
-    ```
-
-2.  **Install backend dependencies:**
-    ```bash
-    npm install
-    ```
-
-3.  **Backend Environment Variables (`.env` in `artnft-backend-node/` directory):**
-    *   In the `artnft-backend-node/` directory, copy the `artnft-backend-node/.env.example` file to a new file named `.env`.
-    *   Open `artnft-backend-node/.env` and fill in your MySQL/MariaDB database credentials:
-        ```env
-        NODE_ENV=development
-        PORT=5000 # Port the backend server will run on
-        
-        # MySQL/MariaDB Database Connection
-        DB_DIALECT=mysql
-        DB_HOST=localhost                 # Or your cloud DB host
-        DB_USER=your_mysql_user           # Or your cloud DB user
-        DB_PASSWORD=your_mysql_password   # Or your cloud DB password
-        DB_NAME=artnft_db                 # Or your cloud DB name
-        DB_PORT=3306                      # Default MySQL/MariaDB port
-
-        # JWT Configuration
-        JWT_SECRET=YOUR_VERY_STRONG_AND_RANDOM_JWT_SECRET_KEY_HERE 
-        JWT_EXPIRES_IN=1d # Example: token expires in 1 day
-        ```
-    *   **Important:** Replace placeholders with your actual MySQL/MariaDB credentials. Choose a strong, random string for `JWT_SECRET`.
-
-4.  **MySQL/MariaDB Database and Schema Setup:**
-    *   Ensure your MySQL/MariaDB server is running (locally or cloud).
-    *   Using your MySQL/MariaDB client (`mysql` command-line, MySQL Workbench, DBeaver, phpMyAdmin):
-        *   Create the database specified in `artnft-backend-node/.env` (e.g., `artnft_db`) if it doesn't exist. Ensure it uses a suitable character set like `utf8mb4`.
-            ```sql
-            CREATE DATABASE artnft_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; 
-            ```
-        *   Connect to your database.
-        *   Apply the database schema using the `artnft-backend-node/schema.sql` file.
-            *   **Using `mysql` (command line):**
-                ```bash
-                mysql -u your_mysql_user -p artnft_db < schema.sql
-                ```
-                (You will be prompted for your MySQL password).
-            *   **Using MySQL Workbench/DBeaver:** Open the `schema.sql` file and execute its content against your connected database.
-            *   **Using phpMyAdmin:** Use the "Import" tab to upload and run the `schema.sql` file.
+*   **API (`apps/api` - formerly `artnft-backend-node`):**
+    *   Navigate to `apps/api`.
+    *   Install dependencies: `npm install`.
+    *   Setup `.env` file with database credentials and JWT secret.
+    *   Ensure MySQL/MariaDB server is running. Create the database (e.g., `artnft_db`).
+    *   Apply schema: `mysql -u your_user -p artnft_db < ../../database/schema.sql`.
+    *   Run migrations (if using a migration tool): `npx sequelize-cli db:migrate`.
+*   **Web Frontend & Admin (`apps/web`, `apps/admin`):**
+    *   Navigate to `apps/web` (or `apps/admin`).
+    *   Install dependencies: `npm install`.
+    *   Setup `.env.local`.
+*   **Mobile App (`apps/mobile`):**
+    *   Navigate to `apps/mobile`.
+    *   Install dependencies: `npm install`.
+    *   Follow React Native/Expo instructions for platform-specific setup (iOS, Android).
 
 ### Running Development Servers
+(Commands might vary based on monorepo tool)
 
-The Next.js frontend, Genkit (for AI flows), and the Node.js backend need to be run concurrently in separate terminal windows.
-
-1.  **Run the Node.js backend development server (from the `artnft-backend-node/` directory, in a separate terminal):**
+*   **From the root directory using a monorepo tool (e.g., Turborepo):**
     ```bash
-    cd artnft-backend-node
-    npm run dev 
+    turbo run dev 
+    # This would typically run dev scripts for all apps/packages defined in turbo.json
+    # Alternatively, run specific apps:
+    # turbo run dev --filter=api
+    # turbo run dev --filter=web
+    # turbo run dev --filter=mobile 
+    # turbo run genkit:watch --filter=web # For Genkit within the web app
     ```
-    This will start the backend server using `nodemon` and `ts-node`, typically on `http://localhost:5000` (or the `PORT` specified in `artnft-backend-node/.env`). Look for console messages indicating the server is running and connected to the database.
 
-2.  **Run the Next.js frontend development server (from the root `artnft` directory, in another terminal):**
-    ```bash
-    npm run dev
-    ```
-    This will start the frontend application, typically on `http://localhost:9002`.
-
-3.  **Run the Genkit development server (from the root `artnft` directory, in a third terminal):**
-    ```bash
-    npm run genkit:watch
-    ```
-    This starts Genkit in watch mode. Genkit usually starts its developer UI on `http://localhost:4000`.
-
-You should now have:
-*   Backend (Node.js/TypeScript/MySQL/MariaDB) running on `http://localhost:5000`
-*   Frontend (Next.js) running on `http://localhost:9002`
-*   Genkit Dev UI on `http://localhost:4000`
-
-## 📁 Project Structure
-
-The project is organized into a Next.js frontend and a separate Node.js backend.
-
-```
-.
-├── artnft-backend-node/      # Node.js (Express, TypeScript) Backend Application
-│   ├── dist/                 # Compiled JavaScript output from TypeScript
-│   ├── src/
-│   │   ├── api/              # API routes, controllers, validators
-│   │   ├── config/           # Database, environment config
-│   │   ├── middleware/       # Express middleware (auth, error handling)
-│   │   ├── models/           # Sequelize database models (User, NFT, etc. - .ts files)
-│   │   ├── services/         # Business logic layer (.ts files)
-│   │   ├── types/            # Custom type definitions (e.g., for Express Request)
-│   │   ├── utils/            # Utility functions (.ts files)
-│   │   ├── app.ts            # Express app setup
-│   │   └── server.ts         # Main server entry point
-│   ├── .env.example          # Example environment variables for backend
-│   ├── package.json          # Backend dependencies and scripts
-│   ├── schema.sql            # MySQL/MariaDB database schema definition
-│   ├── tsconfig.json         # TypeScript configuration for backend
-│   └── README.md             # Backend specific README
-│
-├── public/                   # Frontend: Static assets (images, fonts, etc.)
-├── src/                      # Frontend: Next.js application source
-│   ├── ai/                   # Frontend: Genkit AI flows and configuration
-│   │   ├── flows/            # Specific AI flow implementations
-│   │   └── genkit.ts         # Genkit global initialization
-│   │   └── dev.ts            # Genkit development server entry point
-│   ├── app/                  # Frontend: Next.js App Router (pages, layouts)
-│   │   ├── (admin)/          # Route group for Admin Panel
-│   │   │   └── admin/ ...
-│   │   ├── api/              # Next.js API routes (e.g., /api/crypto-stats)
-│   │   ├── category/[slug]/page.tsx
-│   │   └── ... (other frontend pages and layouts) ...
-│   │   ├── globals.css       # Global styles, Tailwind CSS base, and theme
-│   │   ├── layout.tsx        # Root layout for the entire application
-│   │   └── page.tsx          # Root page (splash screen)
-│   ├── components/           # Frontend: Reusable React components
-│   │   ├── ui/               # ShadCN UI components
-│   │   ├── admin/            # Admin panel specific components
-│   │   └── ... (other frontend components) ...
-│   ├── hooks/                # Frontend: Custom React Hooks
-│   ├── lib/                  # Frontend: Utility functions (e.g., cn for classnames)
-│
-├── .env.local.example        # Example environment variables for frontend
-├── .eslintrc.json            # ESLint configuration
-├── .gitignore                # Files and directories to ignore in Git
-├── apphosting.yaml           # Firebase App Hosting configuration
-├── components.json           # ShadCN UI configuration file
-├── next.config.ts            # Next.js configuration file
-├── package.json              # Frontend: Project dependencies and scripts
-├── postcss.config.js         # PostCSS configuration (for Tailwind CSS)
-├── tailwind.config.ts        # Tailwind CSS configuration
-├── tsconfig.json             # TypeScript configuration
-└── README.md                 # This file (Main Project README)
-```
+*   **Individually (if not using a monorepo runner for all):**
+    1.  **API (`apps/api`):** In `apps/api/`, run `npm run dev`. (Typically on `http://localhost:5000`)
+    2.  **Web App (`apps/web`):** In `apps/web/`, run `npm run dev`. (Typically on `http://localhost:9002`)
+    3.  **Genkit Dev UI (from `apps/web`):** In `apps/web/`, run `npm run genkit:watch`. (Typically on `http://localhost:4000`)
+    4.  **Mobile App (`apps/mobile`):** In `apps/mobile/`, run `npm run ios` or `npm run android` (or `expo start`).
 
 ## 🎨 Styling & Theming
-
-*   **Tailwind CSS:** Utility classes are used for most styling in the frontend.
-*   **ShadCN UI:** Components come pre-styled but are customizable.
-*   **Global Theme:** `src/app/globals.css` defines CSS HSL variables for primary, secondary, accent, background, foreground, and other colors. This allows for easy theme changes and supports light/dark mode.
-*   **Dark Mode:** Implemented using Tailwind's `dark:` variant, controlled by a class on the `html` tag (managed via the Settings page and `localStorage`).
+*(Largely unchanged, applies to `apps/web` and `apps/admin`)*
 
 ## 🤖 AI Integration (Genkit)
+*(Largely unchanged, primarily within `apps/web` or `apps/admin` Next.js server environment)*
 
-*   **Genkit by Google:** The project uses Genkit for specific Generative AI functionalities within the Next.js application.
-*   **Flows:** AI logic is organized into "flows" located in `src/ai/flows/`. These are server-side modules within the Next.js app environment.
-    *   `generateNftDescriptionFlow`: Creates compelling descriptions for NFTs.
-    *   `suggestNftTitlesFlow`: Suggests catchy and relevant titles for NFTs.
-    *   `suggestNftTagsFlow`: Recommends relevant tags/keywords for NFT discoverability.
-*   **Models:** Configured to use Google AI models (e.g., Gemini) via the `@genkit-ai/googleai` plugin. API keys are managed through `.env.local` for the frontend.
-*   **Use Cases:** Implemented in the "Create NFT" page to assist users with content generation.
+## 📱 Mobile Application (React Native) (NEW)
+
+*   **Platform:** `apps/mobile` built with React Native (or Expo).
+*   **Purpose:** Provides a native mobile experience for users to discover, view, and interact with NFTs and the marketplace community.
+*   **Key Features (Conceptual):**
+    *   NFT browsing and discovery.
+    *   User profiles and followed artists.
+    *   Notifications.
+    *   Wallet connection (using mobile-specific wallet SDKs).
+*   **API Communication:** Uses the shared `packages/api-client` to interact with `apps/api`.
+
+## 🔗 API Layer (REST & GraphQL) (NEW/ENHANCED)
+
+The `apps/api` service provides a robust backend for all client applications.
+*   **Dual Interface:** Offers both RESTful endpoints (Express.js) for traditional API interactions and a GraphQL API (e.g., Apollo Server) for flexible data querying.
+*   **GraphQL Benefits:** Particularly useful for the mobile app to fetch precisely the data it needs, reducing over-fetching and under-fetching.
+*   **`packages/api-client`:** This shared package will be designed to consume both REST and GraphQL endpoints, providing a unified interface for frontend apps.
+*   **Authentication:** JWT-based authentication is used for securing both REST and GraphQL endpoints.
 
 ## 🌍 Building for Production
-
-**Frontend (Next.js):**
-```bash
-npm run build
-```
-To start the Next.js production server (after building):
-```bash
-npm run start
-```
-
-**Backend (Node.js/TypeScript):**
-Navigate to `artnft-backend-node/`:
-```bash
-npm run build   # Compiles TypeScript to dist/
-npm start     # Runs the compiled JavaScript from dist/
-```
+*(Commands would be adapted for monorepo tooling, e.g., `turbo run build --filter=...`)*
 
 ## ☁️ Deployment
-
-*   **Next.js Frontend:** This project is configured for deployment on [Firebase App Hosting](https://firebase.google.com/docs/app-hosting) using `apphosting.yaml`. Alternatives include Vercel, Netlify, AWS Amplify.
-*   **Node.js Backend:** Requires a Node.js hosting environment (e.g., Heroku, AWS Elastic Beanstalk, Google Cloud App Engine/Cloud Run, DigitalOcean App Platform, Render). Ensure the environment supports TypeScript compilation or can run pre-compiled JavaScript.
-*   **MySQL/MariaDB Database:** Can be hosted on services like cPanel (often provides MySQL/MariaDB), AWS RDS for MySQL/MariaDB, Google Cloud SQL, Azure Database for MySQL/MariaDB, DigitalOcean Managed Databases, or a self-managed MySQL/MariaDB server.
+*   **Monorepo Considerations:** Deployment strategies will need to accommodate the monorepo structure. CI/CD pipelines can be set up to build and deploy individual apps from `apps/` when changes are detected in them or their dependencies in `packages/`.
+*   **Frontend (`apps/web`, `apps/admin`):** Firebase App Hosting, Vercel, Netlify.
+*   **Backend (`apps/api`):** Node.js hosting (Heroku, AWS Elastic Beanstalk, Google Cloud Run).
+*   **Mobile App (`apps/mobile`):** App Store (iOS), Google Play Store (Android).
+*   **Database:** Cloud-hosted MySQL/MariaDB (AWS RDS, Google Cloud SQL, Azure, DigitalOcean Managed Databases).
 
 ## 🤝 Contributing
-
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-1.  **Fork the Project**
-2.  **Create your Feature Branch** (`git checkout -b feature/AmazingFeature`)
-3.  **Commit your Changes** (`git commit -m 'Add some AmazingFeature'`)
-4.  **Push to the Branch** (`git push origin feature/AmazingFeature`)
-5.  **Open a Pull Request**
-
-Please ensure your code adheres to the project's linting and formatting standards. Include tests for new features where applicable.
+*(Contribution guidelines would generally apply to the monorepo as a whole, with specific considerations for each package/app.)*
 
 ## 🗺️ Roadmap
 
-*   **Phase 1: Core Frontend & Backend Setup with MySQL/MariaDB & TypeScript (Largely Complete)**
-    *   [x] Next.js Frontend: User Authentication pages (Login, Signup), Admin Login page - calls backend APIs.
-    *   [x] Node.js Backend (`artnft-backend-node`): Initial setup with Express (TypeScript), MySQL/MariaDB (Sequelize), and functional user/admin authentication (signup, login).
-    *   [x] Basic NFT Creation & Listing UI (Simulated with AI assistance for content; *frontend prepares data for backend*)
-    *   [x] NFT Discovery UI (Featured/Latest, Categories, Global Search with Filters & Sort; *frontend preparing for backend data*)
-    *   [x] NFT Detail Page UI (Simulated Auction, Buy Now, Related NFTs; *frontend interactions to use backend data*)
-    *   [x] User Dashboard UI (Owned, Favorites, Transaction History, Recent Activity, Admin Announcements - Enhanced UI/UX)
-    *   [x] Basic Responsive Design (Mobile-first, auto-hiding navigation, global header)
-    *   [x] Light/Dark Theming (User-configurable)
-    *   [x] Notifications Page UI (Simulated alerts)
-    *   [x] Settings Page UI (Account, Preferences, Appearance)
-    *   [x] Crypto Market Stats Page (External API integration via Next.js API Route)
-    *   [x] Comprehensive Admin Panel UI (Simulated actions initially, to be wired to backend): Dashboard, User Management, NFT Management (CRUD), Categories, Promotions, Analytics, Audit Log, Moderation, Tasks & Alerts, Site Settings, Feature Toggles.
-
-<details>
-<summary><strong>Phase 2: Full Backend Implementation & Frontend Integration (In Progress)</strong></summary>
-
-*   [ ] **Node.js Backend Development (`artnft-backend-node`):**
-    *   [ ] Implement full CRUD operations for NFTs, Categories, User Profiles, etc. (interacting with MySQL/MariaDB via Sequelize).
-    *   [ ] Develop robust auction system logic (MySQL/MariaDB based).
-    *   [ ] Implement persistent user interactions (Follow Artist, Favorite NFT - MySQL/MariaDB storage).
-    *   [ ] Build out remaining Admin Panel API endpoints.
-    *   [ ] Add comprehensive error handling and validation (e.g. using Zod or express-validator).
-*   [ ] **Next.js Frontend Integration:**
-    *   [ ] Connect all frontend pages and components to the Node.js backend APIs.
-    *   [ ] Replace all mock data with data fetched from the backend.
-    *   [ ] Implement real-time updates for features like auctions (e.g., using WebSockets if supported by backend).
-*   [ ] **Screen-by-Screen API Implementation & Integration Tasks (Examples):**
-    *   **Home Dashboard (`/home`):**
-        *   [ ] Frontend: Fetch "Latest Activity" NFTs from backend `/api/nfts?sortBy=createdAt&sortOrder=desc`.
-        *   [ ] Backend: Implement NFT fetching logic.
-    *   **Create NFT Page (`/create-nft`):**
-        *   [ ] Frontend: Submit new NFT data (including image upload handling to backend or cloud storage like Supabase Storage) to backend `/api/nfts`.
-        *   [ ] Backend: Handle NFT creation, associate with user, store image reference.
-    *   *(Continue for all other screens as detailed in previous roadmap)*
-*   [ ] **True Wallet Integration (Exploratory for this stack):** Investigate how to best handle wallet interactions if required beyond basic auth, possibly interacting with backend for verification.
-</details>
-
-*   **Phase 3: AI Advancement & Community Building**
-    *   [ ] **Advanced GenAI for NFT Creation:** Explore and integrate further AI capabilities (e.g., AI-assisted image generation/modification, art style analysis) using Genkit.
-    *   [ ] **Personalized AI-Powered Recommendations:** Develop GenAI-driven feeds for personalized NFT and artist recommendations (data from backend, AI logic via Genkit).
-    *   [ ] **Interactive Community Features:** Implement commenting, user-to-user messaging (backend driven).
-    *   [ ] **AI-Driven Content Moderation (Exploratory):** Investigate using AI tools for content moderation.
-
-*   **Phase 4: Scalability, Polish & Production Readiness**
-    *   [ ] **Comprehensive Testing Suite:** Unit, integration, and E2E tests for both frontend and backend.
-    *   [ ] **Performance Optimization:** In-depth analysis and optimization for both applications.
-    *   [ ] **Accessibility (WCAG) Compliance:** Ensure WCAG 2.1 AA standards.
-    *   [ ] **Security Hardening & Audit:** CSP, HSTS, input validation, rate limiting for backend.
-    *   [ ] **Full API Documentation:** Document backend RESTful APIs.
-    *   [ ] **Internationalization (i18n) & Localization (l10n).**
-    *   [ ] **Robust DevOps & CI/CD Pipeline for both frontend and backend.**
-    *   [ ] **Analytics Integration.**
+*   **Phase 1 & 2 (Refined for Monorepo):**
+    *   [ ] Establish Monorepo structure with tooling (e.g., Turborepo).
+    *   [ ] Migrate existing Next.js app to `apps/web`.
+    *   [ ] Migrate existing Node.js backend to `apps/api`.
+    *   [ ] Refactor shared elements (UI, utils, types) into `packages/*`.
+    *   [ ] Implement full backend CRUD operations and business logic in `apps/api` for MySQL/MariaDB.
+    *   [ ] Fully connect `apps/web` (and `apps/admin`) to `apps/api`.
+*   **Phase X: GraphQL API Implementation (NEW):**
+    *   [ ] Define GraphQL schema in `apps/api`.
+    *   [ ] Implement resolvers for GraphQL queries and mutations.
+    *   [ ] Update/extend `packages/api-client` to support GraphQL.
+*   **Phase Y: Mobile Application Development (NEW):**
+    *   [ ] Initialize React Native project in `apps/mobile`.
+    *   [ ] Develop core mobile screens (Home, NFT Details, Profile, Search).
+    *   [ ] Implement mobile-specific authentication and wallet interactions.
+    *   [ ] Integrate `packages/api-client` for data fetching.
+*   **Phase Z: Advanced Features & Polish (Across all platforms):**
+    *   Advanced GenAI integrations, personalized recommendations.
+    *   Community features (commenting, messaging).
+    *   Comprehensive testing, performance optimization, security hardening.
 
 ## 📄 License
-
-Distributed under the MIT License. See `LICENSE` file for more information (if one exists, otherwise assume MIT).
+Distributed under the MIT License.
 
 ## 📞 Contact
-
 Project Lead / Maintainer: [CloudFi] - [artnft.io]
-
 Project Link: [https://github.com/jagdish-pulpet/artnft](https://github.com/jagdish-pulpet/artnft)
-
 ---
-
 Thank you for checking out ArtNFT Marketplace! We're excited to see how it evolves.
+
+    
