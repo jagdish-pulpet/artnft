@@ -9,7 +9,9 @@
     "start": "node dist/server.js",
     "lint": "eslint . --ext .ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "db:schema:apply": "cat schema.sql | mysql -u root -p artnft_db"
+    "db:schema:apply": "cat ../../database/schema.sql | mysql -u root -p artnft_db",
+    "db:migrate": "sequelize-cli db:migrate",
+    "db:seed:all": "sequelize-cli db:seed:all"
   },
   "keywords": [
     "nft",
@@ -43,6 +45,7 @@
     "@typescript-eslint/parser": "^6.14.0",
     "eslint": "^8.55.0",
     "nodemon": "^3.0.2",
+    "sequelize-cli": "^6.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
