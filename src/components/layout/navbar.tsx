@@ -1,6 +1,7 @@
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet'; // Added SheetTitle
 import { Home, Store, PlusCircle, User, Sparkles, Menu } from 'lucide-react';
 
 const navItems = [
@@ -40,6 +41,7 @@ export default function Navbar() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[280px] p-0">
+              <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
               <div className="flex flex-col h-full">
                 <div className="p-6 border-b">
                   <Link href="/" className="flex items-center space-x-2" aria-label="ArtNFT Home">
