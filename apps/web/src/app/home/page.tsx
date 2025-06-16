@@ -1,8 +1,8 @@
 
 'use client';
-import { AppLayout } from '@artnft/ui';
+import { AppLayout } from '@artnft/ui'; // Updated import
 import NFTCard, { type NFTCardProps } from '@/components/NFTCard';
-import { ArtNFTLogo } from '@artnft/ui';
+import ArtNFTLogo from '@ui/ArtNFTLogo'; // Updated import
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
@@ -204,7 +204,7 @@ export default function HomePage() {
           "sticky top-0 bg-background z-20 border-b px-4 md:hidden", // Added md:hidden
           "transition-transform duration-300 ease-in-out",
           isHeaderVisible ? 'translate-y-0' : '-translate-y-full',
-          isMobileSearchActive ? 'h-16 py-0' : 'py-3' // Removed md:h-auto as it's mobile only
+          isMobileSearchActive ? 'h-16 py-0' : 'py-3' 
         )}>
           <div className={cn(
             "flex items-center w-full h-full",
@@ -254,7 +254,6 @@ export default function HomePage() {
                   <Button variant="ghost" size="icon" onClick={toggleMobileSearch}>
                     <SearchIcon className="h-5 w-5" />
                   </Button>
-                  {/* Desktop user info and Bell icon are handled by GlobalHeader in AppLayout for md+ screens */}
                 </div>
               </>
             )}
@@ -449,3 +448,4 @@ export default function HomePage() {
     </AppLayout>
   );
 }
+

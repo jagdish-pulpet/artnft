@@ -49,25 +49,25 @@ const nft_id_025 = 'nft_00000000-0000-0000-0000-MOCK00000025';
 
 const MOCK_ALL_NFTS_FOR_SIMULATION: EnhancedNFTCardProps[] = [
   { id: nft_id_001, imageUrl: 'https://placehold.co/400x400.png', title: 'My First Abstract', price: '0.5 ETH', priceEth: 0.5, artistName: 'TestUser01', dataAiHint: 'abstract colorful', category: 'digital-art', status: 'listed', dateAdded: '2024-07-15T10:00:00Z' },
-  { id: nft_id_002, imageUrl: 'https://placehold.co/400x400.png', title: 'Pixel Pal', price: '0.2 ETH', priceEth: 0.2, artistName: 'TestUser01', dataAiHint: 'pixel character', category: 'pixel-art', status: 'on-auction', dateAdded: '2024-07-16T12:30:00Z' },
+  { id: nft_id_002, imageUrl: 'https://placehold.co/400x400.png', title: 'Pixel Pal', price: '0.2 ETH', priceEth: 0.2, artistName: 'TestUser01', dataAiHint: 'pixel character', category: 'pixel-art', status: 'on_auction', dateAdded: '2024-07-16T12:30:00Z' },
   { id: nft_id_003, imageUrl: 'https://placehold.co/400x400.png', title: 'Dream Weaver #1', price: '1.2 ETH', priceEth: 1.2, artistName: 'ArtIsLife', dataAiHint: 'surreal landscape', category: 'digital-art', status: 'listed', dateAdded: '2024-07-12T08:00:00Z' },
   { id: nft_id_004, imageUrl: 'https://placehold.co/400x400.png', title: 'Ephemeral Light', price: '0.8 ETH', priceEth: 0.8, artistName: 'ArtIsLife', dataAiHint: 'abstract light', category: 'photography', status: 'listed', dateAdded: '2024-07-13T14:00:00Z' },
   { id: nft_id_005, imageUrl: 'https://placehold.co/400x400.png', title: 'Dream Weaver #2', price: '1.5 ETH', priceEth: 1.5, artistName: 'ArtIsLife', dataAiHint: 'dreamlike vista', category: 'digital-art', status: 'sold', dateAdded: '2024-07-14T18:00:00Z' },
   { id: nft_id_006, imageUrl: 'https://placehold.co/400x400.png', title: 'Vintage Robot', price: '0.75 ETH', priceEth: 0.75, artistName: 'NFTCollectorGal', dataAiHint: 'retro robot', category: 'collectible', status: 'listed', dateAdded: '2024-07-17T11:00:00Z' },
   { id: nft_id_007, imageUrl: 'https://placehold.co/400x400.png', title: 'Cybernetic Orb', price: '2.0 ETH', priceEth: 2.0, artistName: 'DigitalCreatorPro', dataAiHint: '3d orb', category: 'digital-art', status: 'listed', dateAdded: '2024-07-10T20:00:00Z' },
-  { id: nft_id_008, imageUrl: 'https://placehold.co/400x400.png', title: 'Mech Suit Alpha', price: '3.5 ETH', priceEth: 3.5, artistName: 'DigitalCreatorPro', dataAiHint: 'mech suit concept', category: 'digital-art', status: 'on-auction', dateAdded: '2024-07-11T09:00:00Z' },
+  { id: nft_id_008, imageUrl: 'https://placehold.co/400x400.png', title: 'Mech Suit Alpha', price: '3.5 ETH', priceEth: 3.5, artistName: 'DigitalCreatorPro', dataAiHint: 'mech suit concept', category: 'digital-art', status: 'on_auction', dateAdded: '2024-07-11T09:00:00Z' },
   { id: nft_id_009, imageUrl: 'https://placehold.co/400x400.png', title: 'Retro Wave Loop', price: '0.4 ETH', priceEth: 0.4, artistName: 'SynthMusician', dataAiHint: 'synthwave music', category: 'music', status: 'listed', dateAdded: '2024-07-07T10:00:00Z' },
   { id: nft_id_010, imageUrl: 'https://placehold.co/400x400.png', title: '80s Nostalgia Beat', price: '0.6 ETH', priceEth: 0.6, artistName: 'SynthMusician', dataAiHint: '80s beat', category: 'music', status: 'listed', dateAdded: '2024-07-08T15:00:00Z' },
   { id: nft_id_011, imageUrl: 'https://placehold.co/400x400.png', title: 'Pixel Knight #001', price: '0.3 ETH', priceEth: 0.3, artistName: 'PixelPioneer', dataAiHint: 'pixel knight', category: 'pixel-art', status: 'sold', dateAdded: '2024-07-02T19:00:00Z' },
   { id: nft_id_012, imageUrl: 'https://placehold.co/400x400.png', title: 'Pixel Forest Scene', price: '0.5 ETH', priceEth: 0.5, artistName: 'PixelPioneer', dataAiHint: 'pixel forest', category: 'pixel-art', status: 'listed', dateAdded: '2024-07-04T22:00:00Z' },
-  { id: nft_id_013, imageUrl: 'https://placehold.co/400x400.png', title: 'Pixel Dragonling', price: '0.7 ETH', priceEth: 0.7, artistName: 'PixelPioneer', dataAiHint: 'pixel dragon', category: 'pixel-art', status: 'on-auction', dateAdded: '2024-07-05T10:00:00Z' },
+  { id: nft_id_013, imageUrl: 'https://placehold.co/400x400.png', title: 'Pixel Dragonling', price: '0.7 ETH', priceEth: 0.7, artistName: 'PixelPioneer', dataAiHint: 'pixel dragon', category: 'pixel-art', status: 'on_auction', dateAdded: '2024-07-05T10:00:00Z' },
   { id: nft_id_014, imageUrl: 'https://placehold.co/400x400.png', title: 'Generative Swirls #7', price: '1.0 ETH', priceEth: 1.0, artistName: 'CryptoGallery', dataAiHint: 'generative art', category: 'generative-art', status: 'listed', dateAdded: '2024-06-27T13:00:00Z' },
   { id: nft_id_015, imageUrl: 'https://placehold.co/400x400.png', title: 'Mountain Vista Photo', price: '0.9 ETH', priceEth: 0.9, artistName: 'ArtViewer22', dataAiHint: 'mountain photography', category: 'photography', status: 'listed', dateAdded: '2024-06-30T10:00:00Z' },
   { id: nft_id_016, imageUrl: 'https://placehold.co/400x400.png', title: 'VR Gallery Access Key', price: '2.5 ETH', priceEth: 2.5, artistName: 'NFTInvestorX', dataAiHint: 'vr utility', category: 'utility', status: 'listed', dateAdded: '2024-06-22T11:00:00Z' },
   { id: nft_id_017, imageUrl: 'https://placehold.co/400x400.png', title: 'Lost Temple - Game Asset', price: '1.8 ETH', priceEth: 1.8, artistName: 'UXDesignerArt', dataAiHint: '3d game asset', category: 'virtual-world', status: 'listed', dateAdded: '2024-06-24T17:00:00Z' },
   { id: nft_id_018, imageUrl: 'https://placehold.co/400x400.png', title: 'Cosmic Abstract #42', price: '0.65 ETH', priceEth: 0.65, artistName: 'ArtIsLife', dataAiHint: 'cosmic abstract', category: 'digital-art', status: 'hidden', dateAdded: '2024-07-17T09:00:00Z' },
   { id: nft_id_019, imageUrl: 'https://placehold.co/400x400.png', title: 'Pixel Mage Character', price: '0.4 ETH', priceEth: 0.4, artistName: 'PixelPioneer', dataAiHint: 'pixel mage', category: 'pixel-art', status: 'listed', dateAdded: '2024-07-19T12:00:00Z' },
-  { id: nft_id_020, imageUrl: 'https://placehold.co/400x400.png', title: 'Serene Lake Photograph', price: '0.7 ETH', priceEth: 0.7, artistName: 'ArtViewer22', dataAiHint: 'lake photography', category: 'photography', status: 'on-auction', dateAdded: '2024-07-20T10:00:00Z' },
+  { id: nft_id_020, imageUrl: 'https://placehold.co/400x400.png', title: 'Serene Lake Photograph', price: '0.7 ETH', priceEth: 0.7, artistName: 'ArtViewer22', dataAiHint: 'lake photography', category: 'photography', status: 'on_auction', dateAdded: '2024-07-20T10:00:00Z' },
   { id: nft_id_021, imageUrl: 'https://placehold.co/400x400.png', title: 'Chillhop Beat "Sunset"', price: '0.25 ETH', priceEth: 0.25, artistName: 'SynthMusician', dataAiHint: 'chillhop music', category: 'music', status: 'listed', dateAdded: '2024-07-21T15:00:00Z' },
   { id: nft_id_022, imageUrl: 'https://placehold.co/400x400.png', title: 'Cyberpunk Alleyway 3D', price: '2.2 ETH', priceEth: 2.2, artistName: 'DigitalCreatorPro', dataAiHint: 'cyberpunk 3d', category: 'digital-art', status: 'listed', dateAdded: '2024-07-18T18:00:00Z' },
   { id: nft_id_023, imageUrl: 'https://placehold.co/400x400.png', title: 'Generative Patterns Alpha', price: '0.9 ETH', priceEth: 0.9, artistName: 'CryptoGallery', dataAiHint: 'generative patterns', category: 'generative-art', status: 'draft', dateAdded: '2024-07-06T10:00:00Z' },
@@ -150,8 +150,8 @@ export default function SearchPage() {
 
       const statusMap: Record<string, EnhancedNFTCardProps['status'][]> = {
         'buy-now': ['listed'], 
-        'on-auction': ['on-auction'],
-        'all-status': ['listed', 'on-auction', 'sold', 'hidden', 'draft', 'pending_moderation'] 
+        'on-auction': ['on_auction'],
+        'all-status': ['listed', 'on_auction', 'sold', 'hidden', 'draft', 'pending_moderation'] 
       };
       if (statusFilterValue !== 'all-status' && statusMap[statusFilterValue]) {
          simulatedResults = simulatedResults.filter(nft => statusMap[statusFilterValue].includes(nft.status));
@@ -453,3 +453,4 @@ export default function SearchPage() {
     </AppLayout>
   );
 }
+
