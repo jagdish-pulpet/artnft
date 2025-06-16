@@ -1,15 +1,6 @@
-// THIS FILE IS DEPRECATED AND NO LONGER IN USE.
-// The active version is now located at:
-// apps/web/src/app/admin/page.tsx
-// Please remove this file from your project.
-
-export default function DeprecatedAdminPage() {
-  return (
-    <div>
-      <p style={{ color: 'red', fontWeight: 'bold', padding: '20px', textAlign: 'center' }}>
-        This file (apps/web/src/admin/page.tsx) is DEPRECATED and should be removed.
-        The active page is in apps/web/src/app/admin/
-      </p>
-    </div>
-  );
+// This file (apps/web/src/admin/page.tsx) is unused.
+// Its content was moved to apps/web/src/app/admin/page.tsx.
+// Please manually move this old file to the /unused_files/ directory.
+export default function DeprecatedAdminFile() {
+  return "This file is deprecated and should be moved.";
 }

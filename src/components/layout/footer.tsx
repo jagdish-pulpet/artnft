@@ -1,13 +1,6 @@
-// THIS FILE IS DEPRECATED AND NO LONGER IN USE.
-// The global footer functionality is now handled by DesktopFooter.tsx
-// located in the @artnft/ui package (packages/ui/src/DesktopFooter.tsx).
-// Please remove this file from your project.
-
-export default function DeprecatedFooter() {
-  return (
-    <div>
-      <p>This Footer component (src/components/layout/footer.tsx) is deprecated and should be removed.</p>
-      <p>Use DesktopFooter from @artnft/ui instead.</p>
-    </div>
-  );
+// This file (src/components/layout/footer.tsx) is unused.
+// Footer functionality is now handled by 'packages/ui/src/DesktopFooter.tsx'.
+// Please manually move this old file to the /unused_files/ directory.
+export default function DeprecatedFile() {
+  return "This file is deprecated and should be moved.";
 }
