@@ -292,22 +292,14 @@ const ToastTitle = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$
 _c9 = ToastTitle;
 ToastTitle.displayName = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$radix$2d$ui$2f$react$2d$toast$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Title"].displayName;
 const ToastDescription = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["forwardRef"])(_c10 = ({ className, children, ...props }, ref)=>{
-    let content = children;
-    // Check if children is an error-like object with a message property
-    if (typeof children === 'object' && children !== null && 'message' in children && typeof children.message === 'string') {
-        content = children.message;
-    } else if (typeof children === 'object' && children !== null) {
-        // Fallback for other objects, or you could choose to show a generic message
-        content = "An unexpected error occurred in the toast description.";
-    }
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$radix$2d$ui$2f$react$2d$toast$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Description"], {
         ref: ref,
         className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$apps$2f$web$2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("text-sm opacity-90", className),
         ...props,
-        children: content
+        children: children
     }, void 0, false, {
         fileName: "[project]/apps/web/src/components/ui/toast.tsx",
-        lineNumber: 118,
+        lineNumber: 109,
         columnNumber: 5
     }, this);
 });
