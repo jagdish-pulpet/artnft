@@ -1,24 +1,13 @@
-import { Sparkles } from 'lucide-react';
+// THIS FILE IS DEPRECATED AND NO LONGER IN USE.
+// The global footer functionality is now handled by DesktopFooter.tsx
+// located in the @artnft/ui package (packages/ui/src/DesktopFooter.tsx).
+// Please remove this file from your project.
 
-export default function Footer() {
-  const currentYear = new Date().getFullYear();
+export default function DeprecatedFooter() {
   return (
-    <footer className="border-t border-border/40 py-8 text-muted-foreground mt-12">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col items-center justify-center text-center">
-            <Sparkles className="h-6 w-6 text-accent mb-3" />
-            <p className="text-sm">
-                &copy; {currentYear} ArtNFT. All rights reserved.
-            </p>
-            <p className="text-xs mt-1">
-                A platform for discovering, creating, and trading unique digital art.
-            </p>
-            <div className="mt-4 space-x-4">
-                <a href="#" className="text-xs hover:text-accent transition-colors">Privacy Policy</a>
-                <a href="#" className="text-xs hover:text-accent transition-colors">Terms of Service</a>
-            </div>
-        </div>
-      </div>
-    </footer>
+    <div>
+      <p>This Footer component (src/components/layout/footer.tsx) is deprecated and should be removed.</p>
+      <p>Use DesktopFooter from @artnft/ui instead.</p>
+    </div>
   );
 }
