@@ -1,83 +1,74 @@
-
 # To learn more about how to use Nix to configure your environment
 # see: https://firebase.google.com/docs/studio/customize-workspace
 {pkgs}: {
   # Which nixpkgs channel to use.
   channel = "stable-24.11"; # or "unstable"
+
   # Use https://search.nixos.org/packages to find packages
   packages = [
-    pkgs.nodejs_20
-    # pkgs.zulu # Removed as Java is not used in this project
-    pkgs.openssh
-    pkgs.postgresql # Added for local PostgreSQL server for the backend
+    pkgs.nodejs_20 # Essential for Next.js, Node.js backend, and Genkit
+    pkgs.postgresql # For the ArtNFT backend's database
+    pkgs.openssh # General utility
   ];
+
   # Sets environment variables in the workspace
-  env = {};
-  # This adds a file watcher to startup the firebase emulators. The emulators will only start if
-  # a firebase.json file is written into the user's directory
-  services.firebase.emulators = {
-    detect = true; # Consider setting to false if not using Firebase emulators for this project
-    projectId = "artnft-dev-emulator"; # Updated project ID
-    services = ["auth" "firestore"]; # Review if these are needed for ArtNFT
+  env = {
+    # Example: For PostgreSQL if managed via Nix and data needs to persist locally
+    # PGDATA = "/workspace/.pgdata";
+    # Note: GOOGLE_API_KEY for Genkit should be managed via .env.local or IDX secrets
   };
+
+  # Firebase emulators. Review if auth/firestore are needed, as ArtNFT uses a custom backend.
+  services.firebase.emulators = {
+    detect = true; # Auto-starts if firebase.json is present
+    projectId = "artnft-dev-emulator"; # Updated project ID for clarity
+    services = ["auth" "firestore"]; # List the emulators you might use
+  };
+
   idx = {
-    # Search for the extensions you want on https://open-vsx.org/ and use "publisher.id"
+    # Search for extensions on https://open-vsx.org/ and use "publisher.id"
     extensions = [
-      "dbaeumer.vscode-eslint",
-      "esbenp.prettier-vscode",
-      "bradlc.vscode-tailwindcss",
-      "eamodio.gitlens",
-      "VisualStudioExptTeam.vscodeintellicode"
-      # "vscodevim.vim"
+      "dbaeumer.vscode-eslint", # ESLint for code quality
+      "esbenp.prettier-vscode", # Prettier for code formatting
+      "bradlc.vscode-tailwindcss", # Tailwind CSS IntelliSense
+      "eamodio.gitlens", # GitLens for Git insights
+      "VisualStudioExptTeam.vscodeintellicode", # AI-assisted IntelliSense
+      "SimonSiefke.vscode-handlebars" # For Genkit prompt template highlighting
+      # "vscodevim.vim" # Uncomment if you use Vim keybindings
     ];
+
     workspace = {
-      # Runs when the workspace is first created
+      # Runs on workspace creation
       onCreate = {
         default.openFiles = [
           "README.md",
-          "src/app/home/page.tsx",
-          "artnft-backend-node/src/server.ts"
+          "src/app/home/page.tsx", # Main frontend page
+          "artnft-backend-node/src/server.ts", # Backend entry point
+          "src/ai/flows/generate-nft-description-flow.ts" # Example AI flow
         ];
       };
-      # Runs when the workspace is started
-      # onStart = {
-      #   # Example: Install project dependencies or run a script
-      #   # project-setup = "npm install && npm run db:migrate";
-      # };
     };
+
     # Enable previews and customize configuration
     previews = {
       enable = true;
       previews = {
-        web = {
+        web = { # Next.js Frontend
           command = ["npm" "run" "dev" "--" "--port" "$PORT" "--hostname" "0.0.0.0"];
           manager = "web";
-          label = "Frontend (Next.js)";
+          # label = "Next.js Frontend"; # Optional label
         };
-        backend = {
-          # Assuming your backend dev script is in artnft-backend-node/package.json
-          command = ["npm" "run" "dev" "--prefix" "artnft-backend-node"];
-          manager = "web"; # "process" might also be suitable if it's just logs
-          port = 5000; # Default port for the Node.js backend
-          label = "Backend API";
+        backend = { # Node.js Backend
+          command = ["cd" "artnft-backend-node" "&&" "npm" "run" "dev"];
+          manager = "web"; # IDX will assign a port. Check backend logs.
+          # label = "Node.js Backend"; # Optional label
         };
-        genkitUI = {
-          command = ["npm" "run" "genkit:watch"];
-          manager = "web";
-          port = 4000; # Default port for Genkit Developer UI
-          label = "Genkit Dev UI";
+        genkit = { # Genkit Developer UI
+          command = ["npm" "run" "genkit:watch"]; # Uses the script from package.json
+          manager = "web"; # Genkit UI typically runs on port 4000 by default
+          # label = "Genkit Dev UI"; # Optional label
         };
       };
     };
-    # VSCode settings that are applied to the workspace
-    # "settings": {
-    #   "editor.formatOnSave": true,
-    #   "[typescript]": {
-    #     "editor.defaultFormatter": "esbenp.prettier-vscode"
-    #   },
-    #   "[typescriptreact]": {
-    #     "editor.defaultFormatter": "esbenp.prettier-vscode"
-    #   }
-    # }
   };
 }
