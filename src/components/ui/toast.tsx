@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -103,13 +104,26 @@ ToastTitle.displayName = ToastPrimitives.Title.displayName
 const ToastDescription = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Description>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Description>
->(({ className, ...props }, ref) => (
-  <ToastPrimitives.Description
-    ref={ref}
-    className={cn("text-sm opacity-90", className)}
-    {...props}
-  />
-))
+>(({ className, children, ...props }, ref) => {
+  let content = children;
+  // Check if children is an error-like object with a message property
+  if (typeof children === 'object' && children !== null && 'message' in children && typeof (children as any).message === 'string') {
+    content = (children as { message: string }).message;
+  } else if (typeof children === 'object' && children !== null) {
+    // Fallback for other objects, or you could choose to show a generic message
+    content = "An unexpected error occurred in the toast description."; 
+  }
+
+  return (
+    <ToastPrimitives.Description
+      ref={ref}
+      className={cn("text-sm opacity-90", className)}
+      {...props}
+    >
+      {content}
+    </ToastPrimitives.Description>
+  );
+})
 ToastDescription.displayName = ToastPrimitives.Description.displayName
 
 type ToastProps = React.ComponentPropsWithoutRef<typeof Toast>

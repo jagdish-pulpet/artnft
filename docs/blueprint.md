@@ -2,17 +2,19 @@
 
 ## Core Features:
 
-- Home / Landing Page: Welcome users, showcase featured NFTs, and provide easy navigation.
-- NFT Marketplace / Browse Page: Discover, filter, and view NFTs available for purchase or bid.
-- Create & List NFT: Enable artists and creators to mint new NFTs and list them for sale. Use Genkit to suggest titles, descriptions, or tags based on artwork. The AI is used as a tool to help users tag and describe their NFTs.
-- User Profile / Dashboard: Allow users to manage their NFTs, view activity, and customize profile.
+- User Authentication: User authentication using email/password and wallet connection (MetaMask, WalletConnect).
+- Home Screen: Home screen with featured NFT grid, images, titles, prices, and a search bar.
+- NFT Details Page: NFT details page with large image, description, artist info, and 'Buy Now' button.
+- Create and List NFT: Artists can create/list NFTs with image uploads, descriptions, and price settings.
+- User Profile: User profiles to view/edit details, owned NFTs, transaction history, and follow favorite artists.
+- Notifications: Notifications for new listings, price drops, and updates from followed artists.
 
 ## Style Guidelines:
 
-- Primary color: Soft lavender (#D0B8FF), offering a sense of creativity and calmness.
-- Background color: Light grey (#F0F0F0), to ensure legibility and make the artwork pop.
-- Accent color: Muted violet (#947ac6), for interactive elements, drawing user's eye.
-- Headline font: 'Belleza', sans-serif. Body font: 'Alegreya', serif, to blend fashion-forward artistry with readability.
-- Minimalist, line-based icons to represent different categories and functionalities, ensuring a modern and clean aesthetic.
-- Grid-based layout for displaying NFTs, providing a structured and visually appealing experience.
-- Subtle hover effects and transitions for interactive elements, adding a layer of engagement without being distracting.
+- Primary color: Electric blue (#7DF9FF) to represent the digital nature of the NFTs, creating a modern and vibrant feel.
+- Background color: Light gray (#F0F0F0), providing a clean backdrop that highlights the digital art without distracting from it. Desaturated brightness conveys the minimalist approach.
+- Accent color: Soft pink (#FF69B4), for interactive elements and CTAs. Adding a delicate accent while ensuring contrast against the background.
+- Body and headline font: 'Inter' (sans-serif) provides a modern and neutral look suitable for all text elements. It is an objective, neutral-feeling font appropriate for viewing on a screen.
+- Use sleek, minimalist icons for navigation and interactive elements.
+- A clean and modern grid layout to showcase NFTs on the home screen.
+- Subtle animations on image hover effects to make exploring the platform more engaging.
