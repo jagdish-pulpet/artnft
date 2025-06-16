@@ -1,23 +1,23 @@
 
 'use client';
-import { AppLayout } from '@artnft/ui'; // Updated import
+import { AppLayout } from '@artnft/ui';
 import NFTCard, { type NFTCardProps } from '@/components/NFTCard';
-import { ArtNFTLogo } from '@artnft/ui'; // Updated import
+import { ArtNFTLogo } from '@artnft/ui';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import {
   Search as SearchIcon, Palette, Camera, Music2, ToyBrick, Globe, Bitcoin, Sparkles, Grid,
   Package, PlusSquare, Newspaper, ArrowRight, Users, Award, Flame, UserPlus, UserCheck, Activity, Bell,
-  ArrowLeft, X as XIcon 
+  ArrowLeft, X as XIcon
 } from 'lucide-react';
 import Link from 'next/link';
 import type { LucideIcon } from 'lucide-react';
 import Image from 'next/image';
-import { useState, useEffect, useRef, type FormEvent } from 'react'; 
+import { useState, useEffect, useRef, type FormEvent } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { useRouter } from 'next/navigation'; 
+import { useRouter } from 'next/navigation';
 
 // User IDs from schema.sql
 const user_001_id = 'usr_00000000-0000-0000-0000-000000000001';
@@ -56,9 +56,9 @@ const popularCollections: NFTCardProps[] = [
 ];
 
 const nftsFromFollowedArtists: NFTCardProps[] = [
-    { id: nft_id_003, imageUrl: 'https://placehold.co/400x400.png', title: 'Dream Weaver #1', price: '1.2 ETH', artistName: 'ArtIsLife', dataAiHint: 'surreal landscape' }, 
-    { id: nft_id_012, imageUrl: 'https://placehold.co/400x400.png', title: 'Pixel Forest Scene', price: '0.5 ETH', artistName: 'PixelPioneer', dataAiHint: 'pixel forest' }, 
-    { id: nft_id_008, imageUrl: 'https://placehold.co/400x400.png', title: 'Mech Suit Alpha', price: '3.5 ETH', artistName: 'DigitalCreatorPro', dataAiHint: 'mech suit' }, 
+    { id: nft_id_003, imageUrl: 'https://placehold.co/400x400.png', title: 'Dream Weaver #1', price: '1.2 ETH', artistName: 'ArtIsLife', dataAiHint: 'surreal landscape' },
+    { id: nft_id_012, imageUrl: 'https://placehold.co/400x400.png', title: 'Pixel Forest Scene', price: '0.5 ETH', artistName: 'PixelPioneer', dataAiHint: 'pixel forest' },
+    { id: nft_id_008, imageUrl: 'https://placehold.co/400x400.png', title: 'Mech Suit Alpha', price: '3.5 ETH', artistName: 'DigitalCreatorPro', dataAiHint: 'mech suit' },
 ];
 
 
@@ -140,7 +140,7 @@ export default function HomePage() {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      if (isMobileSearchActive) { 
+      if (isMobileSearchActive) {
         setIsHeaderVisible(true);
         setLastScrollY(currentScrollY);
         return;
@@ -193,21 +193,22 @@ export default function HomePage() {
 
   const toggleMobileSearch = () => {
     setIsMobileSearchActive(prev => !prev);
-    if (isMobileSearchActive) setSearchTerm(''); 
+    if (isMobileSearchActive) setSearchTerm('');
   };
 
   return (
     <AppLayout>
       <div className="max-w-full md:max-w-7xl mx-auto">
+        {/* Mobile-only Header */}
         <header className={cn(
-          "sticky top-0 bg-background z-20 border-b px-4",
+          "sticky top-0 bg-background z-20 border-b px-4 md:hidden", // Added md:hidden
           "transition-transform duration-300 ease-in-out",
           isHeaderVisible ? 'translate-y-0' : '-translate-y-full',
-          isMobileSearchActive ? 'h-16 py-0' : 'py-3 md:h-auto'
+          isMobileSearchActive ? 'h-16 py-0' : 'py-3' // Removed md:h-auto as it's mobile only
         )}>
           <div className={cn(
             "flex items-center w-full h-full",
-            isMobileSearchActive ? "justify-between gap-2" : "justify-between md:gap-4"
+            isMobileSearchActive ? "justify-between gap-2" : "justify-between"
           )}>
 
             {isMobileSearchActive && (
@@ -249,50 +250,11 @@ export default function HomePage() {
                 <div className="flex items-center">
                   <ArtNFTLogo />
                 </div>
-
-                <form onSubmit={handleSearchSubmit} className="hidden md:flex flex-grow max-w-md relative mx-4">
-                  <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input
-                    type="search"
-                    placeholder="Search NFTs, artists..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-16 h-10 rounded-full"
-                  />
-                  {searchTerm && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setSearchTerm('')}
-                      className="absolute right-10 top-1/2 -translate-y-1/2 h-7 w-7"
-                      aria-label="Clear search"
-                    >
-                      <XIcon className="h-4 w-4" />
-                    </Button>
-                  )}
-                  <Button type="submit" variant="default" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full">
-                    <SearchIcon className="h-4 w-4" />
-                  </Button>
-                </form>
-
                 <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="icon" onClick={toggleMobileSearch} className="md:hidden">
+                  <Button variant="ghost" size="icon" onClick={toggleMobileSearch}>
                     <SearchIcon className="h-5 w-5" />
                   </Button>
-                  <div className="hidden md:flex items-center space-x-3">
-                    <Link href="/profile" className="hover:text-primary transition-colors">
-                      <div className="text-right">
-                          <p className="text-xs text-muted-foreground">Hello,</p>
-                          <p className="text-sm font-semibold text-foreground -mt-1">{userName}</p>
-                      </div>
-                    </Link>
-                    <Button variant="ghost" size="icon" asChild>
-                        <Link href="/notifications" aria-label="Notifications">
-                            <Bell className="h-5 w-5" />
-                        </Link>
-                    </Button>
-                  </div>
+                  {/* Desktop user info and Bell icon are handled by GlobalHeader in AppLayout for md+ screens */}
                 </div>
               </>
             )}

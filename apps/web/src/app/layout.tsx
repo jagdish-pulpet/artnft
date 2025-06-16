@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css'; // Path is now relative to this file
-import { Toaster } from "@/components/ui/toaster"; // Alias should work due to tsconfig baseUrl
+import { Toaster } from "@/components/ui/toaster"; // Reverted to alias
 
 export const metadata: Metadata = {
   title: 'ArtNFT Marketplace',
