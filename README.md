@@ -16,7 +16,7 @@
   <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Frontend-Next.js-black?style=flat-square&logo=next.js&logoColor=white" alt="Built with Next.js"/></a>
   <a href="https://nodejs.org"><img src="https://img.shields.io/badge/Backend-Node.js%20(TS)-blueviolet?style=flat-square&logo=nodedotjs&logoColor=white" alt="Backend: Node.js (TypeScript)"/></a>
   <br/>
-  <a href="https://www.postgresql.org"><img src="https://img.shields.io/badge/Database-PostgreSQL-blue?style=flat-square&logo=postgresql&logoColor=white" alt="Database: PostgreSQL"/></a>
+  <a href="https://www.mysql.com"><img src="https://img.shields.io/badge/Database-MySQL%20%2F%20MariaDB-blue?style=flat-square&logo=mysql&logoColor=white" alt="Database: MySQL / MariaDB"/></a>
   <a href="https://tailwindcss.com"><img src="https://img.shields.io/badge/Styling-TailwindCSS-cyan?style=flat-square&logo=tailwindcss&logoColor=white" alt="Styling: Tailwind CSS"/></a>
   <a href="https://firebase.google.com/docs/genkit"><img src="https://img.shields.io/badge/AI-Genkit-brightgreen?style=flat-square&logo=google&logoColor=white" alt="AI: Genkit"/></a>
   <br/>
@@ -28,7 +28,7 @@
   <a href="https://github.com/jagdish-pulpet/artnft/pulls?q=is%3Apr+is%3Aclosed"><img src="https://img.shields.io/github/issues-pr-closed/jagdish-pulpet/artnft?style=flat-square" alt="GitHub closed pull requests"/></a>
 </p>
 
-ArtNFT Marketplace is a cutting-edge, full-stack web application designed for artists, collectors, and enthusiasts in the burgeoning world of Non-Fungible Tokens (NFTs). It offers a seamless and engaging experience for discovering unique digital artworks, creating and listing NFTs, and interacting with a vibrant community. The frontend is built with Next.js, and it communicates with a dedicated Node.js (Express, TypeScript) backend and a PostgreSQL database. AI capabilities are integrated using Genkit.
+ArtNFT Marketplace is a cutting-edge, full-stack web application designed for artists, collectors, and enthusiasts in the burgeoning world of Non-Fungible Tokens (NFTs). It offers a seamless and engaging experience for discovering unique digital artworks, creating and listing NFTs, and interacting with a vibrant community. The frontend is built with Next.js, and it communicates with a dedicated Node.js (Express, TypeScript) backend and a MySQL/MariaDB database. AI capabilities are integrated using Genkit.
 
 ## Table of Contents
 
@@ -41,7 +41,7 @@ ArtNFT Marketplace is a cutting-edge, full-stack web application designed for ar
     *   [Prerequisites](#prerequisites)
     *   [Installation & Setup](#installation--setup)
         *   [Frontend Setup (Next.js)](#frontend-setup-nextjs)
-        *   [Backend Setup (Node.js/Express/PostgreSQL)](#backend-setup-nodejssexpresspostgresql)
+        *   [Backend Setup (Node.js/Express/MySQL/MariaDB)](#backend-setup-nodejssexpressmysqlmariadb)
     *   [Running Development Servers](#running-development-servers)
 7.  [📁 Project Structure](#-project-structure)
 8.  [🎨 Styling & Theming](#-styling--theming)
@@ -280,12 +280,12 @@ The ArtNFT Marketplace is a full-stack application composed of a Next.js fronten
 **Backend (Server-Side Logic & Database - In Progress, located in `artnft-backend-node/`):**
 *   **Framework:** [Node.js](https://nodejs.org/) with [Express.js](https://expressjs.com/)
 *   **Language:** [TypeScript](https://www.typescriptlang.org/)
-*   **Database:** [PostgreSQL](https://www.postgresql.org/)
-*   **ORM (Object-Relational Mapper):** [Sequelize](https://sequelize.org/) for PostgreSQL database interactions.
+*   **Database:** [MySQL / MariaDB](https://www.mysql.com/)
+*   **ORM (Object-Relational Mapper):** [Sequelize](https://sequelize.org/) for MySQL/MariaDB database interactions.
 *   **Authentication:** JWT (JSON Web Tokens) for secure sessions, `bcryptjs` for password hashing.
 *   **API Layer:** RESTful APIs to be consumed by the Next.js frontend.
 *   **Environment Management:** `dotenv` for managing environment variables (database credentials, JWT secrets).
-*   **Other Key Libraries:** `cors` for Cross-Origin Resource Sharing.
+*   **Other Key Libraries:** `cors` for Cross-Origin Resource Sharing, `mysql2` (Sequelize dialect for MySQL/MariaDB).
 
 ## 🏗️ Project Architecture
 
@@ -304,7 +304,7 @@ ArtNFT Marketplace leverages a modern, decoupled architecture:
     *   **Language**: TypeScript for improved code quality and maintainability.
     *   **API Endpoints:** Exposes endpoints for user authentication (signup, login), NFT management (CRUD), category management, etc.
     *   **Business Logic:** Services layer handles core application logic.
-    *   **Database Interaction:** Models (using Sequelize ORM) define the structure of data and interact with the PostgreSQL database.
+    *   **Database Interaction:** Models (using Sequelize ORM) define the structure of data and interact with the MySQL/MariaDB database.
     *   **Authentication & Authorization:** Manages user sessions using JWTs and password security with bcrypt.
 
 *   **Communication:**
@@ -320,8 +320,8 @@ Follow these instructions to get both the frontend and backend running locally.
 
 *   [Node.js](https://nodejs.org/) (v18 or later recommended for both frontend and backend)
 *   [npm](https://www.npmjs.com/) (comes with Node.js) or [yarn](https://yarnpkg.com/)
-*   [PostgreSQL Server](https://www.postgresql.org/download/) installed and running, OR access to a cloud-hosted PostgreSQL instance (e.g., via [Supabase](https://supabase.com), [Neon](https://neon.tech), or [ElephantSQL](https://www.elephantsql.com/) - free tiers available).
-*   A PostgreSQL client (e.g., `psql` command-line, pgAdmin, DBeaver) to manage the database.
+*   [MySQL Server](https://dev.mysql.com/downloads/mysql/) or [MariaDB Server](https://mariadb.org/download/) installed and running, OR access to a cloud-hosted MySQL/MariaDB instance (e.g., via cPanel, or cloud providers like AWS RDS, Google Cloud SQL, Azure Database for MySQL/MariaDB - free tiers may be available).
+*   A MySQL/MariaDB client (e.g., `mysql` command-line, MySQL Workbench, DBeaver, phpMyAdmin) to manage the database.
 
 ### Installation & Setup
 
@@ -356,7 +356,7 @@ Follow these instructions to get both the frontend and backend running locally.
         ```
         (Ensure the port `5000` matches what your Node.js backend will run on, as defined in its `.env` file).
 
-#### Backend Setup (Node.js/Express/PostgreSQL - `artnft-backend-node/` directory)
+#### Backend Setup (Node.js/Express/MySQL/MariaDB - `artnft-backend-node/` directory)
 
 1.  **Navigate to the backend directory:**
     ```bash
@@ -370,43 +370,41 @@ Follow these instructions to get both the frontend and backend running locally.
 
 3.  **Backend Environment Variables (`.env` in `artnft-backend-node/` directory):**
     *   In the `artnft-backend-node/` directory, copy the `artnft-backend-node/.env.example` file to a new file named `.env`.
-    *   Open `artnft-backend-node/.env` and fill in your PostgreSQL database credentials:
+    *   Open `artnft-backend-node/.env` and fill in your MySQL/MariaDB database credentials:
         ```env
         NODE_ENV=development
         PORT=5000 # Port the backend server will run on
         
-        # PostgreSQL Database Connection
-        DB_DIALECT=postgres
-        DB_HOST=localhost                 # Or your Supabase/cloud DB host
-        DB_USER=your_postgres_user        # Or your Supabase/cloud DB user
-        DB_PASSWORD=your_postgres_password  # Or your Supabase/cloud DB password
-        DB_NAME=artnft_db                 # Or your Supabase/cloud DB name (often 'postgres')
-        DB_PORT=5432                      # Default PostgreSQL port
+        # MySQL/MariaDB Database Connection
+        DB_DIALECT=mysql
+        DB_HOST=localhost                 # Or your cloud DB host
+        DB_USER=your_mysql_user           # Or your cloud DB user
+        DB_PASSWORD=your_mysql_password   # Or your cloud DB password
+        DB_NAME=artnft_db                 # Or your cloud DB name
+        DB_PORT=3306                      # Default MySQL/MariaDB port
 
         # JWT Configuration
         JWT_SECRET=YOUR_VERY_STRONG_AND_RANDOM_JWT_SECRET_KEY_HERE 
         JWT_EXPIRES_IN=1d # Example: token expires in 1 day
         ```
-    *   **Important:** Replace placeholders with your actual PostgreSQL credentials. Choose a strong, random string for `JWT_SECRET`. For Supabase, the `DB_HOST` will be like `db.xxxxxxxx.supabase.co`, `DB_USER` is often `postgres`, and `DB_NAME` is often `postgres`.
+    *   **Important:** Replace placeholders with your actual MySQL/MariaDB credentials. Choose a strong, random string for `JWT_SECRET`.
 
-4.  **PostgreSQL Database and Schema Setup:**
-    *   Ensure your PostgreSQL server is running (locally or cloud).
-    *   Using your PostgreSQL client (`psql`, pgAdmin, DBeaver, or Supabase SQL Editor):
-        *   Create the database specified in `artnft-backend-node/.env` (e.g., `artnft_db`) if it doesn't exist.
+4.  **MySQL/MariaDB Database and Schema Setup:**
+    *   Ensure your MySQL/MariaDB server is running (locally or cloud).
+    *   Using your MySQL/MariaDB client (`mysql` command-line, MySQL Workbench, DBeaver, phpMyAdmin):
+        *   Create the database specified in `artnft-backend-node/.env` (e.g., `artnft_db`) if it doesn't exist. Ensure it uses a suitable character set like `utf8mb4`.
             ```sql
-            CREATE DATABASE artnft_db; 
+            CREATE DATABASE artnft_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; 
             ```
-            (For Supabase, the `postgres` database usually already exists and is the one you connect to).
         *   Connect to your database.
         *   Apply the database schema using the `artnft-backend-node/schema.sql` file.
-            *   **Using `psql` (command line):**
+            *   **Using `mysql` (command line):**
                 ```bash
-                psql -U your_postgres_user -d artnft_db -f schema.sql
+                mysql -u your_mysql_user -p artnft_db < schema.sql
                 ```
-                (You will be prompted for your PostgreSQL password).
-            *   **Using Supabase SQL Editor:** Copy the content of `schema.sql` and run it directly in the editor.
-            *   **Using pgAdmin/DBeaver:** Open the `schema.sql` file and execute its content against your connected database.
-        *   **For PostgreSQL < 13 (if not using Supabase or a modern version):** If `gen_random_uuid()` is not available, you might need to enable the `uuid-ossp` extension: `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";` and adjust `users.id` default in `schema.sql` to `uuid_generate_v4()`. (Supabase projects usually use PG15+ where this is not an issue).
+                (You will be prompted for your MySQL password).
+            *   **Using MySQL Workbench/DBeaver:** Open the `schema.sql` file and execute its content against your connected database.
+            *   **Using phpMyAdmin:** Use the "Import" tab to upload and run the `schema.sql` file.
 
 ### Running Development Servers
 
@@ -432,7 +430,7 @@ The Next.js frontend, Genkit (for AI flows), and the Node.js backend need to be 
     This starts Genkit in watch mode. Genkit usually starts its developer UI on `http://localhost:4000`.
 
 You should now have:
-*   Backend (Node.js/TypeScript/PostgreSQL) running on `http://localhost:5000`
+*   Backend (Node.js/TypeScript/MySQL/MariaDB) running on `http://localhost:5000`
 *   Frontend (Next.js) running on `http://localhost:9002`
 *   Genkit Dev UI on `http://localhost:4000`
 
@@ -456,7 +454,7 @@ The project is organized into a Next.js frontend and a separate Node.js backend.
 │   │   └── server.ts         # Main server entry point
 │   ├── .env.example          # Example environment variables for backend
 │   ├── package.json          # Backend dependencies and scripts
-│   ├── schema.sql            # PostgreSQL database schema definition
+│   ├── schema.sql            # MySQL/MariaDB database schema definition
 │   ├── tsconfig.json         # TypeScript configuration for backend
 │   └── README.md             # Backend specific README
 │
@@ -534,7 +532,7 @@ npm start     # Runs the compiled JavaScript from dist/
 
 *   **Next.js Frontend:** This project is configured for deployment on [Firebase App Hosting](https://firebase.google.com/docs/app-hosting) using `apphosting.yaml`. Alternatives include Vercel, Netlify, AWS Amplify.
 *   **Node.js Backend:** Requires a Node.js hosting environment (e.g., Heroku, AWS Elastic Beanstalk, Google Cloud App Engine/Cloud Run, DigitalOcean App Platform, Render). Ensure the environment supports TypeScript compilation or can run pre-compiled JavaScript.
-*   **PostgreSQL Database:** Can be hosted on services like Supabase, Neon, AWS RDS for PostgreSQL, Google Cloud SQL, DigitalOcean Managed Databases, or a self-managed PostgreSQL server.
+*   **MySQL/MariaDB Database:** Can be hosted on services like cPanel (often provides MySQL/MariaDB), AWS RDS for MySQL/MariaDB, Google Cloud SQL, Azure Database for MySQL/MariaDB, DigitalOcean Managed Databases, or a self-managed MySQL/MariaDB server.
 
 ## 🤝 Contributing
 
@@ -550,9 +548,9 @@ Please ensure your code adheres to the project's linting and formatting standard
 
 ## 🗺️ Roadmap
 
-*   **Phase 1: Core Frontend & Backend Setup with PostgreSQL & TypeScript (Largely Complete)**
+*   **Phase 1: Core Frontend & Backend Setup with MySQL/MariaDB & TypeScript (Largely Complete)**
     *   [x] Next.js Frontend: User Authentication pages (Login, Signup), Admin Login page - calls backend APIs.
-    *   [x] Node.js Backend (`artnft-backend-node`): Initial setup with Express (TypeScript), PostgreSQL (Sequelize), and functional user/admin authentication (signup, login).
+    *   [x] Node.js Backend (`artnft-backend-node`): Initial setup with Express (TypeScript), MySQL/MariaDB (Sequelize), and functional user/admin authentication (signup, login).
     *   [x] Basic NFT Creation & Listing UI (Simulated with AI assistance for content; *frontend prepares data for backend*)
     *   [x] NFT Discovery UI (Featured/Latest, Categories, Global Search with Filters & Sort; *frontend preparing for backend data*)
     *   [x] NFT Detail Page UI (Simulated Auction, Buy Now, Related NFTs; *frontend interactions to use backend data*)
@@ -568,9 +566,9 @@ Please ensure your code adheres to the project's linting and formatting standard
 <summary><strong>Phase 2: Full Backend Implementation & Frontend Integration (In Progress)</strong></summary>
 
 *   [ ] **Node.js Backend Development (`artnft-backend-node`):**
-    *   [ ] Implement full CRUD operations for NFTs, Categories, User Profiles, etc. (interacting with PostgreSQL via Sequelize).
-    *   [ ] Develop robust auction system logic (PostgreSQL based).
-    *   [ ] Implement persistent user interactions (Follow Artist, Favorite NFT - PostgreSQL storage).
+    *   [ ] Implement full CRUD operations for NFTs, Categories, User Profiles, etc. (interacting with MySQL/MariaDB via Sequelize).
+    *   [ ] Develop robust auction system logic (MySQL/MariaDB based).
+    *   [ ] Implement persistent user interactions (Follow Artist, Favorite NFT - MySQL/MariaDB storage).
     *   [ ] Build out remaining Admin Panel API endpoints.
     *   [ ] Add comprehensive error handling and validation (e.g. using Zod or express-validator).
 *   [ ] **Next.js Frontend Integration:**
