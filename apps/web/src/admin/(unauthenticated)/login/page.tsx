@@ -4,7 +4,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import ArtNFTLogo from '@ui/ArtNFTLogo'; // Updated import
+import ArtNFTLogo from '@ui/ArtNFTLogo'; // Corrected import path
 import { useRouter } from 'next/navigation';
 import { useState, type FormEvent, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
@@ -163,4 +163,3 @@ export default function AdminLoginPage() {
     </div>
   );
 }
-
