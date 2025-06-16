@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file:///home/user/studio/apps/web/src/app/admin/layout.tsx"],"sourcesContent":["\nimport type { Metadata } from 'next';\n// Global styles and the main Toaster are inherited from the root src/app/layout.tsx\n// Font links (Inter) are also inherited from the root layout.\n\nexport const metadata: Metadata = {\n  title: 'ArtNFT Admin',\n  description: 'Admin Panel for ArtNFT Marketplace',\n};\n\nexport default function AdminRootLayout({\n  children,\n}: Readonly<{\n  children: React.ReactNode;\n}>) {\n  // This layout component wraps all content under the /admin route.\n  // It does not re-declare <html>, <head>, or <body>.\n  // The admin section's specific background 'bg-muted/40' is applied to this top-level div.\n  // min-h-screen ensures this div attempts to fill the viewport height.\n  return (\n    <div className=\"bg-muted/40 min-h-screen\">\n      {children}\n    </div>\n  );\n}\n"],"names":[],"mappings":";;;;;;AAKO,MAAM,WAAqB;IAChC,OAAO;IACP,aAAa;AACf;AAEe,SAAS,gBAAgB,EACtC,QAAQ,EAGR;IACA,kEAAkE;IAClE,oDAAoD;IACpD,0FAA0F;IAC1F,sEAAsE;IACtE,qBACE,8OAAC;QAAI,WAAU;kBACZ;;;;;;AAGP","debugId":null}}]
+}
