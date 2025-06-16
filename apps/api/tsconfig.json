@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "es2020", // Updated for modern Node.js
+    "module": "commonjs",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "baseUrl": ".", // Allows for path aliases if needed within API
+    "paths": {
+      "@/*": ["src/*"]
+      // "@types/*": ["../../packages/types/src/*"] // Example if using shared types
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
