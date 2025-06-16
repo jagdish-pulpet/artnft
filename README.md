@@ -17,7 +17,7 @@
   <a href="https://reactnative.dev"><img src="https://img.shields.io/badge/Mobile-React%20Native-blueviolet?style=flat-square&logo=react&logoColor=white" alt="Mobile: React Native"/></a>
   <br/>
   <a href="https://www.mysql.com"><img src="https://img.shields.io/badge/Database-MySQL%20%2F%20MariaDB-blue?style=flat-square&logo=mysql&logoColor=white" alt="Database: MySQL / MariaDB"/></a>
-  <a href="https://graphql.org"><img src="https://img.shields.io/badge/API-GraphQL%20%26%20REST-f5005F?style=flat-square&logo=graphql&logoColor=white" alt="API: GraphQL & REST"/></a>
+  <a href="https://graphql.org"><img src="https://img.shields.io/badge/API-REST%20%26%20GraphQL-f5005F?style=flat-square&logo=graphql&logoColor=white" alt="API: REST & GraphQL"/></a>
   <a href="https://tailwindcss.com"><img src="https://img.shields.io/badge/Styling-TailwindCSS-cyan?style=flat-square&logo=tailwindcss&logoColor=white" alt="Styling: Tailwind CSS"/></a>
   <a href="https://firebase.google.com/docs/genkit"><img src="https://img.shields.io/badge/AI-Genkit-brightgreen?style=flat-square&logo=google&logoColor=white" alt="AI: Genkit"/></a>
   <br/>
@@ -26,51 +26,50 @@
   <a href="https://github.com/jagdish-pulpet/artnft/graphs/contributors"><img src="https://img.shields.io/github/contributors/jagdish-pulpet/artnft?style=flat-square" alt="GitHub contributors"/></a>
 </p>
 
-ArtNFT Marketplace is a cutting-edge, full-stack platform designed for artists, collectors, and enthusiasts in the burgeoning world of Non-Fungible Tokens (NFTs). It offers a seamless and engaging experience across web and mobile for discovering unique digital artworks, creating and listing NFTs, and interacting with a vibrant community. This project is structured as a monorepo to manage multiple applications and shared packages efficiently.
+ArtNFT Marketplace is a cutting-edge, full-stack platform designed for artists, collectors, and enthusiasts in the burgeoning world of Non-Fungible Tokens (NFTs). It offers a seamless and engaging experience across web and mobile for discovering unique digital artworks, creating and listing NFTs, and interacting with a vibrant community. This project is structured as a **monorepo** to manage multiple applications and shared packages efficiently.
 
 ## Table of Contents
 
 1.  [✨ Key Features](#-key-features)
-2.  [📄 Application Screens Overview](#-application-screens-overview)
-3.  [🏗️ Project Architecture](#️-project-architecture)
-4.  [📁 Proposed Project Structure](#-proposed-project-structure)
-5.  [🛠️ Tech Stack](#️-tech-stack)
-6.  [🚀 Getting Started](#-getting-started)
+2.  [🏗️ Project Architecture](#️-project-architecture)
+3.  [📁 Current Project Structure](#-current-project-structure)
+4.  [🛠️ Tech Stack](#️-tech-stack)
+5.  [🚀 Getting Started](#-getting-started)
     *   [Prerequisites](#prerequisites)
     *   [Monorepo Setup](#monorepo-setup)
     *   [Application-Specific Setup](#application-specific-setup)
     *   [Running Development Servers](#running-development-servers)
-7.  [🎨 Styling & Theming](#-styling--theming)
-8.  [🤖 AI Integration (Genkit)](#-ai-integration-genkit)
-9.  [📱 Mobile Application (React Native)](#-mobile-application-react-native)
-10. [🔗 API Layer (REST & GraphQL)](#-api-layer-rest--graphql)
-11. [🌍 Building for Production](#-building-for-production)
-12. [☁️ Deployment](#️-deployment)
-13. [🤝 Contributing](#-contributing)
-14. [🗺️ Roadmap](#️-roadmap)
-15. [📄 License](#-license)
-16. [📞 Contact](#-contact)
+6.  [🎨 Styling & Theming](#-styling--theming)
+7.  [🤖 AI Integration (Genkit)](#-ai-integration-genkit)
+8.  [📱 Mobile Application (React Native)](#-mobile-application-react-native)
+9.  [🔗 API Layer (REST & GraphQL)](#-api-layer-rest--graphql)
+10. [🌍 Building for Production](#-building-for-production)
+11. [☁️ Deployment](#️-deployment)
+12. [🤝 Contributing](#-contributing)
+13. [🗺️ Roadmap](#️-roadmap)
+14. [📄 License](#-license)
+15. [📞 Contact](#-contact)
 
 ## ✨ Key Features
 
-*(Key features remain largely the same but would now apply to web, admin, and conceptually mobile where relevant. The backend supports all these frontends.)*
+*(Key features remain largely the same but apply to web and conceptually mobile where relevant. The backend supports these frontends.)*
 
 <details>
 <summary><strong>User Authentication (Across Platforms):</strong></summary>
-*   Secure sign-up and login for web and mobile users, handled by the central API.
+*   Secure sign-up and login for web users, handled by the central API.
 *   Admin login via the API.
-*   Simulated wallet connection UI (can be adapted for mobile).
+*   Simulated wallet connection UI.
 </details>
 
 <details>
 <summary><strong>Dynamic Dashboards (Web & Mobile Home):</strong></summary>
-*   Responsive layouts for web (`apps/web`) and native experience for mobile (`apps/mobile`).
+*   Responsive layouts for web (`apps/web/src/app`) and native experience for mobile (`apps/mobile`).
 *   Personalized content feeds, artist spotlights, category exploration.
 </details>
 
 <details>
 <summary><strong>Advanced NFT Creation & Listing (Web, with AI):</strong></summary>
-*   User-friendly interface for minting NFTs with AI-powered content assistance (Genkit within Next.js).
+*   User-friendly interface for minting NFTs with AI-powered content assistance (Genkit within Next.js, primarily in `apps/web/src/ai`).
 </details>
 
 <details>
@@ -79,14 +78,9 @@ ArtNFT Marketplace is a cutting-edge, full-stack platform designed for artists, 
 </details>
 
 <details>
-<summary><strong>Robust Admin Panel (`apps/admin` or part of `apps/web`):</strong></summary>
+<summary><strong>Robust Admin Panel (`apps/web/src/app/admin`):</strong></summary>
 *   Secure admin login, user/NFT management, category control, promotions, analytics, audit logs, content moderation, site settings.
 </details>
-
-*(Other feature details like Notifications, Settings, Crypto Stats page would be adapted or implemented for each relevant application: web, admin, mobile.)*
-
-## 📄 Application Screens Overview
-*(This section would be updated to specify which screens apply to Web, Admin, and the new Mobile app.)*
 
 ## 🏗️ Project Architecture
 
@@ -95,257 +89,214 @@ ArtNFT Marketplace is architected as a **monorepo** to manage its multiple appli
 The core components are:
 
 *   **Applications (`apps/`):**
-    *   **Web App (`apps/web`):** A Next.js application serving the main user-facing marketplace. It handles user authentication, NFT discovery, creation (with Genkit AI), and user profiles.
-    *   **Admin Panel (`apps/admin` or part of `apps/web`):** A Next.js application (or a section within the web app) for platform administration.
-    *   **Mobile App (`apps/mobile`):** A React Native application providing a native experience for iOS and Android users to browse, discover, and interact with NFTs and the community.
-    *   **API Service (`apps/api`):** A Node.js (Express.js) backend providing both **RESTful** and **GraphQL** APIs. It handles business logic, database interactions (MySQL/MariaDB via Sequelize), authentication (JWT), and serves data to all frontend applications.
+    *   **Web App (`apps/web`):** A Next.js application serving the main user-facing marketplace and the admin panel. It handles user authentication, NFT discovery, creation (with Genkit AI), and user profiles. The source code is primarily in `apps/web/src/`, with pages and routes in `apps/web/src/app/`.
+    *   **Mobile App (`apps/mobile`):** A React Native application (placeholder) providing a native experience for iOS and Android users.
+    *   **API Service (`apps/api`):** A Node.js (Express.js) backend providing RESTful APIs (GraphQL planned). It handles business logic, database interactions (MySQL/MariaDB via Sequelize), authentication (JWT), and serves data to all frontend applications. Source code is in `apps/api/src/`.
 
 *   **Shared Packages (`packages/`):**
-    *   **`ui/` & `mobile-ui/`:** Reusable React (for web/admin) and React Native (for mobile) UI components.
-    *   **`utils/`:** Common utility functions shared across the entire codebase.
-    *   **`types/`:** Centralized TypeScript definitions for API contracts, database models, and other shared data structures, ensuring type consistency.
-    *   **`api-client/`:** A dedicated client library (e.g., using `fetch`, Apollo Client for GraphQL) for frontend applications to interact with the `apps/api` service.
-    *   **`core-logic/`:** Shared business logic modules if applicable.
+    *   **`ui/`:** Reusable React UI components (e.g., `AppLayout`, `ArtNFTLogo`, `GlobalHeader`) built with ShadCN UI, shared primarily by `apps/web`. Source: `packages/ui/src/`.
+    *   **`mobile-ui/`:** (Placeholder) Reusable React Native UI components for `apps/mobile`.
+    *   **`utils/`:** Common utility functions (like `cn` for classnames) shared across the entire codebase. Source: `packages/utils/src/`.
+    *   **`types/`:** (Placeholder) Centralized TypeScript definitions for API contracts, database models, etc.
+    *   **`api-client/`:** (Placeholder) A dedicated client library for frontend applications to interact with `apps/api`.
+    *   **`core-logic/`:** (Placeholder) Shared business logic modules.
 
 *   **Database (`database/`):**
-    *   A MySQL/MariaDB relational database stores all persistent data.
-    *   Schema is managed via `schema.sql` and versioned using database migrations.
+    *   A MySQL/MariaDB relational database.
+    *   Schema is managed via `database/schema.sql` and versioned using database migrations (planned).
 
 *   **Communication:**
-    *   All client applications (`web`, `admin`, `mobile`) communicate with the central `apps/api` service via its REST and/or GraphQL endpoints.
-    *   Genkit AI functionalities are integrated within the `apps/web` (or `apps/admin`) Next.js server environment.
+    *   Client applications (`web`, `mobile`) communicate with the central `apps/api` service.
+    *   Genkit AI functionalities are integrated within the `apps/web` Next.js server environment (in `apps/web/src/ai/`).
 
-## 📁 Proposed Project Structure
+## 📁 Current Project Structure
 
-This project proposes a monorepo structure for better organization and scalability:
+This project utilizes a monorepo structure:
 
 ```
 artnft-marketplace/
 ├── apps/
-│   ├── web/                      # Next.js Frontend (User-facing) - Current root project
+│   ├── web/                      # Next.js Frontend (User & Admin)
 │   │   ├── public/
-│   │   ├── src/                  # Your current Next.js app's src
-│   │   └── package.json          # Next.js app dependencies
-│   ├── admin/                    # Next.js Admin Panel (Could be part of 'web' or separate)
-│   │   ├── public/
-│   │   ├── src/                  # Admin-specific Next.js src
-│   │   └── package.json
-│   ├── mobile/                   # React Native App (NEW)
 │   │   ├── src/
-│   │   ├── ios/
-│   │   ├── android/
-│   │   └── package.json          # React Native app dependencies
-│   └── api/                      # Node.js Backend (Evolved from artnft-backend-node)
-│       ├── src/                  # Backend source (Express, GraphQL, Sequelize)
-│       └── package.json          # Backend dependencies
-├── packages/
-│   ├── ui/                       # Shared React UI components (ShadCN based for web/admin)
+│   │   │   ├── app/              # Next.js App Router (pages, layouts)
+│   │   │   │   ├── admin/        # Admin panel routes & components
+│   │   │   │   └── ...           # User-facing routes
+│   │   │   ├── components/       # Web-app specific components (NFTCard, etc.)
+│   │   │   │   └── ui/           # ShadCN UI components (specific to web app)
+│   │   │   ├── lib/              # Web-app specific utils (e.g., utils.ts for cn)
+│   │   │   ├── hooks/            # Web-app specific hooks (e.g., use-toast)
+│   │   │   └── ai/               # Genkit AI flows & config
+│   │   ├── components.json       # ShadCN config for apps/web
+│   │   ├── next.config.ts
+│   │   └── package.json
+│   ├── mobile/                   # React Native App (Placeholder)
 │   │   ├── src/
 │   │   └── package.json
-│   ├── mobile-ui/                # Shared React Native UI components (NEW)
-│   │   ├── src/
-│   │   └── package.json
-│   ├── utils/                    # Shared utility functions (TS/JS)
-│   │   ├── src/
-│   │   └── package.json
-│   ├── types/                    # Shared TypeScript types (API contracts, domain models)
-│   │   ├── src/
-│   │   └── package.json
-│   ├── api-client/               # Client for interacting with the API
-│   │   ├── src/
-│   │   └── package.json
-│   └── core-logic/               # Shared business logic modules (if any)
-│       ├── src/
+│   └── api/                      # Node.js Backend API
+│       ├── src/                  # Backend source (Express, Sequelize, etc.)
 │       └── package.json
+├── packages/
+│   ├── ui/                       # Shared React UI components (AppLayout, ArtNFTLogo)
+│   │   ├── src/
+│   │   └── package.json
+│   ├── mobile-ui/                # (Placeholder) Shared React Native UI components
+│   │   ├── src/
+│   │   └── package.json
+│   ├── utils/                    # Shared utility functions (cn utility)
+│   │   ├── src/
+│   │   └── package.json
+│   ├── types/                    # (Placeholder) Shared TypeScript types
+│   │   └── package.json
+│   └── ...                       # Other shared packages (api-client, core-logic placeholders)
 ├── database/
-│   ├── migrations/               # Database migration files
-│   ├── seeds/                    # Database seed files
-│   └── schema.sql                # Main database schema (MySQL/MariaDB)
-├── tools/
-│   └── monorepo-tool-config/     # (e.g., turbo.json, nx.json, lerna.json config)
+│   ├── migrations/
+│   ├── seeds/
+│   └── schema.sql
 ├── .gitignore
 ├── README.md                     # This file
-└── package.json                  # Root package.json for monorepo tooling (e.g., Turborepo, Lerna)
+└── package.json                  # Root package.json for monorepo (npm workspaces)
 ```
-*Note: Implementing this structure would involve moving existing code into the `apps/web` and `apps/api` (from `artnft-backend-node`) directories and setting up monorepo tooling.*
 
 ## 🛠️ Tech Stack
 
-This project leverages a modern, full-stack technology suite:
+**Monorepo Management:**
+*   **Tooling:** NPM Workspaces (TurboRepo or Nx can be added for advanced task running).
 
-**Monorepo Management (Recommended):**
-*   **Tooling:** [Turborepo](https://turbo.build/repo), [Nx](https://nx.dev/), or [Lerna](https://lerna.js.org/) for managing the multi-package repository.
-
-**Web Frontend & Admin Panel (`apps/web`, `apps/admin`):**
-*   **Framework:** [Next.js](https://nextjs.org/) (v15+ with App Router)
+**Web Frontend & Admin Panel (`apps/web`):**
+*   **Framework:** [Next.js](https://nextjs.org/) (v15+ with App Router located in `apps/web/src/app/`)
 *   **Language:** [TypeScript](https://www.typescriptlang.org/)
 *   **UI Library:** [React](https://react.dev/)
-*   **UI Components:** [ShadCN UI](https://ui.shadcn.com/) (built on Radix UI)
-*   **Styling:** [Tailwind CSS](https://tailwindcss.com/) (with HSL-based theming)
-*   **AI Integration (Specific Features):** [Genkit (by Google)](https://firebase.google.com/docs/genkit) with Google AI Models (e.g., Gemini), run within the Next.js server environment.
+*   **UI Components:** [ShadCN UI](https://ui.shadcn.com/) (local to `apps/web/src/components/ui/`)
+*   **Styling:** [Tailwind CSS](https://tailwindcss.com/) (configured in `apps/web/tailwind.config.ts`, main styles in `apps/web/src/app/globals.css`)
+*   **AI Integration:** [Genkit (by Google)](https://firebase.google.com/docs/genkit) (in `apps/web/src/ai/`)
 *   **Icons:** [Lucide React](https://lucide.dev/)
-*   **State Management:** React Hooks, Next.js Router Hooks.
-*   **Form Handling:** Standard React, [React Hook Form](https://react-hook-form.com/).
-*   **Shared Code:** Consumes `packages/ui`, `packages/api-client`, `packages/types`, `packages/utils`.
+*   **Shared Code:** Consumes `packages/ui` (for `AppLayout`, `ArtNFTLogo`), `packages/utils` (for `cn`).
 
-**Mobile Application (`apps/mobile`) (NEW):**
-*   **Framework:** [React Native](https://reactnative.dev/) (or [Expo](https://expo.dev/) for streamlined development)
-*   **Language:** [TypeScript](https://www.typescriptlang.org/)
-*   **Navigation:** [React Navigation](https://reactnavigation.org/)
-*   **State Management:** Options like Zustand, Redux Toolkit, or React Query / TanStack Query.
-*   **Styling:** React Native StyleSheet, Styled Components, or utility-first libraries for React Native.
-*   **Shared Code:** Consumes `packages/mobile-ui`, `packages/api-client`, `packages/types`, `packages/utils`.
+**Mobile Application (`apps/mobile`) (Placeholder):**
+*   **Framework:** [React Native](https://reactnative.dev/)
+*   *(Details similar to previous, consumes shared packages as needed)*
 
 **Backend API (`apps/api`):**
-*   **Runtime:** [Node.js](https://nodejs.org/)
+*   **Runtime:** [Node.js](https://nodejs.org/) (Source in `apps/api/src/`)
 *   **Framework:** [Express.js](https://expressjs.com/)
 *   **Language:** [TypeScript](https://www.typescriptlang.org/)
-*   **API Styles:**
-    *   **GraphQL:** [Apollo Server](https://www.apollographql.com/docs/apollo-server/) or [Yoga GraphQL](https://the-guild.dev/graphql/yoga-server) (integrated with Express).
-    *   **RESTful APIs:** Using Express.js routing.
+*   **API Styles:** RESTful APIs (GraphQL planned)
 *   **Database:** [MySQL / MariaDB](https://www.mysql.com/)
 *   **ORM:** [Sequelize](https://sequelize.org/)
-*   **Authentication:** JWT (JSON Web Tokens), `bcryptjs` for password hashing.
-*   **Environment Management:** `dotenv`.
-*   **Shared Code:** Consumes `packages/core-logic`, `packages/types`.
+*   **Authentication:** JWT (JSON Web Tokens)
+*   *(Details similar to previous)*
 
 **Shared Packages (`packages/*`):**
 *   **Language:** [TypeScript](https://www.typescriptlang.org/)
-*   **`packages/ui` Development:** [Storybook](https://storybook.js.org/) for component development and testing.
-
-**Database Layer (`database/`):**
-*   **System:** MySQL / MariaDB
-*   **Schema Definition:** SQL (`schema.sql`)
-*   **Migrations:** Sequelize CLI or [Knex.js](https://knexjs.org/) migrations (recommended for versioning schema changes).
+*   **`packages/ui`:** Core shared layout and UI primitive components.
+*   **`packages/utils`:** Core shared utilities like `cn`.
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
 *   [Node.js](https://nodejs.org/) (v18 or later)
-*   [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+*   [npm](https://www.npmjs.com/) (v7+ for workspace support, or Yarn)
 *   [MySQL Server](https://dev.mysql.com/downloads/mysql/) or [MariaDB Server](https://mariadb.org/download/)
-*   A MySQL/MariaDB client (e.g., `mysql` CLI, MySQL Workbench, DBeaver)
-*   For Mobile:
-    *   React Native development environment (Xcode for iOS, Android Studio for Android). Refer to [React Native Environment Setup](https://reactnative.dev/docs/environment-setup).
-    *   Expo CLI (if using Expo): `npm install -g expo-cli`
-*   Monorepo tool (e.g., Turborepo): `npm install -g turbo`
+*   A MySQL/MariaDB client
+*   For Mobile: React Native development environment.
 
 ### Monorepo Setup
-(Assuming a tool like Turborepo is used)
 1.  **Clone the repository:**
     ```bash
     git clone https://github.com/jagdish-pulpet/artnft.git
     cd artnft
     ```
-2.  **Install root dependencies and bootstrap packages:**
+2.  **Install dependencies from the root:**
     ```bash
-    npm install # Or yarn install
-    # Monorepo tool might have a bootstrap command, e.g., turbo install or lerna bootstrap
+    npm install # This will install dependencies for all workspaces
     ```
 3.  **Environment Variables:**
-    *   Each application in `apps/` (web, api, mobile) will have its own `.env` or `.env.local` file for specific configurations (API keys, database URLs, etc.).
-    *   `apps/web/.env.local`: `GOOGLE_API_KEY`, `COINMARKETCAP_API_KEY`, `NEXT_PUBLIC_API_BASE_URL` (pointing to `apps/api`).
-    *   `apps/api/.env`: `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_PORT`, `JWT_SECRET`.
+    *   **Web App (`apps/web/.env.local`):**
+        *   `NEXT_PUBLIC_BACKEND_URL=http://localhost:5000` (or your API's URL)
+        *   `GOOGLE_API_KEY=` (for Genkit)
+        *   `COINMARKETCAP_API_KEY=` (for Stats page)
+    *   **API Service (`apps/api/.env`):**
+        *   `DB_HOST=localhost`
+        *   `DB_USER=your_db_user`
+        *   `DB_PASSWORD=your_db_password`
+        *   `DB_NAME=artnft_db`
+        *   `DB_PORT=3306`
+        *   `JWT_SECRET=your_jwt_secret`
+        *   `PORT=5000` (optional, defaults to 5000 in `apps/api/src/server.ts`)
 
 ### Application-Specific Setup
 
-*   **API (`apps/api` - formerly `artnft-backend-node`):**
-    *   Navigate to `apps/api`.
-    *   Install dependencies: `npm install`.
-    *   Setup `.env` file with database credentials and JWT secret.
-    *   Ensure MySQL/MariaDB server is running. Create the database (e.g., `artnft_db`).
-    *   Apply schema: `mysql -u your_user -p artnft_db < ../../database/schema.sql`.
-    *   Run migrations (if using a migration tool): `npx sequelize-cli db:migrate`.
-*   **Web Frontend & Admin (`apps/web`, `apps/admin`):**
-    *   Navigate to `apps/web` (or `apps/admin`).
-    *   Install dependencies: `npm install`.
-    *   Setup `.env.local`.
-*   **Mobile App (`apps/mobile`):**
-    *   Navigate to `apps/mobile`.
-    *   Install dependencies: `npm install`.
-    *   Follow React Native/Expo instructions for platform-specific setup (iOS, Android).
+*   **API (`apps/api`):**
+    *   Ensure MySQL/MariaDB server is running.
+    *   Create the database (e.g., `artnft_db`).
+    *   Apply schema: `npm run db:schema:apply --workspace=apps/api` (from the root directory) or navigate to `apps/api` and run `npm run db:schema:apply`.
+*   **Web Frontend (`apps/web`):**
+    *   No additional specific setup beyond environment variables.
 
 ### Running Development Servers
-(Commands might vary based on monorepo tool)
 
-*   **From the root directory using a monorepo tool (e.g., Turborepo):**
+*   **From the root directory (recommended):**
     ```bash
-    turbo run dev 
-    # This would typically run dev scripts for all apps/packages defined in turbo.json
-    # Alternatively, run specific apps:
-    # turbo run dev --filter=api
-    # turbo run dev --filter=web
-    # turbo run dev --filter=mobile 
-    # turbo run genkit:watch --filter=web # For Genkit within the web app
+    # Run both web and API concurrently
+    npm run dev
     ```
+    This typically uses the `dev` script in the root `package.json`: `"dev": "npm run dev:web & npm run dev:api"`
 
-*   **Individually (if not using a monorepo runner for all):**
-    1.  **API (`apps/api`):** In `apps/api/`, run `npm run dev`. (Typically on `http://localhost:5000`)
-    2.  **Web App (`apps/web`):** In `apps/web/`, run `npm run dev`. (Typically on `http://localhost:9002`)
-    3.  **Genkit Dev UI (from `apps/web`):** In `apps/web/`, run `npm run genkit:watch`. (Typically on `http://localhost:4000`)
-    4.  **Mobile App (`apps/mobile`):** In `apps/mobile/`, run `npm run ios` or `npm run android` (or `expo start`).
+*   **Individually:**
+    1.  **API (`apps/api`):** In a terminal, from the root: `npm run dev:api` (or `cd apps/api && npm run dev`). Runs on `http://localhost:5000` (or `process.env.PORT`).
+    2.  **Web App (`apps/web`):** In another terminal, from the root: `npm run dev:web` (or `cd apps/web && npm run dev`). Runs on `http://localhost:9002`.
+    3.  **Genkit Dev UI (for `apps/web`):** From the root: `npm run genkit:watch --workspace=apps/web` (or `cd apps/web && npm run genkit:watch`). Runs on `http://localhost:4000`.
 
 ## 🎨 Styling & Theming
-*(Largely unchanged, applies to `apps/web` and `apps/admin`)*
+*   Main styles in `apps/web/src/app/globals.css`.
+*   Tailwind CSS configured in `apps/web/tailwind.config.ts`.
+*   ShadCN UI components are local to `apps/web/src/components/ui/`.
 
 ## 🤖 AI Integration (Genkit)
-*(Largely unchanged, primarily within `apps/web` or `apps/admin` Next.js server environment)*
+*   Genkit flows are located in `apps/web/src/ai/flows/`.
+*   Genkit development server can be run via `npm run genkit:watch --workspace=apps/web`.
 
-## 📱 Mobile Application (React Native) (NEW)
+## 📱 Mobile Application (React Native) (`apps/mobile`)
+*   This is currently a placeholder. Development would involve setting up React Native and integrating with `packages/api-client` and `packages/mobile-ui`.
 
-*   **Platform:** `apps/mobile` built with React Native (or Expo).
-*   **Purpose:** Provides a native mobile experience for users to discover, view, and interact with NFTs and the marketplace community.
-*   **Key Features (Conceptual):**
-    *   NFT browsing and discovery.
-    *   User profiles and followed artists.
-    *   Notifications.
-    *   Wallet connection (using mobile-specific wallet SDKs).
-*   **API Communication:** Uses the shared `packages/api-client` to interact with `apps/api`.
-
-## 🔗 API Layer (REST & GraphQL) (NEW/ENHANCED)
-
-The `apps/api` service provides a robust backend for all client applications.
-*   **Dual Interface:** Offers both RESTful endpoints (Express.js) for traditional API interactions and a GraphQL API (e.g., Apollo Server) for flexible data querying.
-*   **GraphQL Benefits:** Particularly useful for the mobile app to fetch precisely the data it needs, reducing over-fetching and under-fetching.
-*   **`packages/api-client`:** This shared package will be designed to consume both REST and GraphQL endpoints, providing a unified interface for frontend apps.
-*   **Authentication:** JWT-based authentication is used for securing both REST and GraphQL endpoints.
+## 🔗 API Layer (REST & GraphQL) (`apps/api`)
+*   The `apps/api` service provides RESTful endpoints. GraphQL integration is planned.
+*   Uses Express.js, Sequelize for MySQL/MariaDB.
 
 ## 🌍 Building for Production
-*(Commands would be adapted for monorepo tooling, e.g., `turbo run build --filter=...`)*
+*   `npm run build --workspace=apps/web`
+*   `npm run build --workspace=apps/api`
+*   (For monorepo tools like Turborepo, a single `turbo run build` might be configured in the future).
 
 ## ☁️ Deployment
-*   **Monorepo Considerations:** Deployment strategies will need to accommodate the monorepo structure. CI/CD pipelines can be set up to build and deploy individual apps from `apps/` when changes are detected in them or their dependencies in `packages/`.
-*   **Frontend (`apps/web`, `apps/admin`):** Firebase App Hosting, Vercel, Netlify.
-*   **Backend (`apps/api`):** Node.js hosting (Heroku, AWS Elastic Beanstalk, Google Cloud Run).
-*   **Mobile App (`apps/mobile`):** App Store (iOS), Google Play Store (Android).
-*   **Database:** Cloud-hosted MySQL/MariaDB (AWS RDS, Google Cloud SQL, Azure, DigitalOcean Managed Databases).
+*   **Frontend (`apps/web`):** Firebase App Hosting, Vercel, Netlify.
+*   **Backend (`apps/api`):** Node.js hosting (Google Cloud Run, AWS Elastic Beanstalk, Heroku).
+*   **Database:** Cloud-hosted MySQL/MariaDB.
 
 ## 🤝 Contributing
-*(Contribution guidelines would generally apply to the monorepo as a whole, with specific considerations for each package/app.)*
+*(Contribution guidelines would apply to the monorepo as a whole.)*
 
 ## 🗺️ Roadmap
 
-*   **Phase 1 & 2 (Refined for Monorepo):**
-    *   [ ] Establish Monorepo structure with tooling (e.g., Turborepo).
-    *   [ ] Migrate existing Next.js app to `apps/web`.
-    *   [ ] Migrate existing Node.js backend to `apps/api`.
-    *   [ ] Refactor shared elements (UI, utils, types) into `packages/*`.
-    *   [ ] Implement full backend CRUD operations and business logic in `apps/api` for MySQL/MariaDB.
-    *   [ ] Fully connect `apps/web` (and `apps/admin`) to `apps/api`.
-*   **Phase X: GraphQL API Implementation (NEW):**
+*   **Phase 1 (Monorepo & Core):**
+    *   [x] Establish Monorepo structure with NPM workspaces.
+    *   [x] Migrate Next.js app to `apps/web`.
+    *   [x] Migrate Node.js backend to `apps/api`.
+    *   [x] Refactor key shared elements (UI: `AppLayout`, `ArtNFTLogo`; Utils: `cn`) into `packages/*`.
+    *   [ ] Implement full backend CRUD operations and business logic in `apps/api`.
+    *   [ ] Fully connect `apps/web` to `apps/api` for all features.
+*   **Phase 2: GraphQL API & Mobile Foundation:**
     *   [ ] Define GraphQL schema in `apps/api`.
     *   [ ] Implement resolvers for GraphQL queries and mutations.
-    *   [ ] Update/extend `packages/api-client` to support GraphQL.
-*   **Phase Y: Mobile Application Development (NEW):**
-    *   [ ] Initialize React Native project in `apps/mobile`.
-    *   [ ] Develop core mobile screens (Home, NFT Details, Profile, Search).
-    *   [ ] Implement mobile-specific authentication and wallet interactions.
-    *   [ ] Integrate `packages/api-client` for data fetching.
-*   **Phase Z: Advanced Features & Polish (Across all platforms):**
-    *   Advanced GenAI integrations, personalized recommendations.
-    *   Community features (commenting, messaging).
-    *   Comprehensive testing, performance optimization, security hardening.
+    *   [ ] Update/create `packages/api-client` to support GraphQL & REST.
+    *   [ ] Initialize React Native project in `apps/mobile` with basic navigation.
+*   **Phase 3: Feature Expansion & Polish:**
+    *   [ ] Develop core mobile screens for `apps/mobile`.
+    *   [ ] Advanced GenAI integrations, personalized recommendations.
+    *   [ ] Community features (commenting, messaging).
+    *   [ ] Comprehensive testing, performance optimization, security hardening.
 
 ## 📄 License
 Distributed under the MIT License.
@@ -355,5 +306,4 @@ Project Lead / Maintainer: [CloudFi] - [artnft.io]
 Project Link: [https://github.com/jagdish-pulpet/artnft](https://github.com/jagdish-pulpet/artnft)
 ---
 Thank you for checking out ArtNFT Marketplace! We're excited to see how it evolves.
-
-    
+        
