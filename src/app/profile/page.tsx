@@ -10,6 +10,8 @@ import { Edit3, ExternalLink, Image as ImageIcon, Palette, DollarSign, ShoppingB
 import Link from 'next/link';
 import NFTCard, { type NFTCardProps } from '@/components/NFTCard';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 
 // Mock data - in a real app, this comes from an API / user session
 const mockUserProfile = {
@@ -100,6 +102,20 @@ const mockAdminAnnouncements: AdminAnnouncement[] = [
 
 
 export default function ProfilePage() {
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handleLogout = () => {
+    if (typeof window !== 'undefined') {
+        localStorage.removeItem('artnft_user_token');
+        localStorage.removeItem('artnft_user_details');
+        localStorage.removeItem('adminToken'); // Clear admin token if present
+        localStorage.removeItem('isAdminAuthenticated'); // Clear admin status
+    }
+    toast({ title: 'Logged Out', description: 'You have been successfully logged out.' });
+    router.push('/welcome');
+  };
+
   return (
     <AppLayout>
       <div className="max-w-6xl mx-auto p-0 md:p-4 space-y-6 md:space-y-8">
@@ -134,6 +150,9 @@ export default function ProfilePage() {
                 </Button>
                 <Button variant="outline" size="sm">
                   <Edit3 className="mr-0 md:mr-2 h-4 w-4" /> <span className="hidden md:inline">Edit Profile</span>
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleLogout} className="text-destructive hover:bg-destructive/10 hover:text-destructive border-destructive/50">
+                  <LogOut className="mr-0 md:mr-2 h-4 w-4" /> <span className="hidden md:inline">Log Out</span>
                 </Button>
               </div>
             </div>
