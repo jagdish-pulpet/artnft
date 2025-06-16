@@ -1,23 +1,23 @@
 
 'use client';
-import AppLayout from '@/components/AppLayout';
+import { AppLayout } from '@artnft/ui'; // Updated import
 import NFTCard, { type NFTCardProps } from '@/components/NFTCard';
-import ArtNFTLogo from '@ui/ArtNFTLogo'; // Updated import
+import { ArtNFTLogo } from '@artnft/ui'; // Updated import
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import {
   Search as SearchIcon, Palette, Camera, Music2, ToyBrick, Globe, Bitcoin, Sparkles, Grid,
   Package, PlusSquare, Newspaper, ArrowRight, Users, Award, Flame, UserPlus, UserCheck, Activity, Bell,
-  ArrowLeft, X as XIcon // Added ArrowLeft and XIcon
+  ArrowLeft, X as XIcon 
 } from 'lucide-react';
 import Link from 'next/link';
 import type { LucideIcon } from 'lucide-react';
 import Image from 'next/image';
-import { useState, useEffect, useRef, type FormEvent } from 'react'; // Added useRef
+import { useState, useEffect, useRef, type FormEvent } from 'react'; 
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { useRouter } from 'next/navigation'; // Added useRouter
+import { useRouter } from 'next/navigation'; 
 
 // User IDs from schema.sql
 const user_001_id = 'usr_00000000-0000-0000-0000-000000000001';
@@ -140,7 +140,7 @@ export default function HomePage() {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      if (isMobileSearchActive) { // Keep header visible if mobile search is active
+      if (isMobileSearchActive) { 
         setIsHeaderVisible(true);
         setLastScrollY(currentScrollY);
         return;
@@ -188,13 +188,12 @@ export default function HomePage() {
       if (isMobileSearchActive) {
         setIsMobileSearchActive(false);
       }
-      // setSearchTerm(''); // Optionally clear after search
     }
   };
 
   const toggleMobileSearch = () => {
     setIsMobileSearchActive(prev => !prev);
-    if (isMobileSearchActive) setSearchTerm(''); // Clear search term when closing
+    if (isMobileSearchActive) setSearchTerm(''); 
   };
 
   return (
@@ -211,7 +210,6 @@ export default function HomePage() {
             isMobileSearchActive ? "justify-between gap-2" : "justify-between md:gap-4"
           )}>
 
-            {/* Mobile Search Active State */}
             {isMobileSearchActive && (
               <>
                 <Button variant="ghost" size="icon" onClick={toggleMobileSearch} className="shrink-0">
@@ -246,15 +244,12 @@ export default function HomePage() {
               </>
             )}
 
-            {/* Default Header State (Mobile and Desktop) */}
             {!isMobileSearchActive && (
               <>
-                {/* Logo */}
                 <div className="flex items-center">
                   <ArtNFTLogo />
                 </div>
 
-                {/* Desktop Search Form */}
                 <form onSubmit={handleSearchSubmit} className="hidden md:flex flex-grow max-w-md relative mx-4">
                   <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                   <Input
@@ -281,7 +276,6 @@ export default function HomePage() {
                   </Button>
                 </form>
 
-                {/* Actions (Mobile Search Toggle & Desktop User Info) */}
                 <div className="flex items-center gap-2">
                   <Button variant="ghost" size="icon" onClick={toggleMobileSearch} className="md:hidden">
                     <SearchIcon className="h-5 w-5" />
@@ -305,10 +299,8 @@ export default function HomePage() {
           </div>
         </header>
 
-        {/* Main content of the home page */}
         <div className={cn("px-4 md:px-0 space-y-12", isMobileSearchActive ? "pt-4" : "pt-6 md:pt-0")}>
 
-            {/* Hero Section */}
             <section className="relative bg-muted/30 rounded-lg overflow-hidden p-8 md:p-12 text-center md:text-left shadow-lg">
                 <div className="absolute inset-0 opacity-10 z-0">
                     <Image
@@ -343,7 +335,6 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* Latest Activity */}
             <section>
                 <h2 className="text-2xl font-semibold mb-6 text-foreground flex items-center"><Activity className="mr-3 h-7 w-7 text-primary"/>Latest Activity</h2>
                 {latestActivityNFTs.length > 0 ? (
@@ -363,7 +354,6 @@ export default function HomePage() {
                 )}
             </section>
 
-            {/* New From Artists You Follow Section */}
             <section>
                 <h2 className="text-2xl font-semibold mb-4 text-foreground flex items-center"><Users className="mr-3 h-7 w-7 text-primary"/>New From Artists You Follow</h2>
                 {followedArtists.size > 0 ? (
@@ -388,7 +378,6 @@ export default function HomePage() {
                 )}
             </section>
 
-            {/* Artist Spotlight Section */}
             <section id="artist-spotlights">
               <h2 className="text-2xl font-semibold mb-4 text-foreground">Artist Spotlights</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -432,7 +421,6 @@ export default function HomePage() {
               </div>
             </section>
 
-            {/* Explore Categories Section */}
             <section id="categories">
                 <h2 className="text-2xl font-semibold mb-4 text-foreground">Explore Categories</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
@@ -449,7 +437,6 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* Popular Collections Section */}
              <section>
                 <h2 className="text-2xl font-semibold mb-4 text-foreground flex items-center">
                     <Package className="mr-3 h-7 w-7 text-primary"/>Popular Collections
@@ -462,7 +449,6 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* Community Highlights Section */}
             <section>
                 <h2 className="text-2xl font-semibold mb-4 text-foreground">Community Highlights</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

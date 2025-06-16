@@ -1,6 +1,6 @@
 
 import Link from 'next/link';
-import ArtNFTLogo from '@ui/ArtNFTLogo'; // Updated import
+import ArtNFTLogo from './ArtNFTLogo'; // Updated path
 import { Twitter, Instagram, Facebook, Linkedin } from 'lucide-react';
 
 export default function DesktopFooter() {
