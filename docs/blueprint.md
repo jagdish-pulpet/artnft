@@ -2,14 +2,16 @@
 
 ## Core Features:
 
-- Login Authentication: Simple login screen for user authentication.
+- Branded Background: Full-screen background with marketplace branding to enhance user engagement.
+- Centered Branding: Centered logo and tagline for clear and immediate brand recognition.
+- Primary CTAs: Two prominent buttons, "Connect Wallet" and "Sign Up with Email," for easy access to main actions.
+- Existing Account Link: Small "Already have an account? Sign In" link to streamline access for existing users.
 
 ## Style Guidelines:
 
-- Primary color: Soft lavender (#E6E6FA) to evoke creativity and sophistication.
-- Background color: Light gray (#F0F0F0) for a clean and modern feel.
-- Accent color: Pale rose (#FFD1DC) to add a touch of elegance and visual interest.
-- Body and headline font: 'Alegreya', a humanist serif with an elegant, intellectual, contemporary feel.
-- Use minimalist and modern icons to represent different art categories and functionalities.
-- Clean and intuitive layout with a focus on showcasing the NFT art pieces.
-- Subtle animations and transitions to enhance user engagement and provide a smooth browsing experience.
+- Primary color: Deep blue (#3F51B5) to inspire trust and security in the financial context.
+- Background color: Light blue (#E8EAF6), providing a soft and unobtrusive backdrop.
+- Accent color: Teal (#4DB6AC) to highlight interactive elements and CTAs.
+- Body and headline font: 'Inter' sans-serif font, offering a modern and neutral appearance.
+- Full-screen layout for an immersive experience with all elements centered for balance.
+- Subtle animations for button interactions to provide engaging feedback.

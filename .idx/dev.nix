@@ -1,3 +1,4 @@
+
 # To learn more about how to use Nix to configure your environment
 # see: https://firebase.google.com/docs/studio/customize-workspace
 {pkgs}: {
@@ -7,6 +8,7 @@
   packages = [
     pkgs.nodejs_20
     pkgs.zulu
+    pkgs.postgresql_17
   ];
   # Sets environment variables in the workspace
   env = {};

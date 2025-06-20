@@ -8,11 +8,20 @@ export default {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    container: {
+      center: true,
+      padding: {
+        DEFAULT: '1rem',
+        sm: '2rem',
+        lg: '4rem',
+        xl: '5rem',
+      },
+    },
     extend: {
       fontFamily: {
-        body: ['Alegreya', 'serif'],
-        headline: ['Alegreya', 'serif'],
-        code: ['Consolas', 'Monaco', 'monospace'],
+        body: ['Inter', 'sans-serif'],
+        headline: ['Inter', 'sans-serif'],
+        code: ['monospace'],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -29,15 +38,19 @@ export default {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
         },
-        secondary: {
+        secondary: { /* This is the new secondary (Teal) */
           DEFAULT: 'hsl(var(--secondary))',
           foreground: 'hsl(var(--secondary-foreground))',
+        },
+        'shadcn-secondary': { /* This is ShadCN's original secondary, renamed */
+          DEFAULT: 'hsl(var(--shadcn-secondary))',
+          foreground: 'hsl(var(--shadcn-secondary-foreground))',
         },
         muted: {
           DEFAULT: 'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))',
         },
-        accent: {
+        accent: { /* Accent remains Teal for now, can be differentiated later */
           DEFAULT: 'hsl(var(--accent))',
           foreground: 'hsl(var(--accent-foreground))',
         },
@@ -67,9 +80,11 @@ export default {
         },
       },
       borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
+        lg: 'var(--radius)', /* 12px based on globals.css */
+        md: 'calc(var(--radius) - 4px)', /* 8px */
+        sm: 'calc(var(--radius) - 6px)', /* 6px */
+        xl: 'calc(var(--radius) + 4px)', /* 16px */
+        '2xl': 'calc(var(--radius) + 12px)', /* 24px for modals if needed */
       },
       keyframes: {
         'accordion-down': {
@@ -95,5 +110,5 @@ export default {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [require('tailwindcss-animate'), require('tailwind-scrollbar')({ nocompatible: true })],
 } satisfies Config;
