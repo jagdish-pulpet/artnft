@@ -226,7 +226,7 @@ Located in the `artnft-backend/` directory.
 
    # JWT Configuration
    JWT_SECRET=your_very_strong_and_long_jwt_secret_key_at_least_32_characters
-   JWT_EXPIRES_IN=1h               # Or other duration like 7d, 3600 (for seconds)
+   JWT_EXPIRES_IN=1d               # Or other duration like 7d, 3600 (for seconds)
 
    # Firebase Configuration
    # Option A: Path to service account key (ensure file is in .gitignore)
